@@ -1,5 +1,9 @@
 // File: Settings/Setting.cs
-// Purpose: Options UI + saved settings for Dispatch Boss (Public Transit + Industry + Parks/Roads + About).
+// Purpose: Options UI + saved settings for Dispatch Boss.
+// Notes:
+// - Partial class split across 4 source files.
+// - Defaults are applied in ctor to avoid “all zero” default instances.
+// - Apply() re-enables run-once systems so changes take effect.
 
 namespace DispatchBoss
 {
@@ -8,7 +12,7 @@ namespace DispatchBoss
     using Game.Modding;             // IMod
     using Game.SceneFlow;           // GameManager
     using Game.Settings;            // Settings UI attributes
-    using Game.UI;
+    using Game.UI;                  // Unit
     using System;                   // Exception
     using Unity.Entities;
     using UnityEngine;              // Application URL
@@ -27,7 +31,7 @@ namespace DispatchBoss
         RoadMaintenanceGroup, ParkMaintenanceGroup,
         AboutLinksGroup, DebugGroup
     )]
-    public sealed class Setting : ModSetting
+    public sealed partial class Setting : ModSetting
     {
         // Tab ids (must match Locale ids).
         public const string PublicTransitTab = "Public-Transit";
@@ -86,46 +90,19 @@ namespace DispatchBoss
         private const string UrlDiscord =
             "https://discord.gg/HTav7ARPs2";
 
-        private bool m_EnableLineVehicleCountTuner;
-
-        // Toggle vanilla transit line range tuner (global policy).
-        [SettingsUISection(PublicTransitTab, LineVehiclesGroup)]
-        public bool EnableLineVehicleCountTuner
-        {
-            get => m_EnableLineVehicleCountTuner;
-            set
-            {
-                if (m_EnableLineVehicleCountTuner == value)
-                    return;
-
-                m_EnableLineVehicleCountTuner = value;
-
-                // IMPORTANT: do not auto-persist save on toggle changes (prevents settings file rewrites).
-                // - Apply immediately if a city is loaded.
-                GameManager gm = GameManager.instance;
-                if (gm != null && gm.gameMode.IsGame())
-                {
-                    Apply();
-                }
-            }
-        }
-
         public Setting(IMod mod)
             : base(mod)
         {
-            // Existing sentinel: older configs can load 0 for percent sliders.
-            if (BusDepotScalar <= 0f || BusPassengerScalar <= 0f)
-            {
-                SetDefaults();
-            }
-
-            //     EnsureServiceDefaults();
+            // Defaults must exist for:
+            // - First-run (no settings file)
+            // - Default template instance passed to LoadSettings(...)
+            SetDefaults();
         }
 
-        public override void SetDefaults( )
+        public override void SetDefaults()
         {
             // Public-Transit defaults (percent).
-            m_EnableLineVehicleCountTuner = false;   // <-- Do not call setter here (triggers early save).
+            m_EnableLineVehicleCountTuner = false;   // Setter avoided (prevents early Apply).
             ResetDepotToVanilla();
             ResetPassengerToVanilla();
 
@@ -153,7 +130,7 @@ namespace DispatchBoss
             EnableDebugLogging = false;
         }
 
-        public override void Apply( )
+        public override void Apply()
         {
             base.Apply();
 
@@ -169,7 +146,7 @@ namespace DispatchBoss
                 return;
             }
 
-            // Settings changes should re-run the systems once.
+            // Settings changes re-enable run-once systems.
             TryEnableOnce<TransitSystem>(world, "TransitSystem");
             TryEnableOnce<MaintenanceSystem>(world, "MaintenanceSystem");
             TryEnableOnce<IndustrySystem>(world, "IndustrySystem");
@@ -193,368 +170,6 @@ namespace DispatchBoss
             }
         }
 
-        // ------------------------
-        // Public-Transit tab
-        // ------------------------
-
-        // DEPOT Buildings
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float BusDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float FerryDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float SubwayDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float TaxiDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float TrainDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float TramDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUIButtonGroup(DepotGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public bool ResetDepotToVanillaButton
-        {
-            set
-            {
-                if (!value)
-                    return;
-
-                ResetDepotToVanilla();  // Reset all Depots to 100%
-                ApplyAndSave();         // persist in settings file
-            }
-        }
-
-        // PASSENGERS
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float BusPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float TramPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float TrainPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float SubwayPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float ShipPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float FerryPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float AirplanePassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUIButtonGroup(PassengerGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public bool DoublePassengersButton  // Passenger limts all go to 200% (double)
-        {
-            set
-            {
-                if (!value)
-                    return;
-
-                BusPassengerScalar = 200f;
-                TramPassengerScalar = 200f;
-                TrainPassengerScalar = 200f;
-                SubwayPassengerScalar = 200f;
-                ShipPassengerScalar = 200f;
-                FerryPassengerScalar = 200f;
-                AirplanePassengerScalar = 200f;
-
-                ApplyAndSave();
-            }
-        }
-
-        [SettingsUIButtonGroup(PassengerGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public bool ResetPassengerToVanillaButton
-        {
-            set
-            {
-                if (!value)
-                    return;
-
-                ResetPassengerToVanilla();
-                ApplyAndSave();
-            }
-        }
-
-        // ------------------
-        // Industry
-        // ------------------
-
-        // Delivery vehicles (scalar)
-
-        private float m_SemiTruckCargoScalar = 1f;
-        private float m_DeliveryVanCargoScalar = 1f;
-        private float m_OilTruckCargoScalar = 1f;
-        private float m_MotorbikeDeliveryCargoScalar = 1f;
-
-        private float m_ExtractorMaxTrucksScalar = 1f;
-        private float m_CargoStationMaxTrucksScalar = 1f;
-
-
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
-        [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public float SemiTruckCargoScalar
-        {
-            get => m_SemiTruckCargoScalar;
-            set
-            {
-                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
-                if (m_SemiTruckCargoScalar == v)
-                    return;
-                m_SemiTruckCargoScalar = v;
-                OnIndustryChanged();
-            }
-        }
-
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
-        [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public float DeliveryVanCargoScalar
-        {
-            get => m_DeliveryVanCargoScalar;
-            set
-            {
-                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
-                if (m_DeliveryVanCargoScalar == v)
-                    return;
-                m_DeliveryVanCargoScalar = v;
-                OnIndustryChanged();
-            }
-        }
-
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
-        [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public float OilTruckCargoScalar
-        {
-            get => m_OilTruckCargoScalar;
-            set
-            {
-                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
-                if (m_OilTruckCargoScalar == v)
-                    return;
-                m_OilTruckCargoScalar = v;
-                OnIndustryChanged();
-            }
-        }
-
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
-        [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public float MotorbikeDeliveryCargoScalar
-        {
-            get => m_MotorbikeDeliveryCargoScalar;
-            set
-            {
-                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
-                if (m_MotorbikeDeliveryCargoScalar == v)
-                    return;
-                m_MotorbikeDeliveryCargoScalar = v;
-                OnIndustryChanged();
-            }
-        }
-
-        // Extractor and Cargo Station Buildings (scalar)
-
-        [SettingsUISlider(min = CargoStationMinScalar, max = CargoStationMaxScalar, step = CargoStationStepScalar)]
-        [SettingsUISection(IndustryTab, CargoStationsGroup)]
-        public float ExtractorMaxTrucksScalar
-        {
-            get => m_ExtractorMaxTrucksScalar;
-            set
-            {
-                float v = ScalarMath.ClampScalar(value, CargoStationMinScalar, CargoStationMaxScalar);
-                if (m_ExtractorMaxTrucksScalar == v)
-                    return;
-                m_ExtractorMaxTrucksScalar = v;
-                OnIndustryChanged();
-            }
-        }
-
-        [SettingsUISlider(min = CargoStationMinScalar, max = CargoStationMaxScalar, step = CargoStationStepScalar)]
-        [SettingsUISection(IndustryTab, CargoStationsGroup)]
-        public float CargoStationMaxTrucksScalar
-        {
-            get => m_CargoStationMaxTrucksScalar;
-            set
-            {
-                float v = ScalarMath.ClampScalar(value, CargoStationMinScalar, CargoStationMaxScalar);
-                if (m_CargoStationMaxTrucksScalar == v)
-                    return;
-                m_CargoStationMaxTrucksScalar = v;
-                OnIndustryChanged();
-            }
-        }
-
-        [SettingsUIButtonGroup(DeliveryGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public bool ResetDeliveryToVanillaButton
-        {
-            set
-            {
-                if (!value)
-                    return;
-
-                SemiTruckCargoScalar = 1f;
-                DeliveryVanCargoScalar = 1f;
-                OilTruckCargoScalar = 1f;
-                MotorbikeDeliveryCargoScalar = 1f;
-
-                ApplyAndSave();
-            }
-        }
-
-
-        [SettingsUIButtonGroup(CargoStationsGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(IndustryTab, CargoStationsGroup)]
-        public bool ResetCargoStationsToVanillaButton
-        {
-            set
-            {
-                if (!value)
-                    return;
-                // Reset all to vanilla.
-                CargoStationMaxTrucksScalar = 1f;
-                ExtractorMaxTrucksScalar = 1f;
-
-                ApplyAndSave();
-            }
-        }
-
-        // ------------------------
-        // Parks-Roads (percent)
-        // ------------------------
-
-        [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ParksRoadsTab, ParkMaintenanceGroup)]
-        public float ParkMaintenanceDepotScalar { get; set; } = 100f;
-
-        [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ParksRoadsTab, ParkMaintenanceGroup)]
-        public float ParkMaintenanceVehicleCapacityScalar { get; set; } = 100f;
-
-        [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ParksRoadsTab, ParkMaintenanceGroup)]
-        public float ParkMaintenanceVehicleRateScalar { get; set; } = 100f;
-
-        [SettingsUIButtonGroup(ParkMaintenanceGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(ParksRoadsTab, ParkMaintenanceGroup)]
-        public bool ResetParkMaintenanceToVanillaButton
-        {
-            set
-            {
-                if (!value)
-                    return;
-                // Reset all Parks stuff to vanilla.
-                ParkMaintenanceDepotScalar = 100f;
-                ParkMaintenanceVehicleCapacityScalar = 100f;
-                ParkMaintenanceVehicleRateScalar = 100f;
-
-                ApplyAndSave();
-            }
-        }
-
-        [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ParksRoadsTab, RoadMaintenanceGroup)]
-        public float RoadMaintenanceDepotScalar { get; set; } = 100f;
-
-        [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ParksRoadsTab, RoadMaintenanceGroup)]
-        public float RoadMaintenanceVehicleCapacityScalar { get; set; } = 100f;
-
-        [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ParksRoadsTab, RoadMaintenanceGroup)]
-        public float RoadMaintenanceVehicleRateScalar { get; set; } = 100f;
-
-        [SettingsUISlider(min = RoadWearMinPercent, max = RoadWearMaxPercent, step = RoadWearStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ParksRoadsTab, RoadMaintenanceGroup)]
-        public float RoadWearScalar { get; set; } = 100f;
-
-        [SettingsUIButtonGroup(RoadMaintenanceGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(ParksRoadsTab, RoadMaintenanceGroup)]
-        public bool ResetRoadMaintenanceToVanillaButton
-        {
-            set
-            {
-                if (!value)
-                    return;
-                // Reset all Roads stuff to vanilla.
-                RoadMaintenanceDepotScalar = 100f;
-                RoadMaintenanceVehicleCapacityScalar = 100f;
-                RoadMaintenanceVehicleRateScalar = 100f;
-                RoadWearScalar = 100f;
-
-                ApplyAndSave();
-            }
-        }
-
         // ----------------
         // About tab
         // ----------------
@@ -572,8 +187,7 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
                 try
                 {
@@ -593,8 +207,7 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
                 try
                 {
@@ -607,7 +220,9 @@ namespace DispatchBoss
             }
         }
 
-        // DEBUG/LOGGING
+        // ----------------
+        // Debug
+        // ----------------
 
         [SettingsUIButtonGroup(DebugGroup)]
         [SettingsUIButton]
@@ -616,8 +231,7 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
                 GameManager gm = GameManager.instance;
                 if (gm == null || !gm.gameMode.IsGame())
@@ -662,10 +276,7 @@ namespace DispatchBoss
         }
 
         [SettingsUISection(AboutTab, DebugGroup)]
-        public bool EnableDebugLogging
-        {
-            get; set;
-        }
+        public bool EnableDebugLogging { get; set; }
 
         [SettingsUIButton]
         [SettingsUISection(AboutTab, DebugGroup)]
@@ -673,45 +284,5 @@ namespace DispatchBoss
         {
             set => ShellOpen.OpenFolderSafe(ShellOpen.GetLogsFolder(), "OpenLog");
         }
-
-        // ------------------------
-        // Helpers
-        // ------------------------
-
-        public void ResetDepotToVanilla( )
-        {
-            BusDepotScalar = 100f;
-            FerryDepotScalar = 100f;
-            SubwayDepotScalar = 100f;
-            TaxiDepotScalar = 100f;
-            TrainDepotScalar = 100f;
-            TramDepotScalar = 100f;
-        }
-
-        public void ResetPassengerToVanilla( )
-        {
-            AirplanePassengerScalar = 100f;
-            BusPassengerScalar = 100f;
-            FerryPassengerScalar = 100f;
-            ShipPassengerScalar = 100f;
-            SubwayPassengerScalar = 100f;
-            TrainPassengerScalar = 100f;
-            TramPassengerScalar = 100f;
-        }
-
-
-        private void OnIndustryChanged( )
-        {
-            GameManager gm = GameManager.instance;
-            if (gm == null || !gm.gameMode.IsGame())
-                return;
-
-            World world = World.DefaultGameObjectInjectionWorld;
-            if (world == null)
-                return;
-
-            TryEnableOnce<IndustrySystem>(world, "IndustrySystem");
-        }
-
     }
 }
