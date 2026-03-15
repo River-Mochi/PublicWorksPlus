@@ -1,9 +1,10 @@
 // File: Systems/LaneWearProbeSystem.cs
 // Purpose: Verbose probe for LaneCondition.m_Wear to validate lane wear slider behavior.
 // Notes:
-// - Samples lanes in the current UpdateFrame group (matches NetDeteriorationSystem cadence).
-// - Stores a small per-group sample set so deltas become meaningful after groups cycle.
-// - UpdateFrame is a shared component (ISharedComponentData), so we read it via EntityManager.GetSharedComponentData.
+// - Samples ONLY lanes in the current UpdateFrame group (matches NetDeteriorationSystem cadence).
+// - Keeps a tiny stable sample set per group so deltas become meaningful when that group repeats.
+// - Avoids obsolete EntityManager.GetSharedComponentData by using EntityQuery shared-component filtering.
+// - GetUpdateInterval must return a power of 2 for any phase; DO NOT gate settings here.
 
 namespace DispatchBoss
 {
@@ -11,29 +12,43 @@ namespace DispatchBoss
     using Game.Net;
     using Game.Prefabs;
     using Game.Simulation;
-    using System;
+    using Unity.Collections;
     using Unity.Entities;
     using Unity.Mathematics;
 
-    [UpdateAfter(typeof(Game.Simulation.NetDeteriorationSystem))]
     public sealed partial class LaneWearProbeSystem : GameSystemBase
     {
-        private const int kUpdatesPerDay = 16;     // NetDeteriorationSystem.kUpdatesPerDay
-        private const int kGroupCount = 16;        // lane update group count
-        private const int kSamplesPerGroup = 3;    // keep tiny to avoid log spam
+        // NetDeteriorationSystem updates lanes in groups; these match common vanilla constants.
+        // These are NOT the probe frequency; they are used to compute the current UpdateFrame group.
+        private const int kNetUpdatesPerDay = 16;
+        private const int kGroupCount = 16;
 
-        // Log once per NetDeteriorationSystem run (1024 frames). This means deltas for a given group
-        // become non-zero after that group repeats (≈16 logs ≈ 4–5 minutes at ~60fps).
-        private const uint kFramesBetweenLogs = 1024;
+        // Keep small to avoid log spam.
+        private const int kSamplesPerGroup = 3;
+
+        // Probe frequency:
+        // 262144 “simulation frames” per day; 262144 / 256 = 1024 frames (power of 2).
+        private const int kProbeUpdatesPerDay = 256;
 
         private SimulationSystem m_Sim = null!;
-
-        private uint m_LastLogFrame;
+        private EntityQuery m_LanesByFrameQuery;
 
         // Per-group samples (group * kSamplesPerGroup + i)
         private Entity[] m_Samples = null!;
         private float[] m_LastWear = null!;
+        private int[] m_LastWearQ64 = null!;
         private bool[] m_HasLast = null!;
+
+        public override int GetUpdateInterval(SystemUpdatePhase phase)
+        {
+            if (phase == SystemUpdatePhase.GameSimulation)
+            {
+                return 262144 / kProbeUpdatesPerDay;
+            }
+
+            // Defensive: must be power-of-2 and non-zero.
+            return 1;
+        }
 
         protected override void OnCreate()
         {
@@ -41,53 +56,67 @@ namespace DispatchBoss
 
             m_Sim = World.GetOrCreateSystemManaged<SimulationSystem>();
 
-            m_Samples = new Entity[kGroupCount * kSamplesPerGroup];
-            m_LastWear = new float[kGroupCount * kSamplesPerGroup];
-            m_HasLast = new bool[kGroupCount * kSamplesPerGroup];
-
-            // Only run when lanes exist.
-            EntityQuery q = SystemAPI.QueryBuilder()
+            // Query all lanes that can have wear and are assigned to an UpdateFrame group.
+            m_LanesByFrameQuery = SystemAPI.QueryBuilder()
                 .WithAll<LaneCondition, PrefabRef, UpdateFrame>()
                 .Build();
 
-            RequireForUpdate(q);
+            RequireForUpdate(m_LanesByFrameQuery);
+
+            int totalSlots = kGroupCount * kSamplesPerGroup;
+            m_Samples = new Entity[totalSlots];
+            m_LastWear = new float[totalSlots];
+            m_LastWearQ64 = new int[totalSlots];
+            m_HasLast = new bool[totalSlots];
+
+            for (int i = 0; i < totalSlots; i++)
+            {
+                m_Samples[i] = Entity.Null;
+                m_LastWear[i] = 0f;
+                m_LastWearQ64[i] = 0;
+                m_HasLast[i] = false;
+            }
         }
 
         protected override void OnUpdate()
         {
+            // Gate runtime behavior HERE (safe and expected).
             if (Mod.Settings == null || !Mod.Settings.EnableDebugLogging)
                 return;
 
             uint frame = m_Sim.frameIndex;
-            if (frame - m_LastLogFrame < kFramesBetweenLogs)
-                return;
 
-            m_LastLogFrame = frame;
-
-            uint groupU = SimulationUtils.GetUpdateFrame(frame, kUpdatesPerDay, kGroupCount);
+            uint groupU = SimulationUtils.GetUpdateFrame(frame, kNetUpdatesPerDay, kGroupCount);
             int group = (int)groupU;
             UpdateFrame target = new UpdateFrame(groupU);
 
-            var detLookup = SystemAPI.GetComponentLookup<LaneDeteriorationData>(isReadOnly: true);
+            RefillSamplesIfNeeded(group, target);
 
-            EnsureSamplesForGroup(group, target);
+            var condLookup = SystemAPI.GetComponentLookup<LaneCondition>(isReadOnly: true);
+            var prLookup = SystemAPI.GetComponentLookup<PrefabRef>(isReadOnly: true);
+            var detLookup = SystemAPI.GetComponentLookup<LaneDeteriorationData>(isReadOnly: true);
 
             int baseIndex = group * kSamplesPerGroup;
 
             float sumDelta = 0f;
+            int sumDeltaQ = 0;
             float maxAbsDelta = 0f;
-            int logged = 0;
+            int maxAbsDeltaQ = 0;
+            int observed = 0;
 
             for (int i = 0; i < kSamplesPerGroup; i++)
             {
                 int idx = baseIndex + i;
                 Entity lane = m_Samples[idx];
 
-                if (lane == Entity.Null || !EntityManager.Exists(lane) || !EntityManager.HasComponent<LaneCondition>(lane))
+                if (lane == Entity.Null || !EntityManager.Exists(lane))
                     continue;
 
-                LaneCondition cond = EntityManager.GetComponentData<LaneCondition>(lane);
-                PrefabRef pr = EntityManager.GetComponentData<PrefabRef>(lane);
+                if (!condLookup.HasComponent(lane) || !prLookup.HasComponent(lane))
+                    continue;
+
+                LaneCondition cond = condLookup[lane];
+                PrefabRef pr = prLookup[lane];
 
                 float tf = float.NaN;
                 float traf = float.NaN;
@@ -99,42 +128,55 @@ namespace DispatchBoss
                     traf = det.m_TrafficFactor;
                 }
 
-                float delta = 0f;
-                if (m_HasLast[idx])
-                    delta = cond.m_Wear - m_LastWear[idx];
+                bool had = m_HasLast[idx];
 
-                m_LastWear[idx] = cond.m_Wear;
+                float wear = cond.m_Wear;
+                int wearQ64 = (int)math.round(wear * 64f);
+
+                float delta = had ? (wear - m_LastWear[idx]) : 0f;
+                int deltaQ = had ? (wearQ64 - m_LastWearQ64[idx]) : 0;
+
+                m_LastWear[idx] = wear;
+                m_LastWearQ64[idx] = wearQ64;
                 m_HasLast[idx] = true;
 
+                observed++;
                 sumDelta += delta;
+                sumDeltaQ += deltaQ;
                 maxAbsDelta = math.max(maxAbsDelta, math.abs(delta));
-                logged++;
+                maxAbsDeltaQ = math.max(maxAbsDeltaQ, math.abs(deltaQ));
 
-                float expectedPerTick = float.IsNaN(tf) ? float.NaN : (tf / 16f);
-
-                Mod.s_Log.Info(
-                    $"{Mod.ModTag} [LaneWearProbe g={group}] lane={lane.Index}:{lane.Version} " +
-                    $"wear={cond.m_Wear:0.###} Δ={delta:0.###} " +
-                    $"Prefab={pr.m_Prefab.Index}:{pr.m_Prefab.Version} TF={Fmt(tf)} TrF={Fmt(traf)} ExpΔ(Time)/Tick={Fmt(expectedPerTick)}");
+                // Only print per-lane detail when it’s informative:
+                // - first time we’ve seen this sample, or
+                // - quantized step changed (deltaQ != 0)
+                if (!had || deltaQ != 0)
+                {
+                    string tag = had ? "" : " (first)";
+                    Mod.s_Log.Info(
+                        $"{Mod.ModTag} [LaneWearProbe g={group}] lane={lane.Index}:{lane.Version} " +
+                        $"wear={wear:0.######} (q64={wearQ64}) Δ={delta:0.######} (Δq64={deltaQ}){tag} " +
+                        $"Prefab={pr.m_Prefab.Index}:{pr.m_Prefab.Version} TF={Fmt(tf)} TrF={Fmt(traf)}");
+                }
             }
 
-            if (logged == 0)
+            if (observed == 0)
             {
-                Mod.s_Log.Info($"{Mod.ModTag} [LaneWearProbe g={group}] no samples found (no lanes in this group?) Frame={frame}");
+                Mod.s_Log.Info($"{Mod.ModTag} [LaneWearProbe g={group}] no samples found Frame={frame}");
                 return;
             }
 
-            float avg = sumDelta / logged;
+            float avg = sumDelta / observed;
 
             Mod.s_Log.Info(
-                $"{Mod.ModTag} [LaneWearProbe g={group}] summary: Logged={logged} AvgΔ={avg:0.###} Max|Δ|={maxAbsDelta:0.###} Frame={frame}");
+                $"{Mod.ModTag} [LaneWearProbe g={group}] summary: Observed={observed} " +
+                $"AvgΔ={avg:0.######} AvgΔq64={(sumDeltaQ / (float)observed):0.###} " +
+                $"Max|Δ|={maxAbsDelta:0.######} Max|Δq64|={maxAbsDeltaQ} Frame={frame}");
         }
 
-        private void EnsureSamplesForGroup(int group, UpdateFrame target)
+        private void RefillSamplesIfNeeded(int group, UpdateFrame target)
         {
             int baseIndex = group * kSamplesPerGroup;
 
-            // If all present and valid, keep them (stable sampling).
             bool allValid = true;
             for (int i = 0; i < kSamplesPerGroup; i++)
             {
@@ -149,44 +191,38 @@ namespace DispatchBoss
             if (allValid)
                 return;
 
-            // Refill samples for this group.
+            // Reset this group’s slots.
             for (int i = 0; i < kSamplesPerGroup; i++)
             {
                 m_Samples[baseIndex + i] = Entity.Null;
-                m_HasLast[baseIndex + i] = false;
                 m_LastWear[baseIndex + i] = 0f;
+                m_LastWearQ64[baseIndex + i] = 0;
+                m_HasLast[baseIndex + i] = false;
             }
 
-            int filled = 0;
+            // Filter lanes to ONLY the current UpdateFrame group.
+            m_LanesByFrameQuery.ResetFilter();
+            m_LanesByFrameQuery.SetSharedComponentFilter(target);
 
-            foreach ((RefRO<LaneCondition> _, RefRO<PrefabRef> __, Entity laneEntity) in SystemAPI
-                         .Query<RefRO<LaneCondition>, RefRO<PrefabRef>>()
-                         .WithAll<UpdateFrame>()
-                         .WithEntityAccess())
+            try
             {
-                // UpdateFrame is shared: compare via GetSharedComponentData.
-                UpdateFrame uf = EntityManager.GetSharedComponentData<UpdateFrame>(laneEntity);
-                if (!uf.Equals(target))
-                    continue;
+                using NativeArray<Entity> lanes = m_LanesByFrameQuery.ToEntityArray(Allocator.Temp);
 
-                bool dup = false;
-                for (int i = 0; i < filled; i++)
+                int filled = 0;
+                for (int i = 0; i < lanes.Length && filled < kSamplesPerGroup; i++)
                 {
-                    if (m_Samples[baseIndex + i] == laneEntity)
-                    {
-                        dup = true;
-                        break;
-                    }
+                    Entity lane = lanes[i];
+                    if (lane == Entity.Null)
+                        continue;
+
+                    m_Samples[baseIndex + filled] = lane;
+                    filled++;
                 }
-
-                if (dup)
-                    continue;
-
-                m_Samples[baseIndex + filled] = laneEntity;
-                filled++;
-
-                if (filled >= kSamplesPerGroup)
-                    break;
+            }
+            finally
+            {
+                // Always clear filters.
+                m_LanesByFrameQuery.ResetFilter();
             }
         }
 

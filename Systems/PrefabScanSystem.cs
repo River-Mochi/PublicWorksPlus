@@ -97,7 +97,7 @@ namespace DispatchBoss
 
             PrefabScanState.MarkRunning();
 
-            var sw = Stopwatch.StartNew();
+            Stopwatch sw = Stopwatch.StartNew();
 
             int transitLinePrefabTotal = 0;
             int deliveryTotal = 0;
@@ -110,7 +110,7 @@ namespace DispatchBoss
 
             try
             {
-                var sb = new StringBuilder(256 * 1024);
+                StringBuilder sb = new StringBuilder(256 * 1024);
                 int lines = 0;
                 bool truncated = false;
 
@@ -145,7 +145,7 @@ namespace DispatchBoss
                     Append("");
 
                     // Set of lane prefabs that actually have LaneDeteriorationData (ones mod tweaked).
-                    var wearPrefabs = new HashSet<Entity>();
+                    HashSet<Entity> wearPrefabs = new HashSet<Entity>();
 
                     foreach ((RefRO<LaneDeteriorationData> detRO, Entity prefabEntity) in SystemAPI
                                  .Query<RefRO<LaneDeteriorationData>>()
@@ -155,7 +155,7 @@ namespace DispatchBoss
                         wearPrefabs.Add(prefabEntity);
                     }
 
-                    var counts = new Dictionary<Entity, int>(64);
+                    Dictionary<Entity, int> counts = new Dictionary<Entity, int>(64);
                     long liveLaneTotal = 0;
 
                     // LIVE lanes: LaneCondition + PrefabRef, but NOT PrefabData.
@@ -180,7 +180,7 @@ namespace DispatchBoss
                     }
 
                     long covered = 0;
-                    foreach (var kvp in counts)
+                    foreach (KeyValuePair<Entity, int> kvp in counts)
                     {
                         if (wearPrefabs.Contains(kvp.Key))
                             covered += kvp.Value;
@@ -195,13 +195,13 @@ namespace DispatchBoss
                     // Print top N most-used lane prefabs (by live lane count)
                     const int kTop = 30;
 
-                    var top = new List<KeyValuePair<Entity, int>>(counts);
+                    List<KeyValuePair<Entity, int>> top = new List<KeyValuePair<Entity, int>>(counts);
                     top.Sort((a, b) => b.Value.CompareTo(a.Value));
 
                     int printed = 0;
                     for (int i = 0; i < top.Count && printed < kTop; i++)
                     {
-                        var kvp = top[i];
+                        KeyValuePair<Entity, int> kvp = top[i];
                         string name = NameOf(kvp.Key);
                         bool isWear = wearPrefabs.Contains(kvp.Key);
 
@@ -295,7 +295,7 @@ namespace DispatchBoss
                 Append("Vehicle targets are based on route time estimate (segment durations + stop count).");
                 Append("");
 
-                var perType = new Dictionary<TransportType, TransitDefaultsStats>();
+                Dictionary<TransportType, TransitDefaultsStats> perType = new Dictionary<TransportType, TransitDefaultsStats>();
 
                 foreach ((RefRO<TransportLineData> lineRef, Entity e) in SystemAPI
                              .Query<RefRO<TransportLineData>>()
@@ -329,7 +329,7 @@ namespace DispatchBoss
                 }
                 else
                 {
-                    foreach (var kvp in perType)
+                    foreach (KeyValuePair<TransportType, TransitDefaultsStats> kvp in perType)
                     {
                         TransportType type = kvp.Key;
                         TransitDefaultsStats s2 = kvp.Value;
@@ -403,8 +403,8 @@ namespace DispatchBoss
                 int unclassifiedPrinted = 0;
                 const int kMaxUnclassifiedDetails = 100; // keeps report readable
 
-                var tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
-                var trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
+                ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
+                ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
 
                 Append("== DeliveryTruckData Prefabs ==");
 
@@ -561,7 +561,7 @@ namespace DispatchBoss
                 Append("== Industrial Extractor TransportCompanies (for Extractor trucks slider) ==");
                 Append("Filter: name starts with Industrial_ AND contains Extractor/Coal/Stone/Mine/Quarry. Skips CurMaxTransports=0. Deduped by name.");
 
-                var seenExtractors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                HashSet<string> seenExtractors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
                 foreach ((RefRO<TransportCompanyData> tcRef, Entity e) in SystemAPI
                              .Query<RefRO<TransportCompanyData>>()
@@ -607,7 +607,7 @@ namespace DispatchBoss
                     "aquaculture",
                 };
 
-                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
                 foreach ((RefRO<PrefabData> _, Entity e) in SystemAPI
                              .Query<RefRO<PrefabData>>()

@@ -16,6 +16,9 @@ namespace DispatchBoss
 
         internal static string GetNameSafe(PrefabSystem prefabSystem, Entity prefabEntity)
         {
+            if (prefabEntity == Entity.Null)
+                return "(null prefab)";
+
             try
             {
                 if (prefabSystem != null &&

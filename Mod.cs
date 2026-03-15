@@ -67,6 +67,7 @@ namespace DispatchBoss
 
             // Extractors (TransportCompanyData.m_MaxTransports)
             updateSystem.UpdateAfter<IndustrySystem>(SystemUpdatePhase.PrefabUpdate);
+            updateSystem.UpdateBefore<IndustrySystem>(SystemUpdatePhase.PrefabReferences);
 
             // Allow transit lines range to be 1-and higher than vanilla
             // Policy tuner: also better in PrefabUpdate so it applies immediately while paused/Options UI
@@ -78,6 +79,10 @@ namespace DispatchBoss
             // Debug probe: logs LaneCondition.m_Wear deltas (runtime)
             updateSystem.UpdateAt<LaneWearProbeSystem>(SystemUpdatePhase.GameSimulation);
 
+            // Proof logger: checks live delivery vehicles carrying above vanilla caps.
+            updateSystem.UpdateAt<DeliveryCargoProbeSystem>(SystemUpdatePhase.GameSimulation);
+
+            s_Log.Info($"{nameof(DispatchBoss)}.{nameof(OnLoad)} Completed.");
 
         }
 

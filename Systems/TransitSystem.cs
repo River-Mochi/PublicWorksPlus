@@ -291,6 +291,7 @@ namespace DispatchBoss
             switch (type)
             {
                 case TransportType.Bus:
+                case TransportType.Ferry:
                 case TransportType.Taxi:
                 case TransportType.Tram:
                 case TransportType.Train:
@@ -351,11 +352,13 @@ namespace DispatchBoss
             float percent;
             switch (type)
             {
-                case TransportType.Bus: percent = settings.BusDepotScalar; break;
-                case TransportType.Taxi: percent = settings.TaxiDepotScalar; break;
-                case TransportType.Tram: percent = settings.TramDepotScalar; break;
-                case TransportType.Train: percent = settings.TrainDepotScalar; break;
-                case TransportType.Subway: percent = settings.SubwayDepotScalar; break;
+                case TransportType.Bus:   percent = settings.BusDepotScalar;    break;
+                case TransportType.Ferry: percent = settings.FerryDepotScalar;  break;
+                case TransportType.Subway:percent = settings.SubwayDepotScalar; break;
+                case TransportType.Taxi:  percent = settings.TaxiDepotScalar;   break;
+                case TransportType.Train: percent = settings.TrainDepotScalar;  break;
+                case TransportType.Tram:  percent = settings.TramDepotScalar;   break;
+
                 default: return 1f;
             }
 
@@ -367,13 +370,14 @@ namespace DispatchBoss
             float percent;
             switch (type)
             {
-                case TransportType.Bus: percent = settings.BusPassengerScalar; break;
-                case TransportType.Tram: percent = settings.TramPassengerScalar; break;
-                case TransportType.Train: percent = settings.TrainPassengerScalar; break;
-                case TransportType.Subway: percent = settings.SubwayPassengerScalar; break;
-                case TransportType.Ship: percent = settings.ShipPassengerScalar; break;
-                case TransportType.Ferry: percent = settings.FerryPassengerScalar; break;
                 case TransportType.Airplane: percent = settings.AirplanePassengerScalar; break;
+                case TransportType.Bus: percent     = settings.BusPassengerScalar;    break;
+                case TransportType.Ferry: percent   = settings.FerryPassengerScalar;  break;
+                case TransportType.Ship: percent    = settings.ShipPassengerScalar;   break;
+                case TransportType.Subway: percent  = settings.SubwayPassengerScalar; break;
+                case TransportType.Tram: percent    = settings.TramPassengerScalar;   break;
+                case TransportType.Train: percent   = settings.TrainPassengerScalar;  break;
+
                 default: return 1f;
             }
 

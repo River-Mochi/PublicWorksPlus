@@ -56,7 +56,8 @@ namespace DispatchBoss
 
         internal static string GetModsDataFolder()
         {
-            return Path.Combine(EnvPath.kUserDataPath, "ModsData", nameof(DispatchBoss));
+            // Prefer the mod's declared id over nameof(namespace) so folder stays stable.
+            return Path.Combine(EnvPath.kUserDataPath, "ModsData", Mod.ModId);
         }
 
         private static bool TryOpenWithUnityFileUrl(string fullPath)

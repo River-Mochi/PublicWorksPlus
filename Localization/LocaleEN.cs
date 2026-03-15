@@ -70,10 +70,24 @@ namespace DispatchBoss
                     "**1000%** = 10× more.\n" +
                     "Applies to base buildings." },
 
+                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Ferry depot" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
+                    "**Ferry Depot** vehicle capacity.\n" +
+                    "**100%** = vanilla (game default).\n" +
+                    "Applies to base buildings."
+                },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayDepotScalar)), "Subway depot" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.SubwayDepotScalar)),
+                    "Change how many subway vehicles each **Subway Depot** can maintain.\n" +
+                    "Applies to the base building."
+                },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TaxiDepotScalar)), "Taxi depot" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TaxiDepotScalar)),
                     "How many taxis each **Taxi Depot** can maintain.\n" +
-                    "Increase applies to the base depot building only." },
+                    "If set to max, could cause excessive, comical amount of taxis."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramDepotScalar)), "Tram depot" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TramDepotScalar)),
@@ -85,10 +99,7 @@ namespace DispatchBoss
                     "Change how many trains each **Train Depot** can maintain.\n" +
                     "Applies to the base building." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayDepotScalar)), "Subway depot" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.SubwayDepotScalar)),
-                    "Change how many subway vehicles each **Subway Depot** can maintain.\n" +
-                    "Applies to the base building." },
+
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Reset all depots" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -161,27 +172,29 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "Semi trucks" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
-                    "**Semi trucks** capactiy.\n" +
-                    "Includes specialized industry Semi (farms, fish, forestry, etc.).\n" +
-                    "**1×** = vanilla (**25t**)\n" +
+                    "**Semi trucks** capacitiy.\n" +
+                    "Includes:\n" +
+                    "* Specialized industry semi (farms, fish, forestry, etc.).\n" +
+                    "* Semi trucks carrying mail to/from Cargo stations (not the same as local mail delivery).\n" +
+                    "**1× = 25t** (vanilla)\n" +
                     "**10×** = 10× more." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "Delivery vans" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**Delivery vans**\n" +
-                    "**1×** = vanilla (**4t**)\n" +
+                    "**1× = 4t** (vanilla)\n" +
                     "**10×** = 10× more." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "Raw material trucks" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
                     "**Raw materials trucks** (oil, coal, ore, stone)\n" +
-                    "**1×** = vanilla (**20t**)\n" +
+                    "**1× = 20t** (vanilla)\n" +
                     "**10×** = 10× more." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Delivery Motorbike" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
-                    "**Motorbike delivery**\n" +
-                    "**1×** = vanilla (**0.1t**)\n" +
+                    "**Motorbike delivery** typically takes pharmacy to a hospital/clinic.\n" +
+                    "**1× = 0.1t** (vanilla)\n" +
                     "**10×** = 10× more." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Reset delivery" },
@@ -256,8 +269,10 @@ namespace DispatchBoss
                     "Controls how fast roads deteriorate from **time and traffic** factors.\n" +
                     "**10%** = 10× slower wear (fewer repairs needed)\n" +
                     "**100%** = vanilla\n" +
-                    "**500%** = 5× faster wear (more repairs needed)\n"
-           
+                    "**500%** = 5× faster wear (more repairs needed)\n" +
+                    " if m_Wear <= 2.5, no slowdown.\n" +
+                    "If m_Wear >= 17.5, max penalty 50% slower."
+
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Reset road maintenance" },
@@ -326,7 +341,7 @@ namespace DispatchBoss
             };
         }
 
-        public void Unload()
+        public void Unload( )
         {
         }
     }

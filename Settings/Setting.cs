@@ -95,7 +95,8 @@ namespace DispatchBoss
             get => m_EnableLineVehicleCountTuner;
             set
             {
-                if (m_EnableLineVehicleCountTuner == value) return;
+                if (m_EnableLineVehicleCountTuner == value)
+                    return;
 
                 m_EnableLineVehicleCountTuner = value;
 
@@ -113,15 +114,15 @@ namespace DispatchBoss
             : base(mod)
         {
             // Existing sentinel: older configs can load 0 for percent sliders.
-            if (BusDepotScalar == 0f)
+            if (BusDepotScalar <= 0f || BusPassengerScalar <= 0f)
             {
                 SetDefaults();
             }
 
-            EnsureServiceDefaults();
+            //     EnsureServiceDefaults();
         }
 
-        public override void SetDefaults()
+        public override void SetDefaults( )
         {
             // Public-Transit defaults (percent).
             m_EnableLineVehicleCountTuner = false;   // <-- Do not call setter here (triggers early save).
@@ -129,13 +130,13 @@ namespace DispatchBoss
             ResetPassengerToVanilla();
 
             // Industry defaults (scalar).
-            SemiTruckCargoScalar = 1f;
-            DeliveryVanCargoScalar = 1f;
-            OilTruckCargoScalar = 1f;
-            MotorbikeDeliveryCargoScalar = 1f;
+            m_SemiTruckCargoScalar = 1f;
+            m_DeliveryVanCargoScalar = 1f;
+            m_OilTruckCargoScalar = 1f;
+            m_MotorbikeDeliveryCargoScalar = 1f;
 
-            CargoStationMaxTrucksScalar = 1f;
-            ExtractorMaxTrucksScalar = 1f;
+            m_CargoStationMaxTrucksScalar = 1f;
+            m_ExtractorMaxTrucksScalar = 1f;
 
             // Parks-Roads defaults (percent).
             RoadWearScalar = 100f;
@@ -152,7 +153,7 @@ namespace DispatchBoss
             EnableDebugLogging = false;
         }
 
-        public override void Apply()
+        public override void Apply( )
         {
             base.Apply();
 
@@ -199,23 +200,45 @@ namespace DispatchBoss
         // DEPOT Buildings
         [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float BusDepotScalar { get; set; }
+        public float BusDepotScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float TaxiDepotScalar { get; set; }
+        public float FerryDepotScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float TramDepotScalar { get; set; }
+        public float SubwayDepotScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float TrainDepotScalar { get; set; }
+        public float TaxiDepotScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, DepotGroup)]
-        public float SubwayDepotScalar { get; set; }
+        public float TrainDepotScalar
+        {
+            get; set;
+        }
+
+        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
+        [SettingsUISection(PublicTransitTab, DepotGroup)]
+        public float TramDepotScalar
+        {
+            get; set;
+        }
 
         [SettingsUIButtonGroup(DepotGroup)]
         [SettingsUIButton]
@@ -224,8 +247,9 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
-                
+                if (!value)
+                    return;
+
                 ResetDepotToVanilla();  // Reset all Depots to 100%
                 ApplyAndSave();         // persist in settings file
             }
@@ -234,31 +258,52 @@ namespace DispatchBoss
         // PASSENGERS
         [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float BusPassengerScalar { get; set; }
+        public float BusPassengerScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float TramPassengerScalar { get; set; }
+        public float TramPassengerScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float TrainPassengerScalar { get; set; }
+        public float TrainPassengerScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float SubwayPassengerScalar { get; set; }
+        public float SubwayPassengerScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float ShipPassengerScalar { get; set; }
+        public float ShipPassengerScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float FerryPassengerScalar { get; set; }
+        public float FerryPassengerScalar
+        {
+            get; set;
+        }
 
         [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(PublicTransitTab, PassengerGroup)]
-        public float AirplanePassengerScalar { get; set; }
+        public float AirplanePassengerScalar
+        {
+            get; set;
+        }
 
         [SettingsUIButtonGroup(PassengerGroup)]
         [SettingsUIButton]
@@ -267,7 +312,8 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                    return;
 
                 BusPassengerScalar = 200f;
                 TramPassengerScalar = 200f;
@@ -288,7 +334,8 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                    return;
 
                 ResetPassengerToVanilla();
                 ApplyAndSave();
@@ -300,21 +347,107 @@ namespace DispatchBoss
         // ------------------
 
         // Delivery vehicles (scalar)
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
-        [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public float SemiTruckCargoScalar { get; set; } = 1f;
+
+        private float m_SemiTruckCargoScalar = 1f;
+        private float m_DeliveryVanCargoScalar = 1f;
+        private float m_OilTruckCargoScalar = 1f;
+        private float m_MotorbikeDeliveryCargoScalar = 1f;
+
+        private float m_ExtractorMaxTrucksScalar = 1f;
+        private float m_CargoStationMaxTrucksScalar = 1f;
+
 
         [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public float DeliveryVanCargoScalar { get; set; } = 1f;
+        public float SemiTruckCargoScalar
+        {
+            get => m_SemiTruckCargoScalar;
+            set
+            {
+                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
+                if (m_SemiTruckCargoScalar == v)
+                    return;
+                m_SemiTruckCargoScalar = v;
+                OnIndustryChanged();
+            }
+        }
 
         [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public float OilTruckCargoScalar { get; set; } = 1f;
+        public float DeliveryVanCargoScalar
+        {
+            get => m_DeliveryVanCargoScalar;
+            set
+            {
+                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
+                if (m_DeliveryVanCargoScalar == v)
+                    return;
+                m_DeliveryVanCargoScalar = v;
+                OnIndustryChanged();
+            }
+        }
 
         [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public float MotorbikeDeliveryCargoScalar { get; set; } = 1f;
+        public float OilTruckCargoScalar
+        {
+            get => m_OilTruckCargoScalar;
+            set
+            {
+                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
+                if (m_OilTruckCargoScalar == v)
+                    return;
+                m_OilTruckCargoScalar = v;
+                OnIndustryChanged();
+            }
+        }
+
+        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
+        [SettingsUISection(IndustryTab, DeliveryGroup)]
+        public float MotorbikeDeliveryCargoScalar
+        {
+            get => m_MotorbikeDeliveryCargoScalar;
+            set
+            {
+                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
+                if (m_MotorbikeDeliveryCargoScalar == v)
+                    return;
+                m_MotorbikeDeliveryCargoScalar = v;
+                OnIndustryChanged();
+            }
+        }
+
+        // Extractor and Cargo Station Buildings (scalar)
+
+        [SettingsUISlider(min = CargoStationMinScalar, max = CargoStationMaxScalar, step = CargoStationStepScalar)]
+        [SettingsUISection(IndustryTab, CargoStationsGroup)]
+        public float ExtractorMaxTrucksScalar
+        {
+            get => m_ExtractorMaxTrucksScalar;
+            set
+            {
+                float v = ScalarMath.ClampScalar(value, CargoStationMinScalar, CargoStationMaxScalar);
+                if (m_ExtractorMaxTrucksScalar == v)
+                    return;
+                m_ExtractorMaxTrucksScalar = v;
+                OnIndustryChanged();
+            }
+        }
+
+        [SettingsUISlider(min = CargoStationMinScalar, max = CargoStationMaxScalar, step = CargoStationStepScalar)]
+        [SettingsUISection(IndustryTab, CargoStationsGroup)]
+        public float CargoStationMaxTrucksScalar
+        {
+            get => m_CargoStationMaxTrucksScalar;
+            set
+            {
+                float v = ScalarMath.ClampScalar(value, CargoStationMinScalar, CargoStationMaxScalar);
+                if (m_CargoStationMaxTrucksScalar == v)
+                    return;
+                m_CargoStationMaxTrucksScalar = v;
+                OnIndustryChanged();
+            }
+        }
 
         [SettingsUIButtonGroup(DeliveryGroup)]
         [SettingsUIButton]
@@ -323,7 +456,8 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                    return;
 
                 SemiTruckCargoScalar = 1f;
                 DeliveryVanCargoScalar = 1f;
@@ -334,14 +468,6 @@ namespace DispatchBoss
             }
         }
 
-        // Extractor and Cargo Station Buildings (scalar)
-        [SettingsUISlider(min = CargoStationMinScalar, max = CargoStationMaxScalar, step = CargoStationStepScalar)]
-        [SettingsUISection(IndustryTab, CargoStationsGroup)]
-        public float ExtractorMaxTrucksScalar { get; set; } = 1f;
-
-        [SettingsUISlider(min = CargoStationMinScalar, max = CargoStationMaxScalar, step = CargoStationStepScalar)]
-        [SettingsUISection(IndustryTab, CargoStationsGroup)]
-        public float CargoStationMaxTrucksScalar { get; set; } = 1f;
 
         [SettingsUIButtonGroup(CargoStationsGroup)]
         [SettingsUIButton]
@@ -350,10 +476,11 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                    return;
                 // Reset all to vanilla.
-                CargoStationMaxTrucksScalar = 1f;       
-                ExtractorMaxTrucksScalar = 1f;    
+                CargoStationMaxTrucksScalar = 1f;
+                ExtractorMaxTrucksScalar = 1f;
 
                 ApplyAndSave();
             }
@@ -382,7 +509,8 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                    return;
                 // Reset all Parks stuff to vanilla.
                 ParkMaintenanceDepotScalar = 100f;
                 ParkMaintenanceVehicleCapacityScalar = 100f;
@@ -415,7 +543,8 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                    return;
                 // Reset all Roads stuff to vanilla.
                 RoadMaintenanceDepotScalar = 100f;
                 RoadMaintenanceVehicleCapacityScalar = 100f;
@@ -443,7 +572,8 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                    return;
 
                 try
                 {
@@ -463,7 +593,8 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                    return;
 
                 try
                 {
@@ -485,7 +616,8 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                    return;
 
                 GameManager gm = GameManager.instance;
                 if (gm == null || !gm.gameMode.IsGame())
@@ -530,7 +662,10 @@ namespace DispatchBoss
         }
 
         [SettingsUISection(AboutTab, DebugGroup)]
-        public bool EnableDebugLogging { get; set; }
+        public bool EnableDebugLogging
+        {
+            get; set;
+        }
 
         [SettingsUIButton]
         [SettingsUISection(AboutTab, DebugGroup)]
@@ -543,63 +678,40 @@ namespace DispatchBoss
         // Helpers
         // ------------------------
 
-        public void ResetDepotToVanilla()
+        public void ResetDepotToVanilla( )
         {
             BusDepotScalar = 100f;
-            TaxiDepotScalar = 100f;
-            TramDepotScalar = 100f;
-            TrainDepotScalar = 100f;
+            FerryDepotScalar = 100f;
             SubwayDepotScalar = 100f;
+            TaxiDepotScalar = 100f;
+            TrainDepotScalar = 100f;
+            TramDepotScalar = 100f;
         }
 
-        public void ResetPassengerToVanilla()
+        public void ResetPassengerToVanilla( )
         {
-            BusPassengerScalar = 100f;
-            TramPassengerScalar = 100f;
-            TrainPassengerScalar = 100f;
-            SubwayPassengerScalar = 100f;
-            ShipPassengerScalar = 100f;
-            FerryPassengerScalar = 100f;
             AirplanePassengerScalar = 100f;
+            BusPassengerScalar = 100f;
+            FerryPassengerScalar = 100f;
+            ShipPassengerScalar = 100f;
+            SubwayPassengerScalar = 100f;
+            TrainPassengerScalar = 100f;
+            TramPassengerScalar = 100f;
         }
 
-        private static float ClampPercentOrDefault(float v, float min, float max, float @default)
+
+        private void OnIndustryChanged( )
         {
-            if (v <= 0f) return @default;
-            if (v < min) return min;
-            if (v > max) return max;
-            return v;
+            GameManager gm = GameManager.instance;
+            if (gm == null || !gm.gameMode.IsGame())
+                return;
+
+            World world = World.DefaultGameObjectInjectionWorld;
+            if (world == null)
+                return;
+
+            TryEnableOnce<IndustrySystem>(world, "IndustrySystem");
         }
 
-        private void EnsureServiceDefaults()
-        {
-            // Industry scalars: missing fields can load as 0; clamp to safe defaults.
-            if (SemiTruckCargoScalar <= 0f) SemiTruckCargoScalar = 1f;
-            if (DeliveryVanCargoScalar <= 0f) DeliveryVanCargoScalar = 1f;
-            if (OilTruckCargoScalar <= 0f) OilTruckCargoScalar = 1f;
-            if (MotorbikeDeliveryCargoScalar <= 0f) MotorbikeDeliveryCargoScalar = 1f;
-
-            SemiTruckCargoScalar = ScalarMath.ClampScalar(SemiTruckCargoScalar, ServiceMinScalar, ServiceMaxScalar);
-            DeliveryVanCargoScalar = ScalarMath.ClampScalar(DeliveryVanCargoScalar, ServiceMinScalar, ServiceMaxScalar);
-            OilTruckCargoScalar = ScalarMath.ClampScalar(OilTruckCargoScalar, ServiceMinScalar, ServiceMaxScalar);
-            MotorbikeDeliveryCargoScalar = ScalarMath.ClampScalar(MotorbikeDeliveryCargoScalar, ServiceMinScalar, ServiceMaxScalar);
-
-            if (CargoStationMaxTrucksScalar <= 0f) CargoStationMaxTrucksScalar = 1f;
-            if (ExtractorMaxTrucksScalar <= 0f) ExtractorMaxTrucksScalar = 1f;
-
-            CargoStationMaxTrucksScalar = ScalarMath.ClampScalar(CargoStationMaxTrucksScalar, CargoStationMinScalar, CargoStationMaxScalar);
-            ExtractorMaxTrucksScalar = ScalarMath.ClampScalar(ExtractorMaxTrucksScalar, CargoStationMinScalar, CargoStationMaxScalar);
-
-            // Parks/Roads percents: missing fields can load as 0; default to 100%.
-            RoadMaintenanceDepotScalar = ClampPercentOrDefault(RoadMaintenanceDepotScalar, MaintenanceMinPercent, MaintenanceMaxPercent, 100f);
-            RoadMaintenanceVehicleCapacityScalar = ClampPercentOrDefault(RoadMaintenanceVehicleCapacityScalar, MaintenanceMinPercent, MaintenanceMaxPercent, 100f);
-            RoadMaintenanceVehicleRateScalar = ClampPercentOrDefault(RoadMaintenanceVehicleRateScalar, MaintenanceMinPercent, MaintenanceMaxPercent, 100f);
-
-            ParkMaintenanceDepotScalar = ClampPercentOrDefault(ParkMaintenanceDepotScalar, MaintenanceMinPercent, MaintenanceMaxPercent, 100f);
-            ParkMaintenanceVehicleCapacityScalar = ClampPercentOrDefault(ParkMaintenanceVehicleCapacityScalar, MaintenanceMinPercent, MaintenanceMaxPercent, 100f);
-            ParkMaintenanceVehicleRateScalar = ClampPercentOrDefault(ParkMaintenanceVehicleRateScalar, MaintenanceMinPercent, MaintenanceMaxPercent, 100f);
-
-            RoadWearScalar = ClampPercentOrDefault(RoadWearScalar, RoadWearMinPercent, RoadWearMaxPercent, 100f);
-        }
     }
 }

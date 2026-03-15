@@ -5,24 +5,30 @@
 //          - Delivery truck cargo capacity (DeliveryTruckData.m_CargoCapacity)
 // Notes:
 // - Uses SystemAPI queries.
-// - Uses SystemAPI ComponentLookups for tractor/trailer info (more accurate Semi detection).
+// - Uses tractor/trailer lookups for better Semi detection.
+// - Scales all delivery-truck prefabs by bucket (Semi / Van / Raw / Motorbike).
+//   Note: includes mail-capable delivery trucks too (some vanilla DeliveryVans allow mail). does not include PostVan.
+// - Tags changed prefab entities with Updated via ECB (structural change safe).
 
 namespace DispatchBoss
 {
     using Colossal.Serialization.Entities;
     using Game;
+    using Game.Common;
     using Game.Companies;
+    using Game.Economy;
     using Game.Prefabs;
     using Game.SceneFlow;
     using System;
     using System.Collections.Generic;
+    using Unity.Collections;
     using Unity.Entities;
 
     public sealed partial class IndustrySystem : GameSystemBase
     {
         private PrefabSystem m_PrefabSystem = null!;
 
-        // Prefab base caches (per city/session) — prevents stacking.
+        // Prefab base caches (per city/session) — prevents stacking when sliders are moved multiple times.
         private Dictionary<Entity, int> m_CargoStationBaseMaxTransports = null!;
         private Dictionary<Entity, int> m_DeliveryTruckBaseCargoCapacity = null!;
         private Dictionary<Entity, int> m_ExtractorCompanyBaseMaxTransports = null!;
@@ -44,6 +50,7 @@ namespace DispatchBoss
             m_DeliveryTruckBaseCargoCapacity = new Dictionary<Entity, int>();
             m_ExtractorCompanyBaseMaxTransports = new Dictionary<Entity, int>();
 
+            // Only run when prefab entities for these components exist.
             EntityQuery anyRelevantPrefabQuery = SystemAPI.QueryBuilder()
                 .WithAll<PrefabData>()
                 .WithAny<TransportCompanyData, DeliveryTruckData>()
@@ -97,6 +104,10 @@ namespace DispatchBoss
             ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
             ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
 
+            // Structural changes (Updated tag) should go through an ECB.
+            var ecb = new EntityCommandBuffer(Allocator.Temp);
+            bool anyPrefabTaggedUpdated = false;
+
             // -----------------------------------------------------------------
             // Cargo Stations: max trucks (TransportCompanyData.m_MaxTransports)
             // -----------------------------------------------------------------
@@ -130,13 +141,19 @@ namespace DispatchBoss
                         }
 
                         company.m_MaxTransports = newMax;
+
+                        if (!SystemAPI.HasComponent<Updated>(prefabEntity))
+                        {
+                            ecb.AddComponent<Updated>(prefabEntity);
+                            anyPrefabTaggedUpdated = true;
+                        }
                     }
                 }
             }
 
             // -------------------------------------------------------------------
             // Delivery trucks: buckets (semi / vans / raw materials / motorbikes)
-            // ---------------------------------------------------------------------
+            // -------------------------------------------------------------------
             {
                 float semiScalar = ScalarMath.ClampScalar(settings.SemiTruckCargoScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
                 float vanScalar = ScalarMath.ClampScalar(settings.DeliveryVanCargoScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
@@ -148,7 +165,7 @@ namespace DispatchBoss
                              .WithAll<PrefabData>()
                              .WithEntityAccess())
                 {
-                    ref DeliveryTruckData data = ref truckRef.ValueRW;
+                    ref DeliveryTruckData data = ref truckRef.ValueRW;                
 
                     int baseCap = GetOrCacheDeliveryTruckBase(prefabEntity, data.m_CargoCapacity);
 
@@ -182,6 +199,10 @@ namespace DispatchBoss
                         bucket == VehicleHelpers.DeliveryBucket.Motorbike ? mbikeScalar :
                         1f;
 
+                    // If we don’t recognize it, we leave it vanilla.
+                    if (scalar == 1f)
+                        continue;
+
                     int newCap = ScalarMath.ScaleIntRoundedAllowZeroMin1(baseCap, scalar);
 
                     if (newCap != data.m_CargoCapacity)
@@ -194,6 +215,13 @@ namespace DispatchBoss
                         }
 
                         data.m_CargoCapacity = newCap;
+
+                        // Many game systems rebuild caches only when prefab entities are tagged Updated.
+                        if (!SystemAPI.HasComponent<Updated>(prefabEntity))
+                        {
+                            ecb.AddComponent<Updated>(prefabEntity);
+                            anyPrefabTaggedUpdated = true;
+                        }
                     }
                 }
             }
@@ -244,6 +272,12 @@ namespace DispatchBoss
                         {
                             Mod.s_Log.Info($"{Mod.ModTag} Extractor trucks: '{name}' Base={baseMax} x{scalar:0.##} -> {desired}");
                         }
+
+                        if (!SystemAPI.HasComponent<Updated>(prefabEntity))
+                        {
+                            ecb.AddComponent<Updated>(prefabEntity);
+                            anyPrefabTaggedUpdated = true;
+                        }
                     }
                 }
 
@@ -252,6 +286,13 @@ namespace DispatchBoss
                     Mod.s_Log.Info($"{Mod.ModTag} Extractor trucks: scalar={scalar:0.##} matched={matched} changed={changed} skippedZero={skippedZero}");
                 }
             }
+
+            if (anyPrefabTaggedUpdated)
+            {
+                ecb.Playback(EntityManager);
+            }
+
+            ecb.Dispose();
 
             Enabled = false;
         }

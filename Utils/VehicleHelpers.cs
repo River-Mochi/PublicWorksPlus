@@ -106,10 +106,12 @@ namespace DispatchBoss
             if (isSemi)
                 return DeliveryBucket.Semi;
 
-            bool isMotorbike = name.IndexOf("Motorbike", StringComparison.OrdinalIgnoreCase) >= 0;
-            if (isMotorbike)
+            // Name heuristics are fallback-only; keep minimal + cheap.
+            bool nameHasMotorbike = name.IndexOf("Motorbike", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (nameHasMotorbike)
                 return DeliveryBucket.Motorbike;
 
+            // Vans are usually 4000 capacity in vanilla; name check is fallback.
             if (vanillaCargoCapacity == 4000 ||
                 name.IndexOf("DeliveryVan", StringComparison.OrdinalIgnoreCase) >= 0)
             {
@@ -121,11 +123,14 @@ namespace DispatchBoss
                 Resource.Oil |
                 Resource.Coal |
                 Resource.Ore |
-                Resource.Stone;
+                Resource.Stone |
+                Resource.Petrochemicals |
+                Resource.Chemicals;
 
             if ((transportedResources & rawMask) != 0)
                 return DeliveryBucket.RawMaterials;
 
+            // Additional fallbacks
             if (vanillaCargoCapacity == 20000 ||
                 name.IndexOf("OilTruck", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 name.IndexOf("CoalTruck", StringComparison.OrdinalIgnoreCase) >= 0 ||

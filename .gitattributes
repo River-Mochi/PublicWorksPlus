@@ -6,9 +6,18 @@
 *.props    text eol=crlf
 *.targets  text eol=crlf
 *.cs       text eol=crlf
+*.xml     text eol=crlf
+
+
 # optional: LF renders nicer on GitHub
 *.md       text eol=lf
 *.json text eol=lf
+
+*.css   text eol=lf
+*.scss  text eol=lf
+*.js    text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
 
 # Scripts
 *.sh       text eol=lf

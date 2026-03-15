@@ -14,10 +14,12 @@ namespace DispatchBoss
         internal static bool TryGetPrefabBase(PrefabSystem prefabSystem, Entity prefabEntity, out PrefabBase prefabBase)
         {
             prefabBase = null!;
+
             if (prefabSystem == null)
-            {
                 return false;
-            }
+
+            if (prefabEntity == Entity.Null)
+                return false;
 
             return prefabSystem.TryGetPrefab(prefabEntity, out prefabBase);
         }
@@ -28,9 +30,7 @@ namespace DispatchBoss
             component = null!;
 
             if (!TryGetPrefabBase(prefabSystem, prefabEntity, out PrefabBase prefabBase))
-            {
                 return false;
-            }
 
             return prefabBase.TryGet(out component);
         }
