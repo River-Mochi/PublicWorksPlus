@@ -1,6 +1,9 @@
 // File: Systems/TransitSystem.cs
-// Purpose: apply multipliers for depot max vehicles and passenger max riders.
-// PrefabSystem + PrefabBase used for vanilla base values so they never change.
+// Purpose: Apply multipliers for depot max vehicles and passenger max riders.
+// Notes:
+// - PrefabSystem + PrefabBase used for vanilla base values so results never stack.
+// - Depots: Bus / Ferry / Taxi / Tram / Train / Subway.
+// - Passengers: Bus / Tram / Train / Subway / Ship / Ferry / Airplane.
 
 namespace DispatchBoss
 {
@@ -16,12 +19,10 @@ namespace DispatchBoss
     {
         private PrefabSystem m_PrefabSystem = null!;
 
-        // Debug: one-time per city summary.
         private HashSet<TransportType> m_SeenDepotTypes = null!;
         private HashSet<TransportType> m_SeenPassengerTypes = null!;
         private bool m_LoggedTypesOnce;
 
-        // Per-type seat summary (BaseSeats/NewSeats ranges), per vehicle prefab.
         private Dictionary<TransportType, SeatSummary> m_PassengerSeatSummary = null!;
 
         private const int kTramSections = 3;
@@ -64,7 +65,6 @@ namespace DispatchBoss
             m_LoggedTypesOnce = false;
             m_PassengerSeatSummary = new Dictionary<TransportType, SeatSummary>();
 
-            // Prefab-only (IMPORTANT) — modifying prefabs, not live entities.
             EntityQuery depotQuery = SystemAPI.QueryBuilder()
                 .WithAll<PrefabData, TransportDepotData>()
                 .Build();
@@ -106,12 +106,6 @@ namespace DispatchBoss
             GameManager gm = GameManager.instance;
             if (gm == null || !gm.gameMode.IsGame())
             {
-                if (Mod.Settings != null && Mod.Settings.EnableDebugLogging)
-                {
-                    GameMode mode = gm != null ? gm.gameMode : GameMode.None;
-                    Mod.s_Log.Info($"{Mod.ModTag} Debug: TransitSystem bail; gameMode={mode} (not Game) -> disabling system.");
-                }
-
                 Enabled = false;
                 return;
             }
@@ -125,7 +119,6 @@ namespace DispatchBoss
             Setting settings = Mod.Settings;
             bool debug = settings.EnableDebugLogging;
 
-            // DEPOTS (Bus / Taxi / Tram / Train / Subway only) — prefab-only
             foreach ((RefRW<TransportDepotData> depotRef, Entity entity) in SystemAPI
                          .Query<RefRW<TransportDepotData>>()
                          .WithAll<PrefabData>()
@@ -145,13 +138,6 @@ namespace DispatchBoss
                 int baseCapacity;
                 if (!TryGetDepotBaseCapacity(entity, out baseCapacity))
                 {
-                    if (debug)
-                    {
-                        Mod.s_Log.Warn(
-                            $"{Mod.ModTag} Depot: failed to read vanilla base capacity for entity={entity.Index}:{entity.Version}, type={depotData.m_TransportType}. " +
-                            "Falling back to current depot vehicle capacity.");
-                    }
-
                     baseCapacity = depotData.m_VehicleCapacity;
                 }
 
@@ -171,7 +157,6 @@ namespace DispatchBoss
                 }
             }
 
-            // PASSENGERS (Bus / Tram / Train / Subway / Ship / Ferry / Airplane) — prefab-only
             foreach ((RefRW<PublicTransportVehicleData> vehicleRef, Entity entity) in SystemAPI
                          .Query<RefRW<PublicTransportVehicleData>>()
                          .WithAll<PrefabData>()
@@ -188,11 +173,6 @@ namespace DispatchBoss
 
                 if (IsPrisonVan(entity))
                 {
-                    if (debug)
-                    {
-                        Mod.s_Log.Info($"{Mod.ModTag} Vehicle skip: {PrefabNameUtil.GetNameSafe(m_PrefabSystem, entity)} PrisonVan detected -> leaving seats vanilla.");
-                    }
-
                     continue;
                 }
 
@@ -201,13 +181,6 @@ namespace DispatchBoss
                 int basePassengers;
                 if (!TryGetPassengerBaseCapacity(entity, out basePassengers))
                 {
-                    if (debug)
-                    {
-                        Mod.s_Log.Warn(
-                            $"{Mod.ModTag} Vehicle: failed to read vanilla base seats for entity={entity.Index}:{entity.Version}, type={vehicleData.m_TransportType}. " +
-                            "Falling back to current passenger capacity.");
-                    }
-
                     basePassengers = vehicleData.m_PassengerCapacity;
                 }
 
@@ -283,7 +256,7 @@ namespace DispatchBoss
                 }
             }
 
-            Enabled = false; // run-once behavior
+            Enabled = false;
         }
 
         private static bool IsHandledDepotType(TransportType type)
@@ -330,7 +303,9 @@ namespace DispatchBoss
             baseCapacity = 0;
 
             if (!PrefabComponentUtil.TryGetComponent(m_PrefabSystem, entity, out TransportDepot depotComponent))
+            {
                 return false;
+            }
 
             baseCapacity = depotComponent.m_VehicleCapacity;
             return true;
@@ -341,7 +316,9 @@ namespace DispatchBoss
             basePassengers = 0;
 
             if (!PrefabComponentUtil.TryGetComponent(m_PrefabSystem, entity, out PublicTransport publicTransport))
+            {
                 return false;
+            }
 
             basePassengers = publicTransport.m_PassengerCapacity;
             return true;
@@ -352,13 +329,12 @@ namespace DispatchBoss
             float percent;
             switch (type)
             {
-                case TransportType.Bus:   percent = settings.BusDepotScalar;    break;
-                case TransportType.Ferry: percent = settings.FerryDepotScalar;  break;
-                case TransportType.Subway:percent = settings.SubwayDepotScalar; break;
-                case TransportType.Taxi:  percent = settings.TaxiDepotScalar;   break;
-                case TransportType.Train: percent = settings.TrainDepotScalar;  break;
-                case TransportType.Tram:  percent = settings.TramDepotScalar;   break;
-
+                case TransportType.Bus: percent = settings.BusDepotScalar; break;
+                case TransportType.Ferry: percent = settings.FerryDepotScalar; break;
+                case TransportType.Subway: percent = settings.SubwayDepotScalar; break;
+                case TransportType.Taxi: percent = settings.TaxiDepotScalar; break;
+                case TransportType.Train: percent = settings.TrainDepotScalar; break;
+                case TransportType.Tram: percent = settings.TramDepotScalar; break;
                 default: return 1f;
             }
 
@@ -371,13 +347,12 @@ namespace DispatchBoss
             switch (type)
             {
                 case TransportType.Airplane: percent = settings.AirplanePassengerScalar; break;
-                case TransportType.Bus: percent     = settings.BusPassengerScalar;    break;
-                case TransportType.Ferry: percent   = settings.FerryPassengerScalar;  break;
-                case TransportType.Ship: percent    = settings.ShipPassengerScalar;   break;
-                case TransportType.Subway: percent  = settings.SubwayPassengerScalar; break;
-                case TransportType.Tram: percent    = settings.TramPassengerScalar;   break;
-                case TransportType.Train: percent   = settings.TrainPassengerScalar;  break;
-
+                case TransportType.Bus: percent = settings.BusPassengerScalar; break;
+                case TransportType.Ferry: percent = settings.FerryPassengerScalar; break;
+                case TransportType.Ship: percent = settings.ShipPassengerScalar; break;
+                case TransportType.Subway: percent = settings.SubwayPassengerScalar; break;
+                case TransportType.Tram: percent = settings.TramPassengerScalar; break;
+                case TransportType.Train: percent = settings.TrainPassengerScalar; break;
                 default: return 1f;
             }
 

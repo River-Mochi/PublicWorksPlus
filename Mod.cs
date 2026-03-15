@@ -8,15 +8,14 @@ namespace DispatchBoss
     using Colossal.Localization;          // LocalizationManager
     using Colossal.Logging;               // ILog, defines shared s_Log
     using Game;                           // UpdateSystem, GameManager, SystemUpdatePhase
-    using Game.Modding;                   // IMod, ModSetting base
-    using Game.SceneFlow;
-    using System;                         // Exception (localization wrapper)
-    using System.Reflection;              // Metadata: Assembly version
+    using Game.Modding;                   // IMod
+    using Game.SceneFlow;                // GameManager
+    using System;                         // Exception
+    using System.Reflection;              // Assembly
 
     /// <summary>Mod entry point: registers settings, locales, and ECS systems.</summary>
     public sealed class Mod : IMod
     {
-        // ---- PUBLIC CONSTANTS / METADATA ----
         public const string ModName = "Dispatch Boss";
         public const string ShortName = "Dispatch Boss";
         public const string ModId = "DispatchBoss";
@@ -40,7 +39,7 @@ namespace DispatchBoss
                 s_Log.Info($"{ModName} v{ModVersion} OnLoad");
             }
 
-            // Settings first so locale labels can resolve
+            // Settings first so locale labels can resolve.
             Setting setting = new Setting(this);
             Settings = setting;
 
@@ -57,7 +56,13 @@ namespace DispatchBoss
             AddLocaleSource("zh-HANS", new LocaleZH_CN(setting));    // Simplified Chinese
             AddLocaleSource("zh-HANT", new LocaleZH_HANT(setting));  // Traditional Chinese
 
+            // Load settings (.coc) into the instance.
+            // The default instance passed here provides defaults for missing fields.
             AssetDatabase.global.LoadSettings(ModId, setting, new Setting(this));
+
+            // Repair missing/out-of-range/invalid values in-memory (no auto-save).
+            setting.SanitizeAfterLoad();
+
             setting.RegisterInOptionsUI();
 
             // Systems
@@ -65,12 +70,11 @@ namespace DispatchBoss
             updateSystem.UpdateAfter<MaintenanceSystem>(SystemUpdatePhase.PrefabUpdate);
             updateSystem.UpdateAfter<LaneWearSystem>(SystemUpdatePhase.PrefabUpdate);
 
-            // Extractors (TransportCompanyData.m_MaxTransports)
+            // Industry (prefab editing window)
             updateSystem.UpdateAfter<IndustrySystem>(SystemUpdatePhase.PrefabUpdate);
             updateSystem.UpdateBefore<IndustrySystem>(SystemUpdatePhase.PrefabReferences);
 
             // Allow transit lines range to be 1-and higher than vanilla
-            // Policy tuner: also better in PrefabUpdate so it applies immediately while paused/Options UI
             updateSystem.UpdateAfter<VehicleCountPolicyTunerSystem>(SystemUpdatePhase.PrefabUpdate);
 
             // Prefab scan: must work even while Options UI is open
@@ -83,7 +87,6 @@ namespace DispatchBoss
             updateSystem.UpdateAt<DeliveryCargoProbeSystem>(SystemUpdatePhase.GameSimulation);
 
             s_Log.Info($"{nameof(DispatchBoss)}.{nameof(OnLoad)} Completed.");
-
         }
 
         public void OnDispose()
@@ -126,7 +129,6 @@ namespace DispatchBoss
             }
         }
 
-        // Helper to localize Status text.
         internal static string L(string id, string fallback)
         {
             try
@@ -141,11 +143,9 @@ namespace DispatchBoss
             }
             catch
             {
-                // ignore and fall back
             }
 
             return fallback;
         }
-
     }
 }

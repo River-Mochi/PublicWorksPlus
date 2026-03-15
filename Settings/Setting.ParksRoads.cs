@@ -1,30 +1,30 @@
 // File: Settings/Setting.ParksRoads.cs
-// Purpose: Parks-Roads tab settings (maintenance multipliers + road wear multipliers).
-// Notes:
-// - Values are percent sliders (100% = vanilla).
+// Purpose: Parks/Roads settings (maintenance + road wear).
 
 namespace DispatchBoss
 {
-    using Game.Settings; // Settings UI attributes
-    using Game.UI;       // Unit
+    using Game.Settings;     // Settings UI attributes
+    using Game.UI;           // Unit
 
     public sealed partial class Setting
     {
+        private const float kVanillaPercent = 100f;
+
         // ------------------------
         // Parks-Roads (percent)
         // ------------------------
 
         [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(ParksRoadsTab, ParkMaintenanceGroup)]
-        public float ParkMaintenanceDepotScalar { get; set; } = 100f;
+        public float ParkMaintenanceDepotScalar { get; set; }
 
         [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(ParksRoadsTab, ParkMaintenanceGroup)]
-        public float ParkMaintenanceVehicleCapacityScalar { get; set; } = 100f;
+        public float ParkMaintenanceVehicleCapacityScalar { get; set; }
 
         [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(ParksRoadsTab, ParkMaintenanceGroup)]
-        public float ParkMaintenanceVehicleRateScalar { get; set; } = 100f;
+        public float ParkMaintenanceVehicleRateScalar { get; set; }
 
         [SettingsUIButtonGroup(ParkMaintenanceGroup)]
         [SettingsUIButton]
@@ -33,12 +33,11 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
-                ParkMaintenanceDepotScalar = 100f;
-                ParkMaintenanceVehicleCapacityScalar = 100f;
-                ParkMaintenanceVehicleRateScalar = 100f;
+                ParkMaintenanceDepotScalar = kVanillaPercent;
+                ParkMaintenanceVehicleCapacityScalar = kVanillaPercent;
+                ParkMaintenanceVehicleRateScalar = kVanillaPercent;
 
                 ApplyAndSave();
             }
@@ -46,19 +45,19 @@ namespace DispatchBoss
 
         [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(ParksRoadsTab, RoadMaintenanceGroup)]
-        public float RoadMaintenanceDepotScalar { get; set; } = 100f;
+        public float RoadMaintenanceDepotScalar { get; set; }
 
         [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(ParksRoadsTab, RoadMaintenanceGroup)]
-        public float RoadMaintenanceVehicleCapacityScalar { get; set; } = 100f;
+        public float RoadMaintenanceVehicleCapacityScalar { get; set; }
 
         [SettingsUISlider(min = MaintenanceMinPercent, max = MaintenanceMaxPercent, step = MaintenanceStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(ParksRoadsTab, RoadMaintenanceGroup)]
-        public float RoadMaintenanceVehicleRateScalar { get; set; } = 100f;
+        public float RoadMaintenanceVehicleRateScalar { get; set; }
 
         [SettingsUISlider(min = RoadWearMinPercent, max = RoadWearMaxPercent, step = RoadWearStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(ParksRoadsTab, RoadMaintenanceGroup)]
-        public float RoadWearScalar { get; set; } = 100f;
+        public float RoadWearScalar { get; set; }
 
         [SettingsUIButtonGroup(RoadMaintenanceGroup)]
         [SettingsUIButton]
@@ -67,16 +66,41 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
-                RoadMaintenanceDepotScalar = 100f;
-                RoadMaintenanceVehicleCapacityScalar = 100f;
-                RoadMaintenanceVehicleRateScalar = 100f;
-                RoadWearScalar = 100f;
+                RoadMaintenanceDepotScalar = kVanillaPercent;
+                RoadMaintenanceVehicleCapacityScalar = kVanillaPercent;
+                RoadMaintenanceVehicleRateScalar = kVanillaPercent;
+                RoadWearScalar = kVanillaPercent;
 
                 ApplyAndSave();
             }
+        }
+
+        partial void SetDefaults_ParksRoads()
+        {
+            ParkMaintenanceDepotScalar = kVanillaPercent;
+            ParkMaintenanceVehicleCapacityScalar = kVanillaPercent;
+            ParkMaintenanceVehicleRateScalar = kVanillaPercent;
+
+            RoadMaintenanceDepotScalar = kVanillaPercent;
+            RoadMaintenanceVehicleCapacityScalar = kVanillaPercent;
+            RoadMaintenanceVehicleRateScalar = kVanillaPercent;
+
+            RoadWearScalar = kVanillaPercent;
+        }
+
+        partial void RepairAndClamp_ParksRoads()
+        {
+            ParkMaintenanceDepotScalar = ClampPercentOrVanilla(ParkMaintenanceDepotScalar, MaintenanceMinPercent, MaintenanceMaxPercent, kVanillaPercent);
+            ParkMaintenanceVehicleCapacityScalar = ClampPercentOrVanilla(ParkMaintenanceVehicleCapacityScalar, MaintenanceMinPercent, MaintenanceMaxPercent, kVanillaPercent);
+            ParkMaintenanceVehicleRateScalar = ClampPercentOrVanilla(ParkMaintenanceVehicleRateScalar, MaintenanceMinPercent, MaintenanceMaxPercent, kVanillaPercent);
+
+            RoadMaintenanceDepotScalar = ClampPercentOrVanilla(RoadMaintenanceDepotScalar, MaintenanceMinPercent, MaintenanceMaxPercent, kVanillaPercent);
+            RoadMaintenanceVehicleCapacityScalar = ClampPercentOrVanilla(RoadMaintenanceVehicleCapacityScalar, MaintenanceMinPercent, MaintenanceMaxPercent, kVanillaPercent);
+            RoadMaintenanceVehicleRateScalar = ClampPercentOrVanilla(RoadMaintenanceVehicleRateScalar, MaintenanceMinPercent, MaintenanceMaxPercent, kVanillaPercent);
+
+            RoadWearScalar = ClampPercentOrVanilla(RoadWearScalar, RoadWearMinPercent, RoadWearMaxPercent, kVanillaPercent);
         }
     }
 }

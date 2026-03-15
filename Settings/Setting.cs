@@ -1,21 +1,17 @@
 // File: Settings/Setting.cs
-// Purpose: Options UI + saved settings for Dispatch Boss.
-// Notes:
-// - Partial class split across 4 source files.
-// - Defaults are applied in ctor to avoid “all zero” default instances.
-// - Apply() re-enables run-once systems so changes take effect.
+// Purpose: Options UI + saved settings for Dispatch Boss (Public Transit + Industry + Parks/Roads + About).
 
 namespace DispatchBoss
 {
     using Colossal.IO.AssetDatabase; // FileLocation
     using Game;                     // IsGame
-    using Game.Modding;             // IMod
+    using Game.Modding;             // IMod, ModSetting
     using Game.SceneFlow;           // GameManager
     using Game.Settings;            // Settings UI attributes
     using Game.UI;                  // Unit
     using System;                   // Exception
-    using Unity.Entities;
-    using UnityEngine;              // Application URL
+    using Unity.Entities;           // World
+    using UnityEngine;              // Application.OpenURL
 
     [FileLocation("ModsSettings/DispatchBoss/DispatchBoss")]
     [SettingsUITabOrder(PublicTransitTab, IndustryTab, ParksRoadsTab, AboutTab)]
@@ -74,7 +70,7 @@ namespace DispatchBoss
         public const float CargoStationMaxScalar = 5f;
         public const float CargoStationStepScalar = 1f;
 
-        // Parks+Roads: display as percent (100%..1000% = 1x..10x).
+        // Parks+Roads: display as percent (100%..500% = 1x..5x).
         public const float MaintenanceMinPercent = 100f;
         public const float MaintenanceMaxPercent = 500f;
         public const float MaintenanceStepPercent = 10f;
@@ -93,45 +89,34 @@ namespace DispatchBoss
         public Setting(IMod mod)
             : base(mod)
         {
-            // Defaults must exist for:
-            // - First-run (no settings file)
-            // - Default template instance passed to LoadSettings(...)
+            // New install starts with defaults. LoadSettings overwrites when .coc exists.
             SetDefaults();
+        }
+
+        /// <summary>
+        /// Repair missing/out-of-range/invalid values after LoadSettings.
+        /// No auto-save performed.
+        /// </summary>
+        public void SanitizeAfterLoad()
+        {
+            RepairAndClamp();
         }
 
         public override void SetDefaults()
         {
-            // Public-Transit defaults (percent).
-            m_EnableLineVehicleCountTuner = false;   // Setter avoided (prevents early Apply).
-            ResetDepotToVanilla();
-            ResetPassengerToVanilla();
+            SetDefaults_Transit();
+            SetDefaults_Industry();
+            SetDefaults_ParksRoads();
 
-            // Industry defaults (scalar).
-            m_SemiTruckCargoScalar = 1f;
-            m_DeliveryVanCargoScalar = 1f;
-            m_OilTruckCargoScalar = 1f;
-            m_MotorbikeDeliveryCargoScalar = 1f;
-
-            m_CargoStationMaxTrucksScalar = 1f;
-            m_ExtractorMaxTrucksScalar = 1f;
-
-            // Parks-Roads defaults (percent).
-            RoadWearScalar = 100f;
-
-            RoadMaintenanceVehicleCapacityScalar = 100f;
-            RoadMaintenanceVehicleRateScalar = 100f;
-            RoadMaintenanceDepotScalar = 100f;
-
-            ParkMaintenanceVehicleCapacityScalar = 100f;
-            ParkMaintenanceVehicleRateScalar = 100f;
-            ParkMaintenanceDepotScalar = 100f;
-
-            // Debug.
+            // Debug defaults.
             EnableDebugLogging = false;
         }
 
         public override void Apply()
         {
+            // Repair in-memory values first so ECS always sees sane inputs.
+            RepairAndClamp();
+
             base.Apply();
 
             GameManager gm = GameManager.instance;
@@ -146,7 +131,7 @@ namespace DispatchBoss
                 return;
             }
 
-            // Settings changes re-enable run-once systems.
+            // Settings changes re-run systems once.
             TryEnableOnce<TransitSystem>(world, "TransitSystem");
             TryEnableOnce<MaintenanceSystem>(world, "MaintenanceSystem");
             TryEnableOnce<IndustrySystem>(world, "IndustrySystem");
@@ -220,9 +205,7 @@ namespace DispatchBoss
             }
         }
 
-        // ----------------
-        // Debug
-        // ----------------
+        // DEBUG/LOGGING
 
         [SettingsUIButtonGroup(DebugGroup)]
         [SettingsUIButton]
@@ -284,5 +267,62 @@ namespace DispatchBoss
         {
             set => ShellOpen.OpenFolderSafe(ShellOpen.GetLogsFolder(), "OpenLog");
         }
+
+        // ------------------------
+        // Robust repair/clamp
+        // ------------------------
+
+        private void RepairAndClamp()
+        {
+            RepairAndClamp_Transit();
+            RepairAndClamp_Industry();
+            RepairAndClamp_ParksRoads();
+
+            // Debug toggle is a bool; no repair needed.
+        }
+
+        private static float ClampPercentOrVanilla(float value, float min, float max, float vanilla)
+        {
+            if (!IsFinite(value) || value == 0f)
+            {
+                return vanilla;
+            }
+
+            if (value < min || value > max)
+            {
+                return vanilla;
+            }
+
+            return value;
+        }
+
+        private static float ClampScalarOrDefault(float value, float min, float max, float def)
+        {
+            if (!IsFinite(value) || value == 0f)
+            {
+                return def;
+            }
+
+            if (value < min || value > max)
+            {
+                return def;
+            }
+
+            return value;
+        }
+
+        private static bool IsFinite(float v)
+        {
+            return !(float.IsNaN(v) || float.IsInfinity(v));
+        }
+
+        // Partial hooks keep files organized without duplicating boilerplate.
+        partial void SetDefaults_Transit();
+        partial void SetDefaults_Industry();
+        partial void SetDefaults_ParksRoads();
+
+        partial void RepairAndClamp_Transit();
+        partial void RepairAndClamp_Industry();
+        partial void RepairAndClamp_ParksRoads();
     }
 }

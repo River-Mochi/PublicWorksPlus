@@ -1,25 +1,27 @@
 // File: Settings/Setting.Industry.cs
-// Purpose: Industry tab settings (delivery vehicle cargo capacity + cargo/ extractor fleet sizes).
-// Notes:
-// - Sliders trigger IndustrySystem enable so changes apply immediately in-game.
+// Purpose: Industry settings (delivery vehicles, cargo stations, extractors).
 
 namespace DispatchBoss
 {
-    using Game;           // IsGame
-    using Game.SceneFlow; // GameManager
-    using Game.Settings;  // Settings UI attributes
-    using Unity.Entities;
+    using Game;              // IsGame
+    using Game.SceneFlow;    // GameManager
+    using Game.Settings;     // Settings UI attributes
+    using System;            // Exception
+    using Unity.Entities;    // World
 
     public sealed partial class Setting
     {
-        // Delivery vehicles (scalar)
-        private float m_SemiTruckCargoScalar = 1f;
-        private float m_DeliveryVanCargoScalar = 1f;
-        private float m_OilTruckCargoScalar = 1f;
-        private float m_MotorbikeDeliveryCargoScalar = 1f;
+        private const float kVanillaScalar = 1f;
 
-        private float m_ExtractorMaxTrucksScalar = 1f;
-        private float m_CargoStationMaxTrucksScalar = 1f;
+        private float m_SemiTruckCargoScalar = kVanillaScalar;
+        private float m_DeliveryVanCargoScalar = kVanillaScalar;
+        private float m_OilTruckCargoScalar = kVanillaScalar;
+        private float m_MotorbikeDeliveryCargoScalar = kVanillaScalar;
+
+        private float m_ExtractorMaxTrucksScalar = kVanillaScalar;
+        private float m_CargoStationMaxTrucksScalar = kVanillaScalar;
+
+        // Delivery vehicles (scalar 1..10)
 
         [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
@@ -29,9 +31,7 @@ namespace DispatchBoss
             set
             {
                 float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
-                if (m_SemiTruckCargoScalar == v)
-                    return;
-
+                if (m_SemiTruckCargoScalar == v) return;
                 m_SemiTruckCargoScalar = v;
                 OnIndustryChanged();
             }
@@ -45,9 +45,7 @@ namespace DispatchBoss
             set
             {
                 float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
-                if (m_DeliveryVanCargoScalar == v)
-                    return;
-
+                if (m_DeliveryVanCargoScalar == v) return;
                 m_DeliveryVanCargoScalar = v;
                 OnIndustryChanged();
             }
@@ -61,9 +59,7 @@ namespace DispatchBoss
             set
             {
                 float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
-                if (m_OilTruckCargoScalar == v)
-                    return;
-
+                if (m_OilTruckCargoScalar == v) return;
                 m_OilTruckCargoScalar = v;
                 OnIndustryChanged();
             }
@@ -77,15 +73,13 @@ namespace DispatchBoss
             set
             {
                 float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
-                if (m_MotorbikeDeliveryCargoScalar == v)
-                    return;
-
+                if (m_MotorbikeDeliveryCargoScalar == v) return;
                 m_MotorbikeDeliveryCargoScalar = v;
                 OnIndustryChanged();
             }
         }
 
-        // Extractor and Cargo Station Buildings (scalar)
+        // Extractor + Cargo Stations (scalar 1..5)
 
         [SettingsUISlider(min = CargoStationMinScalar, max = CargoStationMaxScalar, step = CargoStationStepScalar)]
         [SettingsUISection(IndustryTab, CargoStationsGroup)]
@@ -95,9 +89,7 @@ namespace DispatchBoss
             set
             {
                 float v = ScalarMath.ClampScalar(value, CargoStationMinScalar, CargoStationMaxScalar);
-                if (m_ExtractorMaxTrucksScalar == v)
-                    return;
-
+                if (m_ExtractorMaxTrucksScalar == v) return;
                 m_ExtractorMaxTrucksScalar = v;
                 OnIndustryChanged();
             }
@@ -111,9 +103,7 @@ namespace DispatchBoss
             set
             {
                 float v = ScalarMath.ClampScalar(value, CargoStationMinScalar, CargoStationMaxScalar);
-                if (m_CargoStationMaxTrucksScalar == v)
-                    return;
-
+                if (m_CargoStationMaxTrucksScalar == v) return;
                 m_CargoStationMaxTrucksScalar = v;
                 OnIndustryChanged();
             }
@@ -126,13 +116,12 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
-                SemiTruckCargoScalar = 1f;
-                DeliveryVanCargoScalar = 1f;
-                OilTruckCargoScalar = 1f;
-                MotorbikeDeliveryCargoScalar = 1f;
+                m_SemiTruckCargoScalar = kVanillaScalar;
+                m_DeliveryVanCargoScalar = kVanillaScalar;
+                m_OilTruckCargoScalar = kVanillaScalar;
+                m_MotorbikeDeliveryCargoScalar = kVanillaScalar;
 
                 ApplyAndSave();
             }
@@ -145,11 +134,10 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
-                CargoStationMaxTrucksScalar = 1f;
-                ExtractorMaxTrucksScalar = 1f;
+                m_CargoStationMaxTrucksScalar = kVanillaScalar;
+                m_ExtractorMaxTrucksScalar = kVanillaScalar;
 
                 ApplyAndSave();
             }
@@ -165,9 +153,40 @@ namespace DispatchBoss
             if (world == null)
                 return;
 
-            // Apply() already enables systems when options are applied.
-            // This path enables IndustrySystem immediately while the city is running.
-            TryEnableOnce<IndustrySystem>(world, "IndustrySystem");
+            try
+            {
+                IndustrySystem sys = world.GetExistingSystemManaged<IndustrySystem>();
+                if (sys != null)
+                {
+                    sys.Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Mod.s_Log.Warn($"{Mod.ModTag} Apply: failed enabling IndustrySystem: {ex.GetType().Name}: {ex.Message}");
+            }
+        }
+
+        partial void SetDefaults_Industry()
+        {
+            m_SemiTruckCargoScalar = kVanillaScalar;
+            m_DeliveryVanCargoScalar = kVanillaScalar;
+            m_OilTruckCargoScalar = kVanillaScalar;
+            m_MotorbikeDeliveryCargoScalar = kVanillaScalar;
+
+            m_CargoStationMaxTrucksScalar = kVanillaScalar;
+            m_ExtractorMaxTrucksScalar = kVanillaScalar;
+        }
+
+        partial void RepairAndClamp_Industry()
+        {
+            m_SemiTruckCargoScalar = ClampScalarOrDefault(m_SemiTruckCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
+            m_DeliveryVanCargoScalar = ClampScalarOrDefault(m_DeliveryVanCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
+            m_OilTruckCargoScalar = ClampScalarOrDefault(m_OilTruckCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
+            m_MotorbikeDeliveryCargoScalar = ClampScalarOrDefault(m_MotorbikeDeliveryCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
+
+            m_CargoStationMaxTrucksScalar = ClampScalarOrDefault(m_CargoStationMaxTrucksScalar, CargoStationMinScalar, CargoStationMaxScalar, kVanillaScalar);
+            m_ExtractorMaxTrucksScalar = ClampScalarOrDefault(m_ExtractorMaxTrucksScalar, CargoStationMinScalar, CargoStationMaxScalar, kVanillaScalar);
         }
     }
 }

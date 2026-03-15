@@ -4,7 +4,6 @@
 namespace DispatchBoss
 {
     using Colossal;
-    using Colossal.IO.AssetDatabase.Internal;
     using System.Collections.Generic;
 
     public sealed class LocaleEN : IDictionarySource
@@ -72,9 +71,9 @@ namespace DispatchBoss
 
                  { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Ferry depot" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
-                    "**Ferry Depot** vehicle capacity.\n" +
+                    "**Ferry Depot** max vehicles per building.\n" +
                     "**100%** = vanilla (game default).\n" +
-                    "Applies to base buildings."
+                    "Applies to base."
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayDepotScalar)), "Subway depot" },
@@ -98,7 +97,6 @@ namespace DispatchBoss
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "Change how many trains each **Train Depot** can maintain.\n" +
                     "Applies to the base building." },
-
 
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Reset all depots" },

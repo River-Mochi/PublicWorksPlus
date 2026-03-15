@@ -1,19 +1,19 @@
 // File: Settings/Setting.Transit.cs
-// Purpose: Public-Transit tab settings (line policy toggle, depot capacity, passenger capacity).
-// Notes:
-// - Ferry depot slider is included (FerryDepotScalar).
-// - Reset helpers live here to keep transit settings cohesive.
+// Purpose: Public Transit settings (depots, passengers, line vehicle policy toggle).
 
 namespace DispatchBoss
 {
-    using Game;
-    using Game.SceneFlow; // GameManager
-    using Game.Settings;  // Settings UI attributes
-    using Game.UI;        // Unit
-    using Unity.Entities;
+    using Game;              // IsGame
+    using Game.SceneFlow;    // GameManager
+    using Game.Settings;     // Settings UI attributes
+    using Game.UI;           // Unit
+    using System;            // Exception
+    using Unity.Entities;    // World
 
     public sealed partial class Setting
     {
+        private const float kVanillaPercent = 100f;
+
         private bool m_EnableLineVehicleCountTuner;
 
         // Toggle vanilla transit line range tuner (global policy).
@@ -23,12 +23,11 @@ namespace DispatchBoss
             get => m_EnableLineVehicleCountTuner;
             set
             {
-                if (m_EnableLineVehicleCountTuner == value)
-                    return;
+                if (m_EnableLineVehicleCountTuner == value) return;
 
                 m_EnableLineVehicleCountTuner = value;
 
-                // Apply immediately if a city is loaded (no auto-persist on toggle).
+                // No auto-save on toggles. Apply immediately when a city is loaded.
                 GameManager gm = GameManager.instance;
                 if (gm != null && gm.gameMode.IsGame())
                 {
@@ -72,8 +71,7 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
                 ResetDepotToVanilla();
                 ApplyAndSave();
@@ -119,8 +117,7 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
                 BusPassengerScalar = 200f;
                 TramPassengerScalar = 200f;
@@ -141,37 +138,58 @@ namespace DispatchBoss
         {
             set
             {
-                if (!value)
-                    return;
+                if (!value) return;
 
                 ResetPassengerToVanilla();
                 ApplyAndSave();
             }
         }
 
-        // ------------------------
-        // Helpers
-        // ------------------------
-
-        public void ResetDepotToVanilla()
+        internal void ResetDepotToVanilla()
         {
-            BusDepotScalar = 100f;
-            FerryDepotScalar = 100f;
-            SubwayDepotScalar = 100f;
-            TaxiDepotScalar = 100f;
-            TrainDepotScalar = 100f;
-            TramDepotScalar = 100f;
+            BusDepotScalar = kVanillaPercent;
+            FerryDepotScalar = kVanillaPercent;
+            SubwayDepotScalar = kVanillaPercent;
+            TaxiDepotScalar = kVanillaPercent;
+            TrainDepotScalar = kVanillaPercent;
+            TramDepotScalar = kVanillaPercent;
         }
 
-        public void ResetPassengerToVanilla()
+        internal void ResetPassengerToVanilla()
         {
-            AirplanePassengerScalar = 100f;
-            BusPassengerScalar = 100f;
-            FerryPassengerScalar = 100f;
-            ShipPassengerScalar = 100f;
-            SubwayPassengerScalar = 100f;
-            TrainPassengerScalar = 100f;
-            TramPassengerScalar = 100f;
+            AirplanePassengerScalar = kVanillaPercent;
+            BusPassengerScalar = kVanillaPercent;
+            FerryPassengerScalar = kVanillaPercent;
+            ShipPassengerScalar = kVanillaPercent;
+            SubwayPassengerScalar = kVanillaPercent;
+            TrainPassengerScalar = kVanillaPercent;
+            TramPassengerScalar = kVanillaPercent;
+        }
+
+        partial void SetDefaults_Transit()
+        {
+            m_EnableLineVehicleCountTuner = false;
+
+            ResetDepotToVanilla();
+            ResetPassengerToVanilla();
+        }
+
+        partial void RepairAndClamp_Transit()
+        {
+            BusDepotScalar = ClampPercentOrVanilla(BusDepotScalar, DepotMinPercent, MaxPercent, kVanillaPercent);
+            FerryDepotScalar = ClampPercentOrVanilla(FerryDepotScalar, DepotMinPercent, MaxPercent, kVanillaPercent);
+            SubwayDepotScalar = ClampPercentOrVanilla(SubwayDepotScalar, DepotMinPercent, MaxPercent, kVanillaPercent);
+            TaxiDepotScalar = ClampPercentOrVanilla(TaxiDepotScalar, DepotMinPercent, MaxPercent, kVanillaPercent);
+            TrainDepotScalar = ClampPercentOrVanilla(TrainDepotScalar, DepotMinPercent, MaxPercent, kVanillaPercent);
+            TramDepotScalar = ClampPercentOrVanilla(TramDepotScalar, DepotMinPercent, MaxPercent, kVanillaPercent);
+
+            BusPassengerScalar = ClampPercentOrVanilla(BusPassengerScalar, PassengerMinPercent, MaxPercent, kVanillaPercent);
+            TramPassengerScalar = ClampPercentOrVanilla(TramPassengerScalar, PassengerMinPercent, MaxPercent, kVanillaPercent);
+            TrainPassengerScalar = ClampPercentOrVanilla(TrainPassengerScalar, PassengerMinPercent, MaxPercent, kVanillaPercent);
+            SubwayPassengerScalar = ClampPercentOrVanilla(SubwayPassengerScalar, PassengerMinPercent, MaxPercent, kVanillaPercent);
+            ShipPassengerScalar = ClampPercentOrVanilla(ShipPassengerScalar, PassengerMinPercent, MaxPercent, kVanillaPercent);
+            FerryPassengerScalar = ClampPercentOrVanilla(FerryPassengerScalar, PassengerMinPercent, MaxPercent, kVanillaPercent);
+            AirplanePassengerScalar = ClampPercentOrVanilla(AirplanePassengerScalar, PassengerMinPercent, MaxPercent, kVanillaPercent);
         }
     }
 }
