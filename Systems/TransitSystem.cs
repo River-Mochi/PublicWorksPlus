@@ -119,6 +119,7 @@ namespace DispatchBoss
             Setting settings = Mod.Settings;
             bool debug = settings.EnableDebugLogging;
 
+            // DEPOTS — prefab-only
             foreach ((RefRW<TransportDepotData> depotRef, Entity entity) in SystemAPI
                          .Query<RefRW<TransportDepotData>>()
                          .WithAll<PrefabData>()
@@ -157,6 +158,7 @@ namespace DispatchBoss
                 }
             }
 
+            // PASSENGERS — prefab-only
             foreach ((RefRW<PublicTransportVehicleData> vehicleRef, Entity entity) in SystemAPI
                          .Query<RefRW<PublicTransportVehicleData>>()
                          .WithAll<PrefabData>()
