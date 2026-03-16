@@ -8,7 +8,6 @@ namespace DispatchBoss
     using Game.Modding;             // IMod, ModSetting
     using Game.SceneFlow;           // GameManager
     using Game.Settings;            // Settings UI attributes
-    using Game.UI;                  // Unit
     using System;                   // Exception
     using Unity.Entities;           // World
     using UnityEngine;              // Application.OpenURL
@@ -59,6 +58,8 @@ namespace DispatchBoss
         public const float PassengerMinPercent = 10f;
         public const float MaxPercent = 1000f;
         public const float StepPercent = 10f;
+
+        private const float kVanillaPercent = 100f;
 
         // Industry sliders (scalar 1x..10x).
         public const float ServiceMinScalar = 1f;

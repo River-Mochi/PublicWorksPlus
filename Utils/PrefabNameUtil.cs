@@ -19,10 +19,12 @@ namespace DispatchBoss
             if (prefabEntity == Entity.Null)
                 return "(null prefab)";
 
+            if (prefabSystem == null)
+                return $"PrefabEntity={prefabEntity.Index}:{prefabEntity.Version}";
+
             try
             {
-                if (prefabSystem != null &&
-                    prefabSystem.TryGetPrefab(prefabEntity, out PrefabBase prefabBase))
+                if (prefabSystem.TryGetPrefab(prefabEntity, out PrefabBase prefabBase))
                 {
                     return prefabBase.name ?? "(unnamed)";
                 }

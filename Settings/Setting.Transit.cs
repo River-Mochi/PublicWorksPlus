@@ -7,13 +7,9 @@ namespace DispatchBoss
     using Game.SceneFlow;    // GameManager
     using Game.Settings;     // Settings UI attributes
     using Game.UI;           // Unit
-    using System;            // Exception
-    using Unity.Entities;    // World
 
     public sealed partial class Setting
     {
-        private const float kVanillaPercent = 100f;
-
         private bool m_EnableLineVehicleCountTuner;
 
         // Toggle vanilla transit line range tuner (global policy).

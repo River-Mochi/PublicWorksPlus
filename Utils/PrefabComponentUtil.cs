@@ -1,5 +1,5 @@
 // File: Utils/PrefabComponentUtil.cs
-// Purpose: prefab components lookup (TransportDepot, PublicTransport, etc.).
+// Purpose: Prefab components lookup (TransportDepot, PublicTransport, etc.).
 // Notes:
 // - Centralizes PrefabSystem.TryGetPrefab + PrefabBase.TryGet.
 // - PrefabBase.TryGet<T> requires T : ComponentBase.

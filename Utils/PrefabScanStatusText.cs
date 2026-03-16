@@ -50,7 +50,6 @@ namespace DispatchBoss
                             ? Mod.L(KeyUnknownTime, "unknown time")
                             : s.LastRunFinishedLocal.ToString("yyyy-MM-dd HH:mm:ss");
 
-                        // Compact here; report path shown elsewhere.
                         return string.Format(
                             Mod.L(KeyDoneFmt, "Done ({0} | {1})"),
                             dur,
@@ -62,25 +61,20 @@ namespace DispatchBoss
                     {
                         string failed = Mod.L(KeyFailed, "Failed");
 
-                        string reason = s.FailCode switch
-                        {
-                            PrefabScanState.FailCode.NoCityLoaded => Mod.L(KeyFailNoCity, "LOAD CITY FIRST"),
-                            _ => string.Empty
-                        };
+                        string reason = s.FailCode == PrefabScanState.FailCode.NoCityLoaded
+                            ? Mod.L(KeyFailNoCity, "LOAD CITY FIRST")
+                            : string.Empty;
 
                         if (!string.IsNullOrEmpty(s.FailDetails))
                         {
-                            // Fails are typically Exception text (not worth translating).
                             if (!string.IsNullOrEmpty(reason))
-                                return $"{failed} ({reason} {s.FailDetails})".Trim();
+                                return $"{failed} ({reason} {s.FailDetails})";
 
-                            return $"{failed} ({s.FailDetails})".Trim();
+                            return $"{failed} ({s.FailDetails})";
                         }
 
                         if (!string.IsNullOrEmpty(reason))
-                        {
                             return $"{failed} - {reason}";
-                        }
 
                         return failed;
                     }
@@ -90,9 +84,7 @@ namespace DispatchBoss
         private static string FormatDuration(TimeSpan ts)
         {
             if (ts.TotalHours >= 1)
-            {
                 return ts.ToString(@"hh\:mm\:ss");
-            }
 
             return ts.ToString(@"mm\:ss");
         }

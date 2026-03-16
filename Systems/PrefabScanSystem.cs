@@ -32,6 +32,23 @@ namespace DispatchBoss
         private const int kMaxChars = 1 * 1024 * 1024; // ~1MB
         private const int kMaxKeywordMatches = 600;     // keywords are hints only
 
+        private static readonly string[] s_Keywords = new string[]
+        {
+            "deliveryvan",
+            "trucktractor",
+            "motorbike",
+            "roadmaintenance",
+            "parkmaintenance",
+            "industrialaquaculturehub",
+            "aquaculture",
+        };
+
+        private static readonly string[] s_ExcludeTokens = new string[]
+        {
+            "Crane", "Tomestone", "StandingStone", "Crapfish", "PileStone", "Pilecoal", "Billboard", "Sign", "Poster", "NetBasket", "NetBox",
+            "GasStation", "FarmCage", "FarmPontoon", "FishTub", "FlyFish", "FarmFilterSystem"
+        };
+
         private struct TransitDefaultsStats
         {
             public int Count;
@@ -70,7 +87,6 @@ namespace DispatchBoss
 
             m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
 
-            // Cached query via SystemAPI.QueryBuilder
             m_ConfigQuery = SystemAPI.QueryBuilder()
                 .WithAll<UITransportConfigurationData>()
                 .Build();
@@ -131,9 +147,8 @@ namespace DispatchBoss
                     lines++;
                 }
 
-                string NameOf(Entity e) => GetPrefabNameSafe(e);
+                string NameOf(Entity e) => PrefabNameUtil.GetNameSafe(m_PrefabSystem, e);
 
-                // NEW: “prove coverage” diagnostic — counts LIVE lanes per lane-prefab.
                 void AppendLiveLaneUsage()
                 {
                     if (truncated)
@@ -144,10 +159,9 @@ namespace DispatchBoss
                     Append("Proof that a small set of lane prefabs can power many road types.");
                     Append("");
 
-                    // Set of lane prefabs that actually have LaneDeteriorationData (ones mod tweaked).
                     HashSet<Entity> wearPrefabs = new HashSet<Entity>();
 
-                    foreach ((RefRO<LaneDeteriorationData> detRO, Entity prefabEntity) in SystemAPI
+                    foreach ((RefRO<LaneDeteriorationData> _, Entity prefabEntity) in SystemAPI
                                  .Query<RefRO<LaneDeteriorationData>>()
                                  .WithAll<PrefabData>()
                                  .WithEntityAccess())
@@ -158,7 +172,6 @@ namespace DispatchBoss
                     Dictionary<Entity, int> counts = new Dictionary<Entity, int>(64);
                     long liveLaneTotal = 0;
 
-                    // LIVE lanes: LaneCondition + PrefabRef, but NOT PrefabData.
                     foreach (RefRO<PrefabRef> prefabRefRO in SystemAPI
                                  .Query<RefRO<PrefabRef>>()
                                  .WithAll<LaneCondition>()
@@ -192,7 +205,6 @@ namespace DispatchBoss
                     Append($"Mod Coverage of LaneDeteriorationData prefabs: {covered:n0}/{liveLaneTotal:n0} ({pct:0.0}%)");
                     Append("");
 
-                    // Print top N most-used lane prefabs (by live lane count)
                     const int kTop = 30;
 
                     List<KeyValuePair<Entity, int>> top = new List<KeyValuePair<Entity, int>>(counts);
@@ -210,13 +222,12 @@ namespace DispatchBoss
                     }
                 }
 
-                Append($"Prefab Scan Report for: {Mod.ModName} {Mod.ModVersion}") ;
+                Append($"Prefab Scan Report for: {Mod.ModName} {Mod.ModVersion}");
                 Append($"Timestamp (local): {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 Append("");
 
-                // ---- Lane wear ----
                 const float kUpdatesPerDay = 16f;
-                const int kMaxLaneDetails = 250; // cap printed per-prefab lines
+                const int kMaxLaneDetails = 250;
 
                 Append("== Lane wear (LaneDeteriorationData prefabs) ==");
                 Append("Wear sources:");
@@ -286,10 +297,8 @@ namespace DispatchBoss
                     : "Lane wear summary: Total=0");
                 Append("");
 
-                // NEW: Prove Coverage section
                 AppendLiveLaneUsage();
                 Append("");
-                // ---- Transit Lines ----
 
                 Append("== Transit lines (vanilla timing inputs) ==");
                 Append("Vehicle targets are based on route time estimate (segment durations + stop count).");
@@ -297,7 +306,7 @@ namespace DispatchBoss
 
                 Dictionary<TransportType, TransitDefaultsStats> perType = new Dictionary<TransportType, TransitDefaultsStats>();
 
-                foreach ((RefRO<TransportLineData> lineRef, Entity e) in SystemAPI
+                foreach ((RefRO<TransportLineData> lineRef, Entity _) in SystemAPI
                              .Query<RefRO<TransportLineData>>()
                              .WithAll<PrefabData>()
                              .WithEntityAccess())
@@ -343,7 +352,6 @@ namespace DispatchBoss
 
                 Append("");
 
-                // ---- VehicleCountPolicy ----
                 Append("-- Transit Line Slider Limits Policy (RouteModifierType.VehicleInterval) --");
                 if (m_ConfigQuery.IsEmptyIgnoreFilter)
                 {
@@ -397,11 +405,9 @@ namespace DispatchBoss
 
                 Append("");
 
-
-                // ---- Delivery trucks ----
                 int semi = 0, van = 0, raw = 0, bike = 0, other = 0;
                 int unclassifiedPrinted = 0;
-                const int kMaxUnclassifiedDetails = 100; // keeps report readable
+                const int kMaxUnclassifiedDetails = 100;
 
                 ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
                 ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
@@ -454,13 +460,11 @@ namespace DispatchBoss
                         default: other++; break;
                     }
 
-                    string detail =
+                    Append(
                         $"- {name} ({e.Index}:{e.Version}) Bucket={bucket} " +
                         $"VanillaCap={vanillaCap} CurCap={dt.m_CargoCapacity} " +
                         $"Resources={dt.m_TransportedResources} " +
-                        $"Tractor={hasTractor}:{tractorType} Trailer={hasTrailer}:{trailerType}";
-
-                    Append(detail);
+                        $"Tractor={hasTractor}:{tractorType} Trailer={hasTrailer}:{trailerType}");
 
                     if (bucket == VehicleHelpers.DeliveryBucket.Other && unclassifiedPrinted < kMaxUnclassifiedDetails)
                     {
@@ -482,7 +486,6 @@ namespace DispatchBoss
                 Append($"Delivery summary: Total={deliveryTotal} Semi={semi} Van={van} Raw={raw} Motorbike={bike} Other={other}");
                 Append("");
 
-                // ---- Maintenance vehicles ----
                 Append("== MaintenanceVehicleData Prefabs ==");
                 foreach ((RefRO<MaintenanceVehicleData> mvRef, Entity e) in SystemAPI
                              .Query<RefRO<MaintenanceVehicleData>>()
@@ -509,7 +512,6 @@ namespace DispatchBoss
                 Append($"MaintenanceVehicle summary: Total={mvTotal}");
                 Append("");
 
-                // ---- Maintenance depots ----
                 Append("== MaintenanceDepotData Prefabs ==");
                 foreach ((RefRO<MaintenanceDepotData> depotRef, Entity e) in SystemAPI
                              .Query<RefRO<MaintenanceDepotData>>()
@@ -533,7 +535,6 @@ namespace DispatchBoss
                 Append($"MaintenanceDepot summary: Total={depotTotal}");
                 Append("");
 
-                // ---- Cargo stations ----
                 Append("== Cargo Transport Stations (CargoTransportStationData + TransportCompanyData) ==");
                 foreach ((RefRO<TransportCompanyData> tcRef, Entity e) in SystemAPI
                              .Query<RefRO<TransportCompanyData>>()
@@ -557,7 +558,6 @@ namespace DispatchBoss
                 Append($"Cargo station summary: Total={cargoTotal}");
                 Append("");
 
-                // ---- Industrial extractor transport companies ----
                 Append("== Industrial Extractor TransportCompanies (for Extractor trucks slider) ==");
                 Append("Filter: name starts with Industrial_ AND contains Extractor/Coal/Stone/Mine/Quarry. Skips CurMaxTransports=0. Deduped by name.");
 
@@ -592,20 +592,8 @@ namespace DispatchBoss
                 Append($"Industrial extractor summary: Unique={extractorCompanies}");
                 Append("");
 
-                // ---- Keyword scan (deduped + capped) ----
                 Append("== Keyword Matches (deduped, capped) ==");
                 Append("Hints for discovering relevant prefabs. Keep narrow ('truck' returns too much)");
-
-                string[] keywords = new[]
-                {
-                    "deliveryvan",
-                    "trucktractor",
-                    "motorbike",
-                    "roadmaintenance",
-                    "parkmaintenance",
-                    "industrialaquaculturehub",
-                    "aquaculture",
-                };
 
                 HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -625,9 +613,9 @@ namespace DispatchBoss
                     string lower = n.ToLowerInvariant();
 
                     int hitIndex = -1;
-                    for (int i = 0; i < keywords.Length; i++)
+                    for (int i = 0; i < s_Keywords.Length; i++)
                     {
-                        if (lower.Contains(keywords[i]))
+                        if (lower.Contains(s_Keywords[i]))
                         {
                             hitIndex = i;
                             break;
@@ -638,13 +626,12 @@ namespace DispatchBoss
                     if (!seen.Add(n)) continue;
 
                     keywordMatches++;
-                    Append($"- {n} ({e.Index}:{e.Version}) hit='{keywords[hitIndex]}'");
+                    Append($"- {n} ({e.Index}:{e.Version}) hit='{s_Keywords[hitIndex]}'");
                 }
 
                 Append($"Keyword match summary: UniqueMatches={keywordMatches} Cap={kMaxKeywordMatches}");
                 Append("");
 
-                // Write report (overwrite each run)
                 string reportPath = GetReportPath();
                 string dir = Path.GetDirectoryName(reportPath) ?? string.Empty;
                 if (dir.Length > 0)
@@ -675,9 +662,15 @@ namespace DispatchBoss
             Enabled = false;
         }
 
-        private static float InverseRelativeAppliedFromInput(float input) => (-input) / (1f + input);
+        private static float InverseRelativeAppliedFromInput(float input)
+        {
+            return (-input) / (1f + input);
+        }
 
-        private static string Fmt(float v) => float.IsNaN(v) ? "n/a" : v.ToString("0.###");
+        private static string Fmt(float v)
+        {
+            return float.IsNaN(v) ? "n/a" : v.ToString("0.###");
+        }
 
         private static bool IsTargetIndustrialExtractorCompany(string name)
         {
@@ -706,15 +699,9 @@ namespace DispatchBoss
             if (name.IndexOf("_LOD", StringComparison.OrdinalIgnoreCase) >= 0) return true;
             if (name.IndexOf("Mesh", StringComparison.OrdinalIgnoreCase) >= 0) return true;
 
-            string[] tokens =
+            for (int i = 0; i < s_ExcludeTokens.Length; i++)
             {
-                "Crane", "Tomestone", "StandingStone", "Crapfish", "PileStone", "Pilecoal", "Billboard", "Sign", "Poster", "NetBasket", "NetBox",
-                "GasStation", "FarmCage", "FarmPontoon", "FishTub", "FlyFish", "FarmFilterSystem"
-            };
-
-            for (int i = 0; i < tokens.Length; i++)
-            {
-                if (name.IndexOf(tokens[i], StringComparison.OrdinalIgnoreCase) >= 0)
+                if (name.IndexOf(s_ExcludeTokens[i], StringComparison.OrdinalIgnoreCase) >= 0)
                     return true;
             }
 
@@ -725,23 +712,6 @@ namespace DispatchBoss
         {
             string root = EnvPath.kUserDataPath;
             return Path.Combine(root, "ModsData", Mod.ModId, "ScanReport-Prefabs.txt");
-        }
-
-        private string GetPrefabNameSafe(Entity prefabEntity)
-        {
-            try
-            {
-                if (m_PrefabSystem != null &&
-                    m_PrefabSystem.TryGetPrefab(prefabEntity, out PrefabBase pb))
-                {
-                    return pb.name ?? "(unnamed)";
-                }
-            }
-            catch
-            {
-            }
-
-            return $"PrefabEntity={prefabEntity.Index}:{prefabEntity.Version}";
         }
     }
 }

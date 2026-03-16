@@ -23,19 +23,22 @@ namespace DispatchBoss
         // 262144 sim frames/day. UpdatesPerDay must be power-of-2 to keep interval power-of-2.
         public static readonly int UpdatesPerDay = 64; // interval = 4096
 
+        private const int kBucketCount = 5;
+
         private PrefabSystem m_PrefabSystem = null!;
         private SimulationSystem m_Sim = null!;
 
         private readonly Dictionary<Entity, int> m_VanillaCapByPrefab = new Dictionary<Entity, int>();
+        private readonly BucketStats[] m_Stats = new BucketStats[kBucketCount];
 
         public override int GetUpdateInterval(SystemUpdatePhase phase)
         {
             if (phase == SystemUpdatePhase.GameSimulation)
             {
-                return 262144 / UpdatesPerDay;      // must be power of 2.
+                return 262144 / UpdatesPerDay;
             }
 
-            return 1;          // power-of-2 safe.
+            return 1;
         }
 
         protected override void OnCreate()
@@ -44,7 +47,7 @@ namespace DispatchBoss
 
             m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
             m_Sim = World.GetOrCreateSystemManaged<SimulationSystem>();
-            // Only run when delivery vehicles exist.
+
             EntityQuery q = SystemAPI.QueryBuilder()
                 .WithAll<Game.Vehicles.DeliveryTruck, PrefabRef>()
                 .Build();
@@ -64,6 +67,11 @@ namespace DispatchBoss
                 return;
 
             m_VanillaCapByPrefab.Clear();
+
+            for (int i = 0; i < m_Stats.Length; i++)
+            {
+                m_Stats[i] = default;
+            }
         }
 
         protected override void OnUpdate()
@@ -71,18 +79,14 @@ namespace DispatchBoss
             if (Mod.Settings == null || !Mod.Settings.EnableDebugLogging)
                 return;
 
+            for (int i = 0; i < m_Stats.Length; i++)
+            {
+                m_Stats[i] = default;
+            }
+
             ComponentLookup<DeliveryTruckData> dtdLookup = SystemAPI.GetComponentLookup<DeliveryTruckData>(isReadOnly: true);
             ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
             ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
-
-            var stats = new Dictionary<VehicleHelpers.DeliveryBucket, BucketStats>
-            {
-                { VehicleHelpers.DeliveryBucket.Semi, new BucketStats() },
-                { VehicleHelpers.DeliveryBucket.Van, new BucketStats() },
-                { VehicleHelpers.DeliveryBucket.RawMaterials, new BucketStats() },
-                { VehicleHelpers.DeliveryBucket.Motorbike, new BucketStats() },
-                { VehicleHelpers.DeliveryBucket.Other, new BucketStats() },
-            };
 
             int scanned = 0;
 
@@ -94,7 +98,6 @@ namespace DispatchBoss
                 Game.Vehicles.DeliveryTruck truck = truckRef.ValueRO;
                 int amount = truck.m_Amount;
 
-                // Avoid tractor inflation: “Seen” counts all entities, “Carrying” counts only those with cargo now.
                 Entity prefab = prRef.ValueRO.m_Prefab;
 
                 int vanillaCap = GetVanillaCap(prefab);
@@ -127,7 +130,11 @@ namespace DispatchBoss
                     hasTrailer,
                     trailerType);
 
-                BucketStats s = stats[bucket];
+                int bi = (int)bucket;
+                if (bi < 0 || bi >= m_Stats.Length)
+                    bi = (int)VehicleHelpers.DeliveryBucket.Other;
+
+                ref BucketStats s = ref m_Stats[bi];
                 s.Seen++;
 
                 if (amount > 0)
@@ -143,17 +150,15 @@ namespace DispatchBoss
                         s.MaxPrefabName = prefabName;
                     }
                 }
-
-                stats[bucket] = s;
             }
 
             Mod.s_Log.Info($"{Mod.ModTag} DeliveryCargoProbe: scanned={scanned} frame={m_Sim.frameIndex}");
 
-            LogBucket("Semi", stats[VehicleHelpers.DeliveryBucket.Semi]);
-            LogBucket("Van", stats[VehicleHelpers.DeliveryBucket.Van]);
-            LogBucket("Raw", stats[VehicleHelpers.DeliveryBucket.RawMaterials]);
-            LogBucket("Motorbike", stats[VehicleHelpers.DeliveryBucket.Motorbike]);
-            LogBucket("Other", stats[VehicleHelpers.DeliveryBucket.Other]);
+            LogBucket("Semi", m_Stats[(int)VehicleHelpers.DeliveryBucket.Semi]);
+            LogBucket("Van", m_Stats[(int)VehicleHelpers.DeliveryBucket.Van]);
+            LogBucket("Raw", m_Stats[(int)VehicleHelpers.DeliveryBucket.RawMaterials]);
+            LogBucket("Motorbike", m_Stats[(int)VehicleHelpers.DeliveryBucket.Motorbike]);
+            LogBucket("Other", m_Stats[(int)VehicleHelpers.DeliveryBucket.Other]);
         }
 
         private int GetVanillaCap(Entity prefab)

@@ -92,9 +92,9 @@ namespace DispatchBoss
 
             RefillSamplesIfNeeded(group, target);
 
-            var condLookup = SystemAPI.GetComponentLookup<LaneCondition>(isReadOnly: true);
-            var prLookup = SystemAPI.GetComponentLookup<PrefabRef>(isReadOnly: true);
-            var detLookup = SystemAPI.GetComponentLookup<LaneDeteriorationData>(isReadOnly: true);
+            ComponentLookup<LaneCondition> condLookup = SystemAPI.GetComponentLookup<LaneCondition>(isReadOnly: true);
+            ComponentLookup<PrefabRef> prLookup = SystemAPI.GetComponentLookup<PrefabRef>(isReadOnly: true);
+            ComponentLookup<LaneDeteriorationData> detLookup = SystemAPI.GetComponentLookup<LaneDeteriorationData>(isReadOnly: true);
 
             int baseIndex = group * kSamplesPerGroup;
 

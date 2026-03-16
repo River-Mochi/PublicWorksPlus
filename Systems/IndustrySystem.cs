@@ -50,7 +50,6 @@ namespace DispatchBoss
             m_DeliveryTruckBaseCargoCapacity = new Dictionary<Entity, int>();
             m_ExtractorCompanyBaseMaxTransports = new Dictionary<Entity, int>();
 
-            // Only run when prefab entities for these components exist.
             EntityQuery anyRelevantPrefabQuery = SystemAPI.QueryBuilder()
                 .WithAll<PrefabData>()
                 .WithAny<TransportCompanyData, DeliveryTruckData>()
@@ -100,12 +99,10 @@ namespace DispatchBoss
             Setting settings = Mod.Settings;
             bool verbose = settings.EnableDebugLogging;
 
-            // Semi detection: read tractor/trailer data via lookups.
             ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
             ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
 
-            // Structural changes (Updated tag) should go through an ECB.
-            var ecb = new EntityCommandBuffer(Allocator.Temp);
+            EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.Temp);
             bool anyPrefabTaggedUpdated = false;
 
             // -----------------------------------------------------------------
@@ -133,20 +130,17 @@ namespace DispatchBoss
 
                     if (newMax != company.m_MaxTransports)
                     {
+                        string prefabName = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefabEntity);
+
                         if (verbose)
                         {
                             Mod.s_Log.Info(
-                                $"{Mod.ModTag} CargoStation max trucks: '{PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefabEntity)}' " +
+                                $"{Mod.ModTag} CargoStation max trucks: '{prefabName}' " +
                                 $"Base={baseMax} x{scalar:0.##} -> {newMax}");
                         }
 
                         company.m_MaxTransports = newMax;
-
-                        if (!SystemAPI.HasComponent<Updated>(prefabEntity))
-                        {
-                            ecb.AddComponent<Updated>(prefabEntity);
-                            anyPrefabTaggedUpdated = true;
-                        }
+                        TagPrefabUpdatedIfMissing(prefabEntity, ref ecb, ref anyPrefabTaggedUpdated);
                     }
                 }
             }
@@ -165,7 +159,7 @@ namespace DispatchBoss
                              .WithAll<PrefabData>()
                              .WithEntityAccess())
                 {
-                    ref DeliveryTruckData data = ref truckRef.ValueRW;                
+                    ref DeliveryTruckData data = ref truckRef.ValueRW;
 
                     int baseCap = GetOrCacheDeliveryTruckBase(prefabEntity, data.m_CargoCapacity);
 
@@ -199,7 +193,6 @@ namespace DispatchBoss
                         bucket == VehicleHelpers.DeliveryBucket.Motorbike ? mbikeScalar :
                         1f;
 
-                    // If we don’t recognize it, we leave it vanilla.
                     if (scalar == 1f)
                         continue;
 
@@ -215,13 +208,7 @@ namespace DispatchBoss
                         }
 
                         data.m_CargoCapacity = newCap;
-
-                        // Many game systems rebuild caches only when prefab entities are tagged Updated.
-                        if (!SystemAPI.HasComponent<Updated>(prefabEntity))
-                        {
-                            ecb.AddComponent<Updated>(prefabEntity);
-                            anyPrefabTaggedUpdated = true;
-                        }
+                        TagPrefabUpdatedIfMissing(prefabEntity, ref ecb, ref anyPrefabTaggedUpdated);
                     }
                 }
             }
@@ -252,7 +239,6 @@ namespace DispatchBoss
 
                     int baseMax = GetOrCacheExtractorCompanyBase(prefabEntity, tc.m_MaxTransports);
 
-                    // Keep 0 as 0 (some prefabs show legit 0/unused).
                     if (baseMax == 0 && tc.m_MaxTransports == 0)
                     {
                         skippedZero++;
@@ -273,11 +259,7 @@ namespace DispatchBoss
                             Mod.s_Log.Info($"{Mod.ModTag} Extractor trucks: '{name}' Base={baseMax} x{scalar:0.##} -> {desired}");
                         }
 
-                        if (!SystemAPI.HasComponent<Updated>(prefabEntity))
-                        {
-                            ecb.AddComponent<Updated>(prefabEntity);
-                            anyPrefabTaggedUpdated = true;
-                        }
+                        TagPrefabUpdatedIfMissing(prefabEntity, ref ecb, ref anyPrefabTaggedUpdated);
                     }
                 }
 
@@ -295,6 +277,15 @@ namespace DispatchBoss
             ecb.Dispose();
 
             Enabled = false;
+        }
+
+        private static void TagPrefabUpdatedIfMissing(Entity prefabEntity, ref EntityCommandBuffer ecb, ref bool anyPrefabTaggedUpdated)
+        {
+            if (!SystemAPI.HasComponent<Updated>(prefabEntity))
+            {
+                ecb.AddComponent<Updated>(prefabEntity);
+                anyPrefabTaggedUpdated = true;
+            }
         }
 
         private static bool IsTargetIndustrialCompany(string name)

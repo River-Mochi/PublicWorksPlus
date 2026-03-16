@@ -8,8 +8,6 @@ namespace DispatchBoss
 
     public sealed partial class Setting
     {
-        private const float kVanillaPercent = 100f;
-
         // ------------------------
         // Parks-Roads (percent)
         // ------------------------

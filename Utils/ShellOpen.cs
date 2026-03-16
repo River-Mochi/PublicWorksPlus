@@ -25,7 +25,6 @@ namespace DispatchBoss
                     return;
                 }
 
-                // Normalize to an absolute path early so Uri and OS launch both behave consistently.
                 string fullPath = Path.GetFullPath(folderPath);
 
                 if (!Directory.Exists(fullPath))
@@ -34,13 +33,11 @@ namespace DispatchBoss
                     return;
                 }
 
-                // Attempt 1: Unity file:// open (best chance to work across platforms).
                 if (TryOpenWithUnityFileUrl(fullPath))
                 {
                     return;
                 }
 
-                // Attempt 2: OS fallback (most reliable on Windows).
                 TryOpenWithOsShell(fullPath);
             }
             catch (Exception ex)
@@ -56,7 +53,6 @@ namespace DispatchBoss
 
         internal static string GetModsDataFolder()
         {
-            // Prefer the mod's declared id over nameof(namespace) so folder stays stable.
             return Path.Combine(EnvPath.kUserDataPath, "ModsData", Mod.ModId);
         }
 
@@ -64,17 +60,15 @@ namespace DispatchBoss
         {
             try
             {
-                // Ensure trailing slash for directories to form a clean file URI.
                 string path = fullPath;
+
                 if (!path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal) &&
                     !path.EndsWith(Path.AltDirectorySeparatorChar.ToString(), StringComparison.Ordinal))
                 {
                     path += Path.DirectorySeparatorChar;
                 }
 
-                // new Uri(absolutePath) produces a file:/// URI for local file paths.
                 string uri = new Uri(path).AbsoluteUri;
-
                 Application.OpenURL(uri);
                 return true;
             }
@@ -88,12 +82,11 @@ namespace DispatchBoss
         {
             try
             {
-                RuntimePlatform p = Application.platform;
+                RuntimePlatform platform = Application.platform;
 
-                // Windows (most players): UseShellExecute launches Explorer via shell association.
-                if (p == RuntimePlatform.WindowsPlayer || p == RuntimePlatform.WindowsEditor)
+                if (platform == RuntimePlatform.WindowsPlayer || platform == RuntimePlatform.WindowsEditor)
                 {
-                    var psi = new ProcessStartInfo(fullPath)
+                    ProcessStartInfo psi = new ProcessStartInfo(fullPath)
                     {
                         UseShellExecute = true,
                         ErrorDialog = false,
@@ -104,10 +97,9 @@ namespace DispatchBoss
                     return;
                 }
 
-                // macOS: use `open <path>`
-                if (p == RuntimePlatform.OSXPlayer || p == RuntimePlatform.OSXEditor)
+                if (platform == RuntimePlatform.OSXPlayer || platform == RuntimePlatform.OSXEditor)
                 {
-                    var psi = new ProcessStartInfo("open", QuoteArg(fullPath))
+                    ProcessStartInfo psi = new ProcessStartInfo("open", QuoteArg(fullPath))
                     {
                         UseShellExecute = false,
                         CreateNoWindow = true,
@@ -117,10 +109,9 @@ namespace DispatchBoss
                     return;
                 }
 
-                // Linux: use `xdg-open <path>`
-                if (p == RuntimePlatform.LinuxPlayer || p == RuntimePlatform.LinuxEditor)
+                if (platform == RuntimePlatform.LinuxPlayer || platform == RuntimePlatform.LinuxEditor)
                 {
-                    var psi = new ProcessStartInfo("xdg-open", QuoteArg(fullPath))
+                    ProcessStartInfo psi = new ProcessStartInfo("xdg-open", QuoteArg(fullPath))
                     {
                         UseShellExecute = false,
                         CreateNoWindow = true,
@@ -130,8 +121,7 @@ namespace DispatchBoss
                     return;
                 }
 
-                // Unknown platform: try generic shell execute as a last attempt.
-                var psiGeneric = new ProcessStartInfo(fullPath)
+                ProcessStartInfo psiGeneric = new ProcessStartInfo(fullPath)
                 {
                     UseShellExecute = true,
                     ErrorDialog = false,
@@ -152,7 +142,6 @@ namespace DispatchBoss
                 return "\"\"";
             }
 
-            // Basic quoting for paths with spaces.
             if (s.IndexOf(' ') >= 0 || s.IndexOf('\t') >= 0)
             {
                 return "\"" + s.Replace("\"", "\\\"") + "\"";

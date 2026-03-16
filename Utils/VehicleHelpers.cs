@@ -1,5 +1,5 @@
 // File: Utils/VehicleHelpers.cs
-// Purpose: shared helpers for prefab classification (delivery buckets, tractor/trailer info).
+// Purpose: Shared helpers for prefab classification (delivery buckets, tractor/trailer info).
 // Notes:
 // - Not a system (no OnUpdate).
 // - Prefer the ComponentLookup overload when calling from a system (SystemAPI.GetComponentLookup).
@@ -106,9 +106,8 @@ namespace DispatchBoss
             if (isSemi)
                 return DeliveryBucket.Semi;
 
-            // Name heuristics are fallback-only; keep minimal + cheap.
-            bool nameHasMotorbike = name.IndexOf("Motorbike", StringComparison.OrdinalIgnoreCase) >= 0;
-            if (nameHasMotorbike)
+            // Name heuristics are fallback-only; keep minimal.
+            if (name.IndexOf("Motorbike", StringComparison.OrdinalIgnoreCase) >= 0)
                 return DeliveryBucket.Motorbike;
 
             // Vans are usually 4000 capacity in vanilla; name check is fallback.
@@ -118,7 +117,7 @@ namespace DispatchBoss
                 return DeliveryBucket.Van;
             }
 
-            // Filters for Raw Materials Dump trucks and Tankers
+            // Raw Materials dump trucks and tankers.
             const Resource rawMask =
                 Resource.Oil |
                 Resource.Coal |
@@ -130,7 +129,7 @@ namespace DispatchBoss
             if ((transportedResources & rawMask) != 0)
                 return DeliveryBucket.RawMaterials;
 
-            // Additional fallbacks
+            // Additional fallbacks.
             if (vanillaCargoCapacity == 20000 ||
                 name.IndexOf("OilTruck", StringComparison.OrdinalIgnoreCase) >= 0 ||
                 name.IndexOf("CoalTruck", StringComparison.OrdinalIgnoreCase) >= 0 ||
