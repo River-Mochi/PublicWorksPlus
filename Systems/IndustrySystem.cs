@@ -50,6 +50,7 @@ namespace DispatchBoss
             m_DeliveryTruckBaseCargoCapacity = new Dictionary<Entity, int>();
             m_ExtractorCompanyBaseMaxTransports = new Dictionary<Entity, int>();
 
+            // Only run when prefab entities for these components exist.
             EntityQuery anyRelevantPrefabQuery = SystemAPI.QueryBuilder()
                 .WithAll<PrefabData>()
                 .WithAny<TransportCompanyData, DeliveryTruckData>()
@@ -99,9 +100,11 @@ namespace DispatchBoss
             Setting settings = Mod.Settings;
             bool verbose = settings.EnableDebugLogging;
 
+            // Semi detection: read tractor/trailer data via lookups.
             ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
             ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
 
+            // Structural changes (Updated tag) should go through an ECB.
             EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.Temp);
             bool anyPrefabTaggedUpdated = false;
 
@@ -193,6 +196,7 @@ namespace DispatchBoss
                         bucket == VehicleHelpers.DeliveryBucket.Motorbike ? mbikeScalar :
                         1f;
 
+                    // If not recognized, leave vanilla.
                     if (scalar == 1f)
                         continue;
 
@@ -239,6 +243,7 @@ namespace DispatchBoss
 
                     int baseMax = GetOrCacheExtractorCompanyBase(prefabEntity, tc.m_MaxTransports);
 
+                    // Keep 0 as 0 (some prefabs show legit 0/unused).
                     if (baseMax == 0 && tc.m_MaxTransports == 0)
                     {
                         skippedZero++;
@@ -279,9 +284,14 @@ namespace DispatchBoss
             Enabled = false;
         }
 
-        private static void TagPrefabUpdatedIfMissing(Entity prefabEntity, ref EntityCommandBuffer ecb, ref bool anyPrefabTaggedUpdated)
+        // NOTE: Must be instance method. SystemAPI is not allowed in static context.
+        // EntityManager.HasComponent is safe here and avoids SystemAPI source-gen restrictions.
+        private void TagPrefabUpdatedIfMissing(Entity prefabEntity, ref EntityCommandBuffer ecb, ref bool anyPrefabTaggedUpdated)
         {
-            if (!SystemAPI.HasComponent<Updated>(prefabEntity))
+            if (prefabEntity == Entity.Null)
+                return;
+
+            if (!EntityManager.HasComponent<Updated>(prefabEntity))
             {
                 ecb.AddComponent<Updated>(prefabEntity);
                 anyPrefabTaggedUpdated = true;
