@@ -32,6 +32,7 @@ namespace DispatchBoss
         private const int kMaxChars = 1 * 1024 * 1024; // ~1MB
         private const int kMaxKeywordMatches = 600;     // keywords are hints only
 
+        // Keep keywords narrow; broad terms explode output.
         private static readonly string[] s_Keywords = new string[]
         {
             "deliveryvan",
@@ -43,6 +44,7 @@ namespace DispatchBoss
             "aquaculture",
         };
 
+        // Exclude common prop/LOD/name noise to keep keyword results useful.
         private static readonly string[] s_ExcludeTokens = new string[]
         {
             "Crane", "Tomestone", "StandingStone", "Crapfish", "PileStone", "Pilecoal", "Billboard", "Sign", "Poster", "NetBasket", "NetBox",
@@ -62,16 +64,16 @@ namespace DispatchBoss
                 Count = 1;
                 MinInterval = d.m_DefaultVehicleInterval;
                 MaxInterval = d.m_DefaultVehicleInterval;
-                MinStop = d.m_StopDuration;
-                MaxStop = d.m_StopDuration;
+                MinStop     = d.m_StopDuration;
+                MaxStop     = d.m_StopDuration;
             }
 
             public void Add(TransportLineData d)
             {
                 Count++;
 
-                float interval = d.m_DefaultVehicleInterval;
-                float stop = d.m_StopDuration;
+                float interval  = d.m_DefaultVehicleInterval;
+                float stop      = d.m_StopDuration;
 
                 if (interval < MinInterval) MinInterval = interval;
                 if (interval > MaxInterval) MaxInterval = interval;
@@ -87,11 +89,14 @@ namespace DispatchBoss
 
             m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
 
+            // Needed for VehicleCountPolicy section; do not delete.
             m_ConfigQuery = SystemAPI.QueryBuilder()
                 .WithAll<UITransportConfigurationData>()
                 .Build();
 
+            // Ensure this system only exists when prefab world exists.
             RequireForUpdate(SystemAPI.QueryBuilder().WithAll<PrefabData>().Build());
+
             Enabled = false;
         }
 
@@ -116,13 +121,13 @@ namespace DispatchBoss
             Stopwatch sw = Stopwatch.StartNew();
 
             int transitLinePrefabTotal = 0;
-            int deliveryTotal = 0;
-            int mvTotal = 0;
-            int depotTotal = 0;
-            int cargoTotal = 0;
-            int laneTotal = 0;
-            int extractorCompanies = 0;
-            int keywordMatches = 0;
+            int keywordMatches         = 0;
+            int extractorCompanies     = 0;
+            int deliveryTotal          = 0;
+            int depotTotal             = 0;
+            int cargoTotal             = 0;
+            int laneTotal              = 0;
+            int mvTotal                = 0;
 
             try
             {
@@ -149,6 +154,9 @@ namespace DispatchBoss
 
                 string NameOf(Entity e) => PrefabNameUtil.GetNameSafe(m_PrefabSystem, e);
 
+                // -----------------------------
+                // Live lane usage (coverage)
+                // -----------------------------
                 void AppendLiveLaneUsage()
                 {
                     if (truncated)
@@ -222,10 +230,16 @@ namespace DispatchBoss
                     }
                 }
 
+                // -----------------------------
+                // Header
+                // -----------------------------
                 Append($"Prefab Scan Report for: {Mod.ModName} {Mod.ModVersion}");
                 Append($"Timestamp (local): {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 Append("");
 
+                // -----------------------------
+                // Lane wear prefabs
+                // -----------------------------
                 const float kUpdatesPerDay = 16f;
                 const int kMaxLaneDetails = 250;
 
@@ -237,8 +251,10 @@ namespace DispatchBoss
 
                 int laneListed = 0;
 
-                float minTf = float.MaxValue, maxTf = float.MinValue;
-                float minTraf = float.MaxValue, maxTraf = float.MinValue;
+                float minTf = float.MaxValue;
+                float maxTf = float.MinValue;
+                float minTraf = float.MaxValue;
+                float maxTraf = float.MinValue;
 
                 foreach ((RefRO<LaneDeteriorationData> laneRef, Entity e) in SystemAPI
                              .Query<RefRO<LaneDeteriorationData>>()
@@ -272,7 +288,7 @@ namespace DispatchBoss
                         }
 
                         float xTime = (!float.IsNaN(vanTf) && vanTf > 0f) ? (tf / vanTf) : float.NaN;
-                        float xTraf = (!float.IsNaN(vanTraf) && vanTraf > 0f) ? (traf / vanTraf) : float.NaN;
+                        float xTraf2 = (!float.IsNaN(vanTraf) && vanTraf > 0f) ? (traf / vanTraf) : float.NaN;
 
                         float expPerTick = tf / kUpdatesPerDay;
 
@@ -280,7 +296,7 @@ namespace DispatchBoss
                             $"- {NameOf(e)} ({e.Index}:{e.Version}) " +
                             $"Vanilla (Time={Fmt(vanTf)}, Traffic={Fmt(vanTraf)}) " +
                             $"Current (Time={tf:0.###}, Traffic={traf:0.###}) " +
-                            $"xTime={Fmt(xTime)} xTraffic={Fmt(xTraf)} ExpΔ(Time)/Tick={expPerTick:0.###}");
+                            $"xTime={Fmt(xTime)} xTraffic={Fmt(xTraf2)} ExpΔ(Time)/Tick={expPerTick:0.###}");
 
                         laneListed++;
                     }
@@ -300,13 +316,16 @@ namespace DispatchBoss
                 AppendLiveLaneUsage();
                 Append("");
 
+                // -----------------------------
+                // Transit line defaults
+                // -----------------------------
                 Append("== Transit lines (vanilla timing inputs) ==");
                 Append("Vehicle targets are based on route time estimate (segment durations + stop count).");
                 Append("");
 
                 Dictionary<TransportType, TransitDefaultsStats> perType = new Dictionary<TransportType, TransitDefaultsStats>();
 
-                foreach ((RefRO<TransportLineData> lineRef, Entity _) in SystemAPI
+                foreach ((RefRO<TransportLineData> lineRef, Entity entity) in SystemAPI
                              .Query<RefRO<TransportLineData>>()
                              .WithAll<PrefabData>()
                              .WithEntityAccess())
@@ -352,6 +371,9 @@ namespace DispatchBoss
 
                 Append("");
 
+                // -----------------------------
+                // VehicleCountPolicy
+                // -----------------------------
                 Append("-- Transit Line Slider Limits Policy (RouteModifierType.VehicleInterval) --");
                 if (m_ConfigQuery.IsEmptyIgnoreFilter)
                 {
@@ -405,7 +427,15 @@ namespace DispatchBoss
 
                 Append("");
 
-                int semi = 0, van = 0, raw = 0, bike = 0, other = 0;
+                // -----------------------------
+                // Delivery truck prefabs
+                // -----------------------------
+                int semi = 0;
+                int van = 0;
+                int raw = 0;
+                int bike = 0;
+                int other = 0;
+
                 int unclassifiedPrinted = 0;
                 const int kMaxUnclassifiedDetails = 100;
 
@@ -486,6 +516,9 @@ namespace DispatchBoss
                 Append($"Delivery summary: Total={deliveryTotal} Semi={semi} Van={van} Raw={raw} Motorbike={bike} Other={other}");
                 Append("");
 
+                // -----------------------------
+                // Maintenance vehicles
+                // -----------------------------
                 Append("== MaintenanceVehicleData Prefabs ==");
                 foreach ((RefRO<MaintenanceVehicleData> mvRef, Entity e) in SystemAPI
                              .Query<RefRO<MaintenanceVehicleData>>()
@@ -512,6 +545,9 @@ namespace DispatchBoss
                 Append($"MaintenanceVehicle summary: Total={mvTotal}");
                 Append("");
 
+                // -----------------------------
+                // Maintenance depots
+                // -----------------------------
                 Append("== MaintenanceDepotData Prefabs ==");
                 foreach ((RefRO<MaintenanceDepotData> depotRef, Entity e) in SystemAPI
                              .Query<RefRO<MaintenanceDepotData>>()
@@ -535,6 +571,9 @@ namespace DispatchBoss
                 Append($"MaintenanceDepot summary: Total={depotTotal}");
                 Append("");
 
+                // -----------------------------
+                // Cargo stations (company fleet)
+                // -----------------------------
                 Append("== Cargo Transport Stations (CargoTransportStationData + TransportCompanyData) ==");
                 foreach ((RefRO<TransportCompanyData> tcRef, Entity e) in SystemAPI
                              .Query<RefRO<TransportCompanyData>>()
@@ -558,6 +597,9 @@ namespace DispatchBoss
                 Append($"Cargo station summary: Total={cargoTotal}");
                 Append("");
 
+                // -----------------------------
+                // Industrial extractor companies (fleet slider targets)
+                // -----------------------------
                 Append("== Industrial Extractor TransportCompanies (for Extractor trucks slider) ==");
                 Append("Filter: name starts with Industrial_ AND contains Extractor/Coal/Stone/Mine/Quarry. Skips CurMaxTransports=0. Deduped by name.");
 
@@ -592,6 +634,9 @@ namespace DispatchBoss
                 Append($"Industrial extractor summary: Unique={extractorCompanies}");
                 Append("");
 
+                // -----------------------------
+                // Keyword scan
+                // -----------------------------
                 Append("== Keyword Matches (deduped, capped) ==");
                 Append("Hints for discovering relevant prefabs. Keep narrow ('truck' returns too much)");
 
@@ -632,6 +677,9 @@ namespace DispatchBoss
                 Append($"Keyword match summary: UniqueMatches={keywordMatches} Cap={kMaxKeywordMatches}");
                 Append("");
 
+                // -----------------------------
+                // Write report
+                // -----------------------------
                 string reportPath = GetReportPath();
                 string dir = Path.GetDirectoryName(reportPath) ?? string.Empty;
                 if (dir.Length > 0)
@@ -681,10 +729,10 @@ namespace DispatchBoss
                 return false;
 
             if (name.IndexOf("Extractor", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Coal", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Stone", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Mine", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Quarry", StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            if (name.IndexOf("Coal", StringComparison.OrdinalIgnoreCase) >= 0)      return true;
+            if (name.IndexOf("Stone", StringComparison.OrdinalIgnoreCase) >= 0)     return true;
+            if (name.IndexOf("Mine", StringComparison.OrdinalIgnoreCase) >= 0)      return true;
+            if (name.IndexOf("Quarry", StringComparison.OrdinalIgnoreCase) >= 0)    return true;
 
             return false;
         }
@@ -694,10 +742,11 @@ namespace DispatchBoss
             if (string.IsNullOrEmpty(name))
                 return false;
 
-            if (name.StartsWith("Male_", StringComparison.OrdinalIgnoreCase)) return true;
+            // High-noise buckets (models/people/LODs).
+            if (name.StartsWith("Male_", StringComparison.OrdinalIgnoreCase))   return true;
             if (name.StartsWith("Female_", StringComparison.OrdinalIgnoreCase)) return true;
-            if (name.IndexOf("_LOD", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Mesh", StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            if (name.IndexOf("_LOD", StringComparison.OrdinalIgnoreCase) >= 0)  return true;
+            if (name.IndexOf("Mesh", StringComparison.OrdinalIgnoreCase) >= 0)  return true;
 
             for (int i = 0; i < s_ExcludeTokens.Length; i++)
             {

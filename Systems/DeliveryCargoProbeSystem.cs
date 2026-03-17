@@ -20,9 +20,11 @@ namespace DispatchBoss
 
     public sealed partial class DeliveryCargoProbeSystem : GameSystemBase
     {
-        // 262144 sim frames/day. UpdatesPerDay must be power-of-2 to keep interval power-of-2.
-        public static readonly int UpdatesPerDay = 64; // interval = 4096
+        // 262144 sim frames/day. UpdatesPerDay must be power-of-2 so interval stays power-of-2.
+        public static readonly int UpdatesPerDay = 64; // interval = 4096 sim frames
 
+        // VehicleHelpers.DeliveryBucket enum:
+        // Other=0, Semi=1, Van=2, RawMaterials=3, Motorbike=4
         private const int kBucketCount = 5;
 
         private PrefabSystem m_PrefabSystem = null!;
@@ -53,6 +55,8 @@ namespace DispatchBoss
                 .Build();
 
             RequireForUpdate(q);
+
+            ClearStats();
         }
 
         protected override void OnGameLoadingComplete(Purpose purpose, GameMode mode)
@@ -67,11 +71,7 @@ namespace DispatchBoss
                 return;
 
             m_VanillaCapByPrefab.Clear();
-
-            for (int i = 0; i < m_Stats.Length; i++)
-            {
-                m_Stats[i] = default;
-            }
+            ClearStats();
         }
 
         protected override void OnUpdate()
@@ -79,10 +79,7 @@ namespace DispatchBoss
             if (Mod.Settings == null || !Mod.Settings.EnableDebugLogging)
                 return;
 
-            for (int i = 0; i < m_Stats.Length; i++)
-            {
-                m_Stats[i] = default;
-            }
+            ClearStats();
 
             ComponentLookup<DeliveryTruckData> dtdLookup = SystemAPI.GetComponentLookup<DeliveryTruckData>(isReadOnly: true);
             ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
@@ -105,9 +102,9 @@ namespace DispatchBoss
                     continue;
 
                 Resource transported = Resource.NoResource;
-                if (dtdLookup.HasComponent(prefab))
+                if (dtdLookup.TryGetComponent(prefab, out DeliveryTruckData dtd))
                 {
-                    transported = dtdLookup[prefab].m_TransportedResources;
+                    transported = dtd.m_TransportedResources;
                 }
 
                 VehicleHelpers.GetTrailerTypeInfo(
@@ -131,7 +128,7 @@ namespace DispatchBoss
                     trailerType);
 
                 int bi = (int)bucket;
-                if (bi < 0 || bi >= m_Stats.Length)
+                if (bi < 0 || bi >= kBucketCount)
                     bi = (int)VehicleHelpers.DeliveryBucket.Other;
 
                 ref BucketStats s = ref m_Stats[bi];
@@ -159,6 +156,15 @@ namespace DispatchBoss
             LogBucket("Raw", m_Stats[(int)VehicleHelpers.DeliveryBucket.RawMaterials]);
             LogBucket("Motorbike", m_Stats[(int)VehicleHelpers.DeliveryBucket.Motorbike]);
             LogBucket("Other", m_Stats[(int)VehicleHelpers.DeliveryBucket.Other]);
+        }
+
+        private void ClearStats()
+        {
+            for (int i = 0; i < m_Stats.Length; i++)
+            {
+                m_Stats[i] = default;
+                m_Stats[i].MaxPrefabName = string.Empty; // never allow null
+            }
         }
 
         private int GetVanillaCap(Entity prefab)
@@ -190,7 +196,7 @@ namespace DispatchBoss
             Mod.s_Log.Info(
                 $"{Mod.ModTag} DeliveryCargoProbe {name}: seen={s.Seen} carrying={s.Carrying} " +
                 $"overVanilla={s.OverVanilla} ({pct:0.#}% of carrying) " +
-                $"maxAmount={FmtTons(s.MaxAmount)} prefab='{s.MaxPrefabName ?? "n/a"}'");
+                $"maxAmount={FmtTons(s.MaxAmount)} prefab='{s.MaxPrefabName}'");
         }
 
         private static string FmtTons(int amount)
@@ -205,7 +211,7 @@ namespace DispatchBoss
             public int Carrying;
             public int OverVanilla;
             public int MaxAmount;
-            public string? MaxPrefabName;
+            public string MaxPrefabName;
         }
     }
 }

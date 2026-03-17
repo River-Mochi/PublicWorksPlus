@@ -54,10 +54,10 @@ namespace DispatchBoss
         // -----------------------
 
         // Public-Transit sliders (percent).
-        public const float DepotMinPercent = 100f;
-        public const float PassengerMinPercent = 10f;
-        public const float MaxPercent = 1000f;
-        public const float StepPercent = 10f;
+        public const float DepotMinPercent      = 100f;
+        public const float PassengerMinPercent  = 10f;
+        public const float MaxPercent           = 1000f;
+        public const float StepPercent          = 10f;
 
         private const float kVanillaPercent = 100f;
 

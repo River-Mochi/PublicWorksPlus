@@ -6,11 +6,11 @@ namespace DispatchBoss
     using Game;              // IsGame
     using Game.SceneFlow;    // GameManager
     using Game.Settings;     // Settings UI attributes
-    using System;            // Exception
     using Unity.Entities;    // World
 
     public sealed partial class Setting
     {
+        // Vanilla/default scalar is 1.0f: scaling by 1.0 means "no change".
         private const float kVanillaScalar = 1f;
 
         private float m_SemiTruckCargoScalar = kVanillaScalar;
@@ -32,6 +32,7 @@ namespace DispatchBoss
             {
                 float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
                 if (m_SemiTruckCargoScalar == v) return;
+
                 m_SemiTruckCargoScalar = v;
                 OnIndustryChanged();
             }
@@ -46,6 +47,7 @@ namespace DispatchBoss
             {
                 float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
                 if (m_DeliveryVanCargoScalar == v) return;
+
                 m_DeliveryVanCargoScalar = v;
                 OnIndustryChanged();
             }
@@ -60,6 +62,7 @@ namespace DispatchBoss
             {
                 float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
                 if (m_OilTruckCargoScalar == v) return;
+
                 m_OilTruckCargoScalar = v;
                 OnIndustryChanged();
             }
@@ -74,6 +77,7 @@ namespace DispatchBoss
             {
                 float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
                 if (m_MotorbikeDeliveryCargoScalar == v) return;
+
                 m_MotorbikeDeliveryCargoScalar = v;
                 OnIndustryChanged();
             }
@@ -90,6 +94,7 @@ namespace DispatchBoss
             {
                 float v = ScalarMath.ClampScalar(value, CargoStationMinScalar, CargoStationMaxScalar);
                 if (m_ExtractorMaxTrucksScalar == v) return;
+
                 m_ExtractorMaxTrucksScalar = v;
                 OnIndustryChanged();
             }
@@ -104,6 +109,7 @@ namespace DispatchBoss
             {
                 float v = ScalarMath.ClampScalar(value, CargoStationMinScalar, CargoStationMaxScalar);
                 if (m_CargoStationMaxTrucksScalar == v) return;
+
                 m_CargoStationMaxTrucksScalar = v;
                 OnIndustryChanged();
             }
@@ -153,18 +159,7 @@ namespace DispatchBoss
             if (world == null)
                 return;
 
-            try
-            {
-                IndustrySystem sys = world.GetExistingSystemManaged<IndustrySystem>();
-                if (sys != null)
-                {
-                    sys.Enabled = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Mod.s_Log.Warn($"{Mod.ModTag} Apply: failed enabling IndustrySystem: {ex.GetType().Name}: {ex.Message}");
-            }
+            TryEnableOnce<IndustrySystem>(world, "IndustrySystem");
         }
 
         partial void SetDefaults_Industry()

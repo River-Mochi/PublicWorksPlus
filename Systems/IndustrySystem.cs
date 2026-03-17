@@ -7,7 +7,6 @@
 // - Uses SystemAPI queries.
 // - Uses tractor/trailer lookups for better Semi detection.
 // - Scales all delivery-truck prefabs by bucket (Semi / Van / Raw / Motorbike).
-//   Note: includes mail-capable delivery trucks too (some vanilla DeliveryVans allow mail). does not include PostVan.
 // - Tags changed prefab entities with Updated via ECB (structural change safe).
 
 namespace DispatchBoss
@@ -16,7 +15,6 @@ namespace DispatchBoss
     using Game;
     using Game.Common;
     using Game.Companies;
-    using Game.Economy;
     using Game.Prefabs;
     using Game.SceneFlow;
     using System;
@@ -50,7 +48,6 @@ namespace DispatchBoss
             m_DeliveryTruckBaseCargoCapacity = new Dictionary<Entity, int>();
             m_ExtractorCompanyBaseMaxTransports = new Dictionary<Entity, int>();
 
-            // Only run when prefab entities for these components exist.
             EntityQuery anyRelevantPrefabQuery = SystemAPI.QueryBuilder()
                 .WithAll<PrefabData>()
                 .WithAny<TransportCompanyData, DeliveryTruckData>()
@@ -100,11 +97,9 @@ namespace DispatchBoss
             Setting settings = Mod.Settings;
             bool verbose = settings.EnableDebugLogging;
 
-            // Semi detection: read tractor/trailer data via lookups.
             ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
             ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
 
-            // Structural changes (Updated tag) should go through an ECB.
             EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.Temp);
             bool anyPrefabTaggedUpdated = false;
 
@@ -196,7 +191,6 @@ namespace DispatchBoss
                         bucket == VehicleHelpers.DeliveryBucket.Motorbike ? mbikeScalar :
                         1f;
 
-                    // If not recognized, leave vanilla.
                     if (scalar == 1f)
                         continue;
 
@@ -243,7 +237,6 @@ namespace DispatchBoss
 
                     int baseMax = GetOrCacheExtractorCompanyBase(prefabEntity, tc.m_MaxTransports);
 
-                    // Keep 0 as 0 (some prefabs show legit 0/unused).
                     if (baseMax == 0 && tc.m_MaxTransports == 0)
                     {
                         skippedZero++;
@@ -284,14 +277,10 @@ namespace DispatchBoss
             Enabled = false;
         }
 
-        // NOTE: Must be instance method. SystemAPI is not allowed in static context.
-        // EntityManager.HasComponent is safe here and avoids SystemAPI source-gen restrictions.
+        // SystemAPI is valid in non-static SystemBase methods. Static methods are not supported contexts.
         private void TagPrefabUpdatedIfMissing(Entity prefabEntity, ref EntityCommandBuffer ecb, ref bool anyPrefabTaggedUpdated)
         {
-            if (prefabEntity == Entity.Null)
-                return;
-
-            if (!EntityManager.HasComponent<Updated>(prefabEntity))
+            if (!SystemAPI.HasComponent<Updated>(prefabEntity))
             {
                 ecb.AddComponent<Updated>(prefabEntity);
                 anyPrefabTaggedUpdated = true;

@@ -74,24 +74,20 @@
 		<None Include="$(ModTargetsFile)" Link="Properties\Mod.targets" />
 	</ItemGroup>
 
-	<!-- Exclude docs/ from compile, output, and publish packaging -->
-	<ItemGroup>
-		<!-- If a .cs is in docs/, don't compile it -->
-		<Compile Remove="docs\**\*.cs" />
 
-		<!-- Remove docs from any default "None"/"Content" globs (SDK projects + packaging targets) -->
-		<None Remove="docs\**" />
-		<Content Remove="docs\**" />
+  <!-- Keep docs visible in Solution Explorer, but never compile/copy/publish them -->
+        <ItemGroup>
+            <!-- If a .cs is in docs/, don't compile it -->
+            <Compile Remove="docs\**\*.cs" />
 
-		<!-- Belt-and-suspenders: if anything still shows up as None/Content, force it to never copy -->
-		<None Update="docs\**">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
-		</None>
-		<Content Update="docs\**">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
-		</Content>
-	</ItemGroup>
+            <!-- Make docs show up in VS -->
+            <None Include="docs\**\*.*" />
+
+            <!-- Ensure docs never copy to output/publish -->
+            <None Update="docs\**\*.*">
+                <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+                <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+            </None>
+        </ItemGroup>
 
 </Project>
