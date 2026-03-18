@@ -122,7 +122,7 @@ namespace DispatchBoss
             // DEPOTS — prefab-only
             foreach ((RefRW<TransportDepotData> depotRef, Entity entity) in SystemAPI
                          .Query<RefRW<TransportDepotData>>()
-                         .WithAll<PrefabData>()
+                         .WithAll<PrefabData>()  
                          .WithEntityAccess())
             {
                 ref TransportDepotData depotData = ref depotRef.ValueRW;

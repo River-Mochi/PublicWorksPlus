@@ -307,8 +307,7 @@ namespace DispatchBoss
             if (m_CargoStationBaseMaxTransports.TryGetValue(prefabEntity, out int baseMax))
                 return baseMax;
 
-            int vanilla;
-            if (TryGetCargoStationVanillaMax(prefabEntity, out vanilla) && vanilla > 0)
+            if (TryGetCargoStationVanillaMax(prefabEntity, out int vanilla) && vanilla > 0)
                 baseMax = vanilla;
             else
                 baseMax = currentValue;
@@ -333,8 +332,7 @@ namespace DispatchBoss
             if (m_DeliveryTruckBaseCargoCapacity.TryGetValue(prefabEntity, out int baseCap))
                 return baseCap;
 
-            int vanilla;
-            if (TryGetDeliveryTruckVanillaCargo(prefabEntity, out vanilla) && vanilla >= 0)
+            if (TryGetDeliveryTruckVanillaCargo(prefabEntity, out int vanilla) && vanilla >= 0)
                 baseCap = vanilla;
             else
                 baseCap = currentValue;

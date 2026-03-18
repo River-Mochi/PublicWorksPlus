@@ -124,8 +124,7 @@ namespace DispatchBoss
 
                 string prefabName = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefabEntity);
 
-                bool isPark;
-                if (!TryClassifyDepot(data.m_MaintenanceType, prefabName, out isPark))
+                if (!TryClassifyDepot(data.m_MaintenanceType, prefabName, out bool isPark))
                 {
                     continue;
                 }
@@ -166,8 +165,7 @@ namespace DispatchBoss
 
                 string prefabName = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefabEntity);
 
-                bool isPark;
-                if (!TryClassifyVehicle(data.m_MaintenanceType, prefabName, out isPark))
+                if (!TryClassifyVehicle(data.m_MaintenanceType, prefabName, out bool isPark))
                 {
                     continue;
                 }
@@ -290,8 +288,7 @@ namespace DispatchBoss
                 return baseVehicles;
             }
 
-            int vanilla;
-            if (TryGetMaintenanceDepotVanilla(prefabEntity, out vanilla) && vanilla >= 0)
+            if (TryGetMaintenanceDepotVanilla(prefabEntity, out int vanilla) && vanilla >= 0)
                 baseVehicles = vanilla;
             else
                 baseVehicles = currentValue;

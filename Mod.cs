@@ -40,7 +40,7 @@ namespace DispatchBoss
             }
 
             // Settings first so locale labels can resolve.
-            Setting setting = new Setting(this);
+            Setting setting = new(this);
             Settings = setting;
 
             // Register ALL languages (keep these lines!)

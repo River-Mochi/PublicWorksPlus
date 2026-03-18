@@ -64,9 +64,13 @@ namespace DispatchBoss
             if (m_ConfigQuery.IsEmptyIgnoreFilter)
                 return;
 
-            Setting settings = Mod.Settings;
-            if (settings == null)
+
+            Setting settings = Mod.Settings!;
+            if (Mod.Settings == null)   // Bail out, keep runtime safe.
+            {
                 return;
+            }
+
 
             bool verbose = settings.EnableDebugLogging;
             bool enable = settings.EnableLineVehicleCountTuner;
@@ -213,12 +217,10 @@ namespace DispatchBoss
             float inputMin = inputForFewer;
             float inputMax = inputForMore;
 
-            // Ensure min <= max (readable swap; ignore IDE0180 if preferred).
+            // Ensure min <= max
             if (inputMin > inputMax)
             {
-                float t = inputMin;
-                inputMin = inputMax;
-                inputMax = t;
+                (inputMax, inputMin) = (inputMin, inputMax);    // Swap values.
             }
 
             // InverseRelative has a divide by (1 + input). Input near -1 explodes.

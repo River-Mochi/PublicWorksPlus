@@ -99,7 +99,7 @@ namespace DispatchBoss
                     "Applies to the base building." },
 
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Reset all depots" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Reset depots defaults" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
                     "Set all depot sliders back to **100%** (game default / vanilla)." },
 
@@ -170,7 +170,7 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "Semi trucks" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
-                    "**Semi trucks** capacitiy.\n" +
+                    "**Semi trucks** capacity.\n" +
                     "Includes:\n" +
                     "* Specialized industry semi (farms, fish, forestry, etc.).\n" +
                     "* Semi trucks carrying mail to/from Cargo stations (not the same as local mail delivery).\n" +
@@ -195,7 +195,7 @@ namespace DispatchBoss
                     "**1× = 0.1t** (vanilla)\n" +
                     "**10×** = 10× more." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Reset delivery" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Reset delivery defaults" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
                     "Set delivery multipliers back to **1×** (game default / vanilla)." },
 
