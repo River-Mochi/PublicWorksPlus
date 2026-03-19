@@ -4,7 +4,6 @@
 // - Run-once system: enabled on city load or when settings Apply() enables it.
 // - Caches original m_TimeFactor + m_TrafficFactor per prefab entity so changes do not stack.
 // - Affects how quickly lanes accumulate deterioration from BOTH time and traffic.
-// - Uses SystemAPI query patterns (Entities 1.3 style).
 
 namespace DispatchBoss
 {
@@ -103,7 +102,7 @@ namespace DispatchBoss
                 float desiredTime = baseF.Time * scalar;
                 float desiredTraffic = baseF.Traffic * scalar;
 
-                // Keep tiny positives so “0” doesn’t effectively freeze wear forever.
+                // Keep tiny positives so “0” doesn't effectively freeze wear forever.
                 if (desiredTime < 0.0001f) desiredTime = 0.0001f;
                 if (desiredTraffic < 0.0001f) desiredTraffic = 0.0001f;
 

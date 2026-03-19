@@ -48,15 +48,16 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "Expand transit line min/max" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
-                    "Increases the range of in-game Transit Line slider.\n" +
-                    "**As low as (1)** on most routes.\n" +
-                    "**Maximum limit varies**; but all are 3x or more higher than vanilla\n" +
-                    "Game uses route time (driving time + stop count), which creates variable maximums (this mod follows game logic so does not set a static max limit like 50).\n" +
-                    "Works for: bus, tram, train, subway, ship, ferry, airplane.\n\n" +
+                    "Increases the **range** of in-game Transit Line Slider per each route.\n" +
+                    "**As low as (1)** on all routes tested.\n" +
+                    "**Maximum limit varies**; but all are 3x or more higher than vanilla, e.g., 30-60\n" +
+                    "Tech note: game uses route time (driving time + stop count); this creates a variable max (this mod follows game logic so does not set a static max limit like 200).\n" +
+                    "Works for all transit: bus, ferry, tram, train, subway, ship, airplane.\n\n" +
                     "**---------------**\n" +
-                    "<Avoid Conflicts>: remove mods that edit the same Transit Line policy.\n" +
                     "Tip: if you want to increase maximum end of the slider a little more, add some stops to the route.\n" +
-                    "Game auto-increases the max based on added stops + factors; adding stops is an easy player tweak."
+                    "Game auto-increases the max based on added stops + factors; adding stops is an easy player tweak.\n" +
+                    "<Avoid Conflicts>: remove mods that edit the same Transit Line policy.\n" +
+                    "Disable if you don't need the feature or you need it off to use a different mod for the same thing."
                 },
 
                 // Depot Capacity sliders
@@ -67,13 +68,13 @@ namespace DispatchBoss
                     "Change how many buses each **Bus Depot** can maintain/spawn.\n" +
                     "**100%** = vanilla (game default).\n" +
                     "**1000%** = 10× more.\n" +
-                    "Applies to base buildings." },
+                    "Applies to base building." },
 
                  { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Ferry depot" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**Ferry Depot** max vehicles per building.\n" +
                     "**100%** = vanilla (game default).\n" +
-                    "Applies to base."
+                    "Applies to base building."
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayDepotScalar)), "Subway depot" },
@@ -185,11 +186,11 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "Raw material trucks" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**Raw materials trucks** (oil, coal, ore, stone)\n" +
+                    "**Raw material trucks** (oil, coal, ore, stone)\n" +
                     "**1× = 20t** (vanilla)\n" +
                     "**10×** = 10× more." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Delivery Motorbike" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Delivery motorbike" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
                     "**Motorbike delivery** typically takes pharmacy to a hospital/clinic.\n" +
                     "**1× = 0.1t** (vanilla)\n" +
@@ -209,7 +210,7 @@ namespace DispatchBoss
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "Extractor fleet" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
                     "Multiplier for industrial **extractors max trucks**\n" +
-                    "(farms, forestry, fishing, ore, oil, coal, stone).\n" +
+                    "(farms, fishing, forestry, ore, oil, coal, stone).\n" +
                     "**1×** = vanilla, **5×** = 5× more." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "Reset cargo + extractors fleet" },
@@ -263,13 +264,14 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Road wear" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<Alpha feature>\n" +
+                    "<NEW Alpha feature>\n" +
                     "Controls how fast roads deteriorate from **time and traffic** factors.\n" +
                     "**10%** = 10× slower wear (fewer repairs needed)\n" +
                     "**100%** = vanilla\n" +
-                    "**500%** = 5× faster wear (more repairs needed)\n" +
-                    " if m_Wear <= 2.5, no slowdown.\n" +
-                    "If m_Wear >= 17.5, max penalty 50% slower."
+                    "**500%** = 5× faster damage (more repairs/trucks needed)\n" +
+                    "If m_Wear <= 2.5 factor, no slowdown.\n" +
+                    "If m_Wear >= 17.5, max penalty, vehicles are 50% slower on roads.\n" +
+                    "See Roads Infoview: shows red over badly damaged roads that slow vehicles down."
 
                 },
 
@@ -299,9 +301,10 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RunPrefabScanButton)), "Scan Report (prefabs)" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RunPrefabScanButton)),
-                    "One-time report of relevant prefabs + values.\n" +
-                    "Report file: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
-                    "Avoid clicking repeatedly; wait for status to show Done." },
+                    "Creates a <one-time> report for debugging.\n" +
+                    "Not needed for normal gameplay.\n" +
+                    "File location: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
+                    "Tip: click <once>, if status shows Done > then use <Open report folder>." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab scan status" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
@@ -310,12 +313,9 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Verbose debug logs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "Sends many extra details to log.\n" +
-                    "Useful for troubleshooting.\n" +
+                    "Sends extra details to <DispatchBoss.log> for troubleshooting.\n" +
                     "**Disable** for normal gameplay.\n" +
-                    "<If you do not know what this is,>\n" +
-                    "**leave it OFF**.\n" +
-                    "<Log spam affects performance.>" },
+                    "<This only increases logging.>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "Open log folder" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
@@ -332,7 +332,7 @@ namespace DispatchBoss
                 { "DB_SCAN_QUEUED_FMT", "Queued ({0})" },
                 { "DB_SCAN_RUNNING_FMT", "Running ({0})" },
                 { "DB_SCAN_DONE_FMT", "Done ({0} | {1})" },
-                { "DB_SCAN_FAILED", "No data " },
+                { "DB_SCAN_FAILED", "Failed" },
                 { "DB_SCAN_FAIL_NO_CITY", "Load city first" },
                 { "DB_SCAN_UNKNOWN_TIME", "unknown time" },
 

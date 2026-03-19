@@ -136,8 +136,7 @@ namespace DispatchBoss
 
                 float scalar = GetDepotScalar(settings, depotData.m_TransportType);
 
-                int baseCapacity;
-                if (!TryGetDepotBaseCapacity(entity, out baseCapacity))
+                if (!TryGetDepotBaseCapacity(entity, out int baseCapacity))
                 {
                     baseCapacity = depotData.m_VehicleCapacity;
                 }

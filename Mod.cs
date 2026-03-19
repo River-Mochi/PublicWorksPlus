@@ -80,12 +80,12 @@ namespace DispatchBoss
             // Prefab scan: must work even while Options UI is open
             updateSystem.UpdateAt<PrefabScanSystem>(SystemUpdatePhase.PrefabUpdate);
 
+#if DEBUG
             // Debug probe: logs LaneCondition.m_Wear deltas (runtime)
             updateSystem.UpdateAt<LaneWearProbeSystem>(SystemUpdatePhase.GameSimulation);
-
             // Proof logger: checks live delivery vehicles carrying above vanilla caps.
             updateSystem.UpdateAt<DeliveryCargoProbeSystem>(SystemUpdatePhase.GameSimulation);
-
+#endif
             s_Log.Info($"{nameof(DispatchBoss)}.{nameof(OnLoad)} Completed.");
         }
 
@@ -149,3 +149,4 @@ namespace DispatchBoss
         }
     }
 }
+
