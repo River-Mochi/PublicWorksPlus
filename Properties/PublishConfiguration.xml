@@ -24,16 +24,16 @@
 
 
         ### Notes 🚍🚋🚆✈️🚢
+        - Remove "Adjust Transit Capacity" mod; it's already included in this mod.
         - **Adjust Sliders** at any time, no restart needed; Supports switching cities.
-        - Transit lines: still follows the game’s **route cycle time** (travel time + stops) formula; math is tweaked so you can set just 1 bus per line or ~30-60buses.
+        - Transit lines: follows the game’s **route cycle time** (travel time + stops) formula; math is tweaked so you can have just 1 bus per line or ~30-60buses.
         DB is made differently than older policy adjusters; no Harmony patch is used and max is not static so no it will not be 250 buses on one line. You will still get tons of buses. Based on testing, even 30 buses backed up traffic bumper to bumper.
         - Depot capacity = maximum number of vehicles a single depot can maintain/spawn (does not scale extension buildings).
         - **Avoid** other depot/passenger capacity mods to avoid conflicts (they override each other).
         - No Harmony or Reflection; more compatible - less likely to break with game updates.
         - Safe to remove any time (use Reset buttons to return to vanilla game default values).
-        - Remove "Adjust Transit Capacity"; it's included in this mod.
         - ✅ Transit Line toggle: it's your choice if you want to use this built-in one. Pick one, don't use other mods that also adjust the in-game slider (e.g. Transport Policy Adjuster).
- If you forget, it's not going to explode, it will be inconsistent like two people changing the radio station.
+        If both are enabled, it's not going to explode, it may be inconsistent like two people changing the radio station.
 
         ### Support and feedback
         - If the mod helps you, give it a Like, it's free + easy :)
@@ -54,6 +54,10 @@
 
         - English, Français, Deutsch, Español, Italiano, Polski Polish, Português Brazilian
         - 한국어, 日本語, 简体中文 (Simplified Chinese), 繁體中文 Traditional Chinese
+
+        ### Tip:
+       If you want to increase maximum end of the transit route slider a little more, add some stops to the route.
+       Game also auto-increases the max based on added stops + factors; adding stops is an easy player tweak.
 
         tags: city dispatch, transit line increase, control municipal, public transit system, change size, increase people passengers, depot size demand, decrease passengers,
         delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extractor, fish

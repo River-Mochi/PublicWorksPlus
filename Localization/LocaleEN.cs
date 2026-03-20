@@ -315,7 +315,7 @@ namespace DispatchBoss
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
                     "Sends extra details to <DispatchBoss.log> for troubleshooting.\n" +
                     "**Disable** for normal gameplay.\n" +
-                    "<This only increases logging.>" },
+                    "<This only increases logging and does not change gameplay values.>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "Open log folder" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),

@@ -44,101 +44,124 @@ namespace DispatchBoss
                 // Public-Transit tab
                 // --------------------
 
-                { m_Setting.GetOptionGroupLocaleID(Setting.LineVehiclesGroup), "노선 (게임 내 차량 슬라이더 제한)" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.LineVehiclesGroup), "교통 노선 (게임 내 슬라이더 범위)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "노선 차량 슬라이더 제한 확장" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "교통 노선 최소/최대 확장" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
-                    "대부분 노선에서 슬라이더 최소값을 **1대**까지 허용합니다.\n" +
-                    "**최대값도 증가할 수 있음** (게임의 노선 시간 로직 유지).\n" +
-                    "게임은 노선 시간(주행 + 정류장 수)을 사용하므로 최대값은 노선마다 달라요.\n" +
-                    "<충돌 방지: 같은 노선 정책을 건드리는 모드는 제거하세요>.\n" +
-                    "다른 정책 모드를 쓸 거면 이 체크는 OFF.\n" +
-                    "대상: 버스, 트램, 기차, 지하철, 선박, 페리, 비행기.\n" +
-                    "팁: 기본 최대값보다 더 원하면 정류장을 몇 개 추가해 보세요." +
-                    " 게임이 최대 슬라이더를 올려줄 때가 많아요."
+                    "각 노선별 게임 내 교통 노선 슬라이더의 **범위**를 늘립니다.\n" +
+                    "테스트된 모든 노선에서 **최저 (1)** 까지 내려갑니다.\n" +
+                    "**최대 한도는 가변적**이지만, 모두 바닐라보다 3x 이상 높습니다. 예: 30-60\n" +
+                    "기술 참고: 게임은 노선 시간(주행 시간 + 정류장 수)을 사용하므로 최대값이 가변적입니다(이 모드는 게임 로직을 따르므로 200 같은 고정 최대값은 설정하지 않습니다).\n" +
+                    "모든 교통수단에 적용됩니다: 버스, 페리, 트램, 기차, 지하철, 선박, 비행기.\n\n" +
+                    "**---------------**\n" +
+                    "팁: 슬라이더의 최대 끝값을 조금 더 올리고 싶다면 노선에 정류장을 몇 개 추가하세요.\n" +
+                    "게임은 추가된 정류장 + 여러 요소를 기준으로 최대값을 자동 증가시킵니다. 정류장 추가는 간단한 플레이어 조정입니다.\n" +
+                    "<충돌 방지>: 같은 교통 노선 정책을 수정하는 모드는 제거하세요.\n" +
+                    "이 기능이 필요 없거나 같은 기능의 다른 모드를 쓰기 위해 꺼야 한다면 비활성화하세요."
                 },
 
                 // Depot Capacity sliders
-                { m_Setting.GetOptionGroupLocaleID(Setting.DepotGroup), "차고지 용량 (차고지당 최대 차량)" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.DepotGroup), "차고 용량 (차고당 최대 차량 수)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusDepotScalar)), "버스 차고지" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusDepotScalar)), "버스 차고" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.BusDepotScalar)),
-                    "**버스 차고지**가 유지/스폰 가능한 버스 수를 변경합니다.\n" +
-                    "**100%** = 기본(바닐라).\n" +
-                    "**1000%** = 10×.\n" +
-                    "건물 기본 용량에 적용됩니다." },
+                    "각 **버스 차고**가 유지/출고할 수 있는 버스 수를 변경합니다.\n" +
+                    "**100%** = 바닐라 (게임 기본값).\n" +
+                    "**1000%** = 10배.\n" +
+                    "기본 건물에 적용됩니다." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TaxiDepotScalar)), "택시 차고지" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TaxiDepotScalar)),
-                    "**택시 차고지**가 유지 가능한 택시 수.\n" +
-                    "기본 건물에만 적용됩니다." },
+                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "페리 차고" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
+                    "**페리 차고** 건물당 최대 차량 수입니다.\n" +
+                    "**100%** = 바닐라 (게임 기본값).\n" +
+                    "기본 건물에 적용됩니다."
+                },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramDepotScalar)), "트램 차고지" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TramDepotScalar)),
-                    "**트램 차고지**가 유지 가능한 트램 수.\n" +
-                    "건물 기본 용량에 적용됩니다." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TrainDepotScalar)), "기차 차고지" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
-                    "**기차 차고지**가 유지 가능한 기차 수.\n" +
-                    "건물 기본 용량에 적용됩니다." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayDepotScalar)), "지하철 차고지" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayDepotScalar)), "지하철 차고" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SubwayDepotScalar)),
-                    "**지하철 차고지**가 유지 가능한 차량 수.\n" +
-                    "건물 기본 용량에 적용됩니다." },
+                    "각 **지하철 차고**가 유지할 수 있는 지하철 차량 수를 변경합니다.\n" +
+                    "기본 건물에 적용됩니다."
+                },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "모든 차고지 초기화" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TaxiDepotScalar)), "택시 차고" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TaxiDepotScalar)),
+                    "각 **택시 차고**가 유지할 수 있는 택시 수입니다.\n" +
+                    "최대로 설정하면 택시가 과하게 많아져 우스꽝스러울 수 있습니다."
+                },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramDepotScalar)), "트램 차고" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TramDepotScalar)),
+                    "각 **트램 차고**가 유지할 수 있는 트램 수를 변경합니다.\n" +
+                    "기본 건물에 적용됩니다." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TrainDepotScalar)), "기차 차고" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
+                    "각 **기차 차고**가 유지할 수 있는 기차 수를 변경합니다.\n" +
+                    "기본 건물에 적용됩니다." },
+
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "차고 기본값 리셋" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
-                    "모든 차고지 슬라이더를 **100%**(기본/바닐라)로 되돌립니다." },
+                    "모든 차고 슬라이더를 **100%** (게임 기본값 / 바닐라)로 되돌립니다." },
 
                 // Passenger capacity sliders
                 { m_Setting.GetOptionGroupLocaleID(Setting.PassengerGroup), "승객 수용량 (차량당 최대 인원)" },
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusPassengerScalar)), "버스" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.BusPassengerScalar)),
                     "**버스 승객** 수용량을 변경합니다.\n" +
-                    "**10%** = 기본 좌석의 10%.\n" +
-                    "**100%** = 기본(바닐라).\n" +
-                    "**1000%** = 10× 좌석." },
+                    "**10%** = 바닐라 좌석 수의 10%.\n" +
+                    "**100%** = 바닐라 좌석 수 (게임 기본값).\n" +
+                    "**1000%** = 좌석 수 10배." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramPassengerScalar)), "트램" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TramPassengerScalar)),
-                    "**트램 승객** 수용량.\n" +
-                    "**100%** = 기본(바닐라)." },
+                    "**트램 승객** 수용량을 변경합니다.\n" +
+                    "**10%** = 바닐라 좌석 수의 10%.\n" +
+                    "**100%** = 바닐라 좌석 수 (게임 기본값).\n" +
+                    "**1000%** = 좌석 수 10배." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TrainPassengerScalar)), "기차" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainPassengerScalar)),
-                    "**기차 승객** 수용량.\n" +
-                    "기관차 + 객차에 적용됩니다." },
+                    "**기차 승객** 수용량을 변경합니다.\n" +
+                    "엔진과 객차 구간에 적용됩니다.\n" +
+                    "**10%** = 바닐라 좌석 수의 10%.\n" +
+                    "**100%** = 바닐라 좌석 수 (게임 기본값).\n" +
+                    "**1000%** = 좌석 수 10배." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayPassengerScalar)), "지하철" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SubwayPassengerScalar)),
-                    "**지하철 승객** 수용량.\n" +
-                    "**100%** = 기본(바닐라)." },
+                    "**지하철 승객** 수용량을 변경합니다.\n" +
+                    "**10%** = 바닐라 좌석 수의 10%.\n" +
+                    "**100%** = 바닐라 좌석 수 (게임 기본값).\n" +
+                    "**1000%** = 좌석 수 10배." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ShipPassengerScalar)), "선박" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ShipPassengerScalar)),
-                    "**여객선** 수용량(화물선 제외).\n" +
-                    "**100%** = 기본(바닐라)." },
+                    "**여객선** 수용량을 변경합니다 (화물선 제외).\n" +
+                    "**100%** = 바닐라 좌석 수 (게임 기본값)." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryPassengerScalar)), "페리" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryPassengerScalar)),
-                    "**페리 승객** 수용량.\n" +
-                    "**100%** = 기본(바닐라)." },
+                    "**페리 승객** 수용량을 변경합니다.\n" +
+                    "**10%** = 바닐라 좌석 수의 10%.\n" +
+                    "**100%** = 바닐라 좌석 수 (게임 기본값).\n" +
+                    "**1000%** = 좌석 수 10배." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AirplanePassengerScalar)), "비행기" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AirplanePassengerScalar)),
-                    "**비행기 승객** 수용량.\n" +
-                    "**100%** = 기본(바닐라)." },
+                    "**비행기 승객** 수용량을 변경합니다.\n" +
+                    "**10%** = 바닐라 좌석 수의 10%.\n" +
+                    "**100%** = 바닐라 좌석 수 (게임 기본값).\n" +
+                    "**1000%** = 좌석 수 10배." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DoublePassengersButton)), "두 배" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DoublePassengersButton)),
-                    "모든 승객 슬라이더를 **200%**로 설정합니다.\n" +
-                    "버스/트램/기차/지하철/선박/페리/비행기에 적용." },
+                    "모든 승객 슬라이더를 **200%**로 설정합니다." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetPassengerToVanillaButton)), "모든 승객 초기화" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetPassengerToVanillaButton)), "모든 승객 리셋" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetPassengerToVanillaButton)),
-                    "모든 승객 슬라이더를 **100%**(기본/바닐라)로 되돌립니다." },
+                    "모든 승객 슬라이더를 **100%**로 되돌립니다\n" +
+                    "(게임 기본값 / 바닐라)." },
 
                 // ----------------
                 // INDUSTRY tab
@@ -146,167 +169,177 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.DeliveryGroup), "배송 차량 (화물 용량)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "대형 트럭(세미)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "세미트럭" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
-                    "**세미 트럭** 용량.\n" +
-                    "특화 산업 세미(농장/임업/어업 등) 포함.\n" +
-                    "배수: **1×** = 기본(**25t**), **10×** = 10×." },
+                    "**세미트럭** 용량.\n" +
+                    "포함:\n" +
+                    "* 특화 산업 세미트럭 (농장, 어업, 임업 등).\n" +
+                    "* 화물역으로 우편을 운반하는 세미트럭 (지역 우편 배달과는 다름).\n" +
+                    "**1× = 25t** (바닐라)\n" +
+                    "**10×** = 10배." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "배송 밴" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**배송 밴**\n" +
-                    "배수: **1×** = 기본(**4t**), **10×** = 10×." },
+                    "**1× = 4t** (바닐라)\n" +
+                    "**10×** = 10배." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "원자재 트럭(석유, 석탄, 광석, 돌)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "원자재 트럭" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**원자재 트럭**(석유/석탄/광석/돌)\n" +
-                    "배수: **1×** = 기본(**20t**), **10×** = 10×." },
+                    "**원자재 트럭** (석유, 석탄, 광석, 석재)\n" +
+                    "**1× = 20t** (바닐라)\n" +
+                    "**10×** = 10배." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "오토바이" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "배송 오토바이" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
-                    "**오토바이 배송**\n" +
-                    "배수: **1×** = 기본, **10×** = 10×." },
+                    "**오토바이 배송**은 보통 약품을 병원/클리닉으로 운반합니다.\n" +
+                    "**1× = 0.1t** (바닐라)\n" +
+                    "**10×** = 10배." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "배송 초기화" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "배송 기본값 리셋" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "배송 배수를 **1×**(기본/바닐라)로 되돌립니다." },
+                    "배송 배수를 **1×** (게임 기본값 / 바닐라)로 되돌립니다." },
 
-                { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "화물 플릿(항만, 철도, 공항)" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "화물 플릿 (항구, 철도, 공항)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "화물 시설 최대 플릿" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "화물역 최대 플릿" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "**화물 운송 시설**의 최대 활성 운송수단 배수.\n" +
-                    "**1×** = 기본, **5×** = 5×." },
+                    "**화물 운송역**의 최대 활성 운송 차량 수에 대한 배수입니다.\n" +
+                    "**1×** = 바닐라, **5×** = 5배." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "추출 시설 플릿" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "채취 시설 플릿" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "산업 **추출 시설 최대 트럭** 배수\n" +
-                    "(농장/임업/어업/광석/석유 + 석탄/돌 가능 시).\n" +
-                    "**1×** = 기본, **5×** = 5×." },
+                    "산업용 **채취 시설 최대 트럭 수**에 대한 배수입니다\n" +
+                    "(농장, 어업, 임업, 광석, 석유, 석탄, 석재).\n" +
+                    "**1×** = 바닐라, **5×** = 5배." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "화물 + 추출 플릿 초기화" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "화물 + 채취 시설 플릿 리셋" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
-                    "화물 시설 + 추출 시설 배수를 **1×**(기본/바닐라)로 되돌립니다." },
+                    "화물역 + 채취 시설 배수를 **1×** (게임 기본값 / 바닐라)로 되돌립니다." },
 
                 // -------------------
                 // Parks-Roads
                 // -------------------
 
-                { m_Setting.GetOptionGroupLocaleID(Setting.ParkMaintenanceGroup), "공원 유지보수" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.ParkMaintenanceGroup), "공원 유지관리" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)), "작업량(턴) 용량" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)), "작업 교대 용량" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)),
-                    "**작업량 용량**(차량 용량) 배수.\n" +
-                    "돌아가기 전까지 처리 가능한 총 작업.\n" +
-                    "물자 더 많음 = 밖에서 더 오래." },
+                    "**작업 교대 용량** (차량 용량)에 대한 배수입니다.\n" +
+                    "트럭이 건물로 돌아가기 전에 수행할 수 있는 총 작업량입니다.\n" +
+                    "쉽게 말해: 보급이 많을수록 더 오래 현장에 머뭅니다." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)), "작업 속도" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)), "차량 작업률" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)),
-                    "**작업 속도** 배수.\n" +
-                    "속도 = 정지 중 tick당 처리량." },
+                    "**차량 작업률**에 대한 배수입니다.\n" +
+                    "작업률 = 정차 중 시뮬레이션 tick당 수행하는 작업량." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)), "차고지 플릿" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)), "차고 플릿 크기" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)),
-                    "차고지 **최대 차량 수** 배수.\n" },
+                    "차고 건물의 **최대 차량 수**에 대한 배수입니다.\n" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)), "공원 유지보수 초기화" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)), "공원 유지관리 리셋" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)),
-                    "모두 **100%**(기본/바닐라)로 되돌립니다." },
+                    "모든 값을 **100%** (게임 기본값 / 바닐라)로 되돌립니다." },
 
-                { m_Setting.GetOptionGroupLocaleID(Setting.RoadMaintenanceGroup), "도로 유지보수" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.RoadMaintenanceGroup), "도로 유지관리" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)), "차고지 플릿" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)), "차고 플릿 크기" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)),
-                    "차고지당 **최대 차량 수** 배수.\n" +
-                    "높을수록 = 더 많은 차량.\n" +
-                    "<밸런스: 너무 적거나 너무 많으면 교통에 악영향.>" },
+                    "건물당 **차고 최대 차량 수**에 대한 배수입니다.\n" +
+                    "높을수록 = 트럭 증가.\n" +
+                    "<밸런스 참고: 너무 적거나 너무 많으면 교통에 악영향을 줄 수 있습니다.>" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)), "작업량(턴) 용량" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)), "작업 교대 용량" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
-                    "**작업량 용량** 배수.\n" +
-                    "돌아가기 전까지 처리 가능한 총 작업.\n" +
-                    "높을수록 = 복귀 횟수 감소." },
+                    "**작업 교대 용량**에 대한 배수입니다.\n" +
+                    "트럭이 차고로 돌아가기 전에 수행할 수 있는 총 작업량입니다.\n" +
+                    "**높을수록 = 복귀 횟수 감소.**" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "수리 속도(알파)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "수리율" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
-                    "속도 = 정지 중 tick당 처리량.\n" +
-                    "바닐라에선 손상 정도에 따라 여러 번 멈출 수 있어요.\n" +
-                    "<알파: 실제 도시에서 체감 테스트 중.>" },
+                    "작업률 = 정차 중 시뮬레이션 tick당 수행하는 작업량.\n" +
+                    "최고 수리율에서도 트럭은 잠깐 멈췄다 가는 동작을 합니다 (한 번 멈출 때 더 많은 작업을 수행함).\n"
+                },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "도로 마모 속도(알파)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "도로 마모" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<알파 기능: 아직 테스트 중>\n" +
-                    "시간에 따라 도로가 마모되는 속도.\n" +
-                    "**100%** = 기본\n" +
-                    "**10%** = 10× 느림(수리 덜 필요)\n" +
-                    "**400%** = 4× 빠름(수리 더 필요)" },
+                    "<새로운 Alpha 기능>\n" +
+                    "**시간과 교통량** 요인으로 도로가 얼마나 빨리 손상되는지 제어합니다.\n" +
+                    "**10%** = 마모 10× 느림 (수리 필요 감소)\n" +
+                    "**100%** = 바닐라\n" +
+                    "**500%** = 손상 5× 빠름 (더 많은 수리/트럭 필요)\n" +
+                    "m_Wear <= 2.5 이면 감속 없음.\n" +
+                    "m_Wear >= 17.5 이면 최대 페널티, 도로 위 차량 속도가 50% 느려집니다.\n" +
+                    "도로 인포뷰 참조: 심하게 손상된 도로는 빨간색으로 표시되며 차량을 감속시킵니다."
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "도로 유지보수 초기화" },
+                },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "도로 유지관리 리셋" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)),
-                    "모두 **100%**(기본/바닐라)로 되돌립니다." },
+                    "모든 값을 **100%** (게임 기본값 / 바닐라)로 되돌립니다." },
 
-                // --------------------
+                // -------------------
                 // About tab
-                // --------------------
+                // -------------------
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.AboutInfoGroup), "정보" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.AboutLinksGroup), "링크" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "디버그 / 로그" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.AboutLinksGroup), "지원 링크" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "디버그 / 로깅" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModNameDisplay)), "모드" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModNameDisplay)), "모드 표시 이름." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModNameDisplay)), "이 모드의 표시 이름입니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersionDisplay)), "버전" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersionDisplay)), "현재 모드 버전." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersionDisplay)), "현재 모드 버전입니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenParadoxMods)), "Paradox" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenParadoxMods)), "작성자의 Paradox Mods 페이지 열기." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenParadoxMods)), "작성자의 모드가 있는 Paradox Mods 웹사이트를 엽니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenDiscord)), "Discord" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenDiscord)), "커뮤니티 Discord 열기." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenDiscord)), "커뮤니티 Discord를 브라우저에서 엽니다." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RunPrefabScanButton)), "스캔 리포트(prefab)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RunPrefabScanButton)), "스캔 보고서 (prefab)" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RunPrefabScanButton)),
-                    "1회 리포트: 관련 prefab + 레인 마모 값.\n" +
-                    "파일: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
-                    "연타 금지; 상태가 Done 될 때까지 기다리세요." },
+                    "디버깅용 <1회성> 보고서를 생성합니다.\n" +
+                    "일반 플레이에는 필요하지 않습니다.\n" +
+                    "파일 위치: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
+                    "팁: <한 번> 클릭하고, 상태가 Done 이면 > <보고서 폴더 열기>를 사용하세요." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab 스캔 상태" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "스캔 상태 표시: 대기 / 대기열 / 실행 중 / 완료 / 실패.\n" +
-                    "대기열/실행 중은 경과 시간, 완료는 소요 시간+완료 시간을 표시합니다." },
+                    "스캔 상태 표시: Idle / Queued / Running / Done / No Data.\n" +
+                    "Queued/Running 은 경과 시간을 표시하고, Done 은 소요 시간 + 완료 시각을 표시합니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "상세 디버그 로그" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "ON = DispatchBoss.log에 더 많은 정보 출력.\n" +
-                    "문제 해결에 유용.\n" +
-                    "일반 플레이는 **OFF** 추천.\n" +
-                    "<잘 모르겠으면>\n" +
-                    "**OFF 유지**.\n" +
-                    "<로그가 많으면 성능에 영향.>" },
+                    "문제 해결용 추가 세부 정보를 <DispatchBoss.log> 로 보냅니다.\n" +
+                    "일반 플레이에서는 **비활성화**하세요.\n" +
+                    "<이 옵션은 로깅만 늘리며 게임플레이 값은 변경하지 않습니다.>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "로그 폴더 열기" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "로그 폴더를 엽니다.\n" +
-                    "그다음 <DispatchBoss.log>를 텍스트 편집기로 여세요(Notepad++ 추천)." },
+                    "다음: 텍스트 편집기로 <DispatchBoss.log> 를 여세요 (Notepad++ 권장)." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "리포트 폴더 열기" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "보고서 폴더 열기" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenReportButton)),
-                    "리포트 폴더를 엽니다.\n" +
-                    "그다음 <ScanReport-Prefabs.txt>를 여세요." },
+                    "보고서 폴더를 엽니다.\n" +
+                    "다음: 텍스트 편집기로 <ScanReport-Prefabs.txt> 를 여세요 (예: Notepad++)." },
 
-                // ---- Status Text (format string templates) ----
-                { "DB_SCAN_IDLE", "대기" },
+                // ---- Scan Report Status Text (format string templates) ----
+                { "DB_SCAN_IDLE", "대기 중" },
                 { "DB_SCAN_QUEUED_FMT", "대기열 ({0})" },
                 { "DB_SCAN_RUNNING_FMT", "실행 중 ({0})" },
                 { "DB_SCAN_DONE_FMT", "완료 ({0} | {1})" },
                 { "DB_SCAN_FAILED", "실패" },
-                { "DB_SCAN_FAIL_NO_CITY", "도시를 먼저 로드" },
-                { "DB_SCAN_UNKNOWN_TIME", "시간 알 수 없음" },
+                { "DB_SCAN_FAIL_NO_CITY", "먼저 도시 로드" },
+                { "DB_SCAN_UNKNOWN_TIME", "알 수 없는 시간" },
+
             };
         }
 
-        public void Unload()
+        public void Unload( )
         {
         }
     }

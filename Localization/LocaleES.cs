@@ -44,101 +44,124 @@ namespace DispatchBoss
                 // Public-Transit tab
                 // --------------------
 
-                { m_Setting.GetOptionGroupLocaleID(Setting.LineVehiclesGroup), "Líneas (límites del deslizador)" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.LineVehiclesGroup), "Líneas de transporte (rango del deslizador en juego)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "Ampliar límites del deslizador de línea" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "Ampliar min/máx de líneas de transporte" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
-                    "Permite bajar el deslizador hasta **1 vehículo** en muchas rutas.\n" +
-                    "**El máximo también puede subir** (según la lógica de tiempo de ruta).\n" +
-                    "El juego usa el tiempo de ruta (conducción + paradas), así que el max varía por línea.\n" +
-                    "<Evita conflictos: quita mods que toquen la misma política de línea>.\n" +
-                    "Si usas otro mod de políticas, deja esto OFF.\n" +
-                    "Funciona para: bus, tranvía, tren, metro, barco, ferry, avión.\n" +
-                    "Tip: si quieres más vehículos, añade paradas — el juego suele subir el máximo."
+                    "Aumenta el **rango** del deslizador de líneas de transporte en juego para cada ruta.\n" +
+                    "**Tan bajo como (1)** en todas las rutas probadas.\n" +
+                    "El **límite máximo varía**; pero todos son 3x o más altos que vanilla, por ejemplo, 30-60\n" +
+                    "Nota técnica: el juego usa el tiempo de ruta (tiempo de conducción + número de paradas); esto crea un máximo variable (este mod sigue la lógica del juego y por eso no fija un máximo estático como 200).\n" +
+                    "Funciona para todo el transporte: autobús, ferry, tranvía, tren, metro, barco, avión.\n\n" +
+                    "**---------------**\n" +
+                    "Consejo: si se quiere aumentar un poco más el máximo del deslizador, agregar algunas paradas a la ruta.\n" +
+                    "El juego aumenta automáticamente el máximo según las paradas añadidas + factores; agregar paradas es un ajuste sencillo para el jugador.\n" +
+                    "<Evitar conflictos>: quitar mods que editen la misma política de líneas de transporte.\n" +
+                    "Desactivar si la función no es necesaria o si debe desactivarse para usar otro mod para lo mismo."
                 },
 
                 // Depot Capacity sliders
-                { m_Setting.GetOptionGroupLocaleID(Setting.DepotGroup), "Capacidad de depósitos (max vehículos por edificio)" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.DepotGroup), "Capacidad de depósitos (vehículos máx por depósito)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusDepotScalar)), "Depósito de buses" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusDepotScalar)), "Depósito de autobuses" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.BusDepotScalar)),
-                    "Cambia cuántos buses puede mantener/generar cada **Depósito de buses**.\n" +
-                    "**100%** = vanilla.\n" +
-                    "**1000%** = 10×.\n" +
-                    "Aplica a la capacidad base del edificio." },
+                    "Cambia cuántos autobuses puede mantener/generar cada **depósito de autobuses**.\n" +
+                    "**100%** = vanilla (valor predeterminado del juego).\n" +
+                    "**1000%** = 10× más.\n" +
+                    "Se aplica al edificio base." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TaxiDepotScalar)), "Depósito de taxis" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TaxiDepotScalar)),
-                    "Cuántos taxis puede mantener cada **Depósito de taxis**.\n" +
-                    "Solo afecta al edificio base." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramDepotScalar)), "Depósito de tranvías" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TramDepotScalar)),
-                    "Cambia cuántos tranvías puede mantener cada **Depósito de tranvías**.\n" +
-                    "Aplica a la capacidad base del edificio." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TrainDepotScalar)), "Depósito de trenes" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
-                    "Cambia cuántos trenes puede mantener cada **Depósito de trenes**.\n" +
-                    "Aplica a la capacidad base del edificio." },
+                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Depósito de ferris" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
+                    "**Depósito de ferris**: vehículos máximos por edificio.\n" +
+                    "**100%** = vanilla (valor predeterminado del juego).\n" +
+                    "Se aplica al edificio base."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayDepotScalar)), "Depósito de metro" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SubwayDepotScalar)),
-                    "Cambia cuántos vehículos puede mantener cada **Depósito de metro**.\n" +
-                    "Aplica a la capacidad base del edificio." },
+                    "Cambia cuántos vehículos de metro puede mantener cada **depósito de metro**.\n" +
+                    "Se aplica al edificio base."
+                },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Restablecer todos los depósitos" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TaxiDepotScalar)), "Depósito de taxis" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TaxiDepotScalar)),
+                    "Cuántos taxis puede mantener cada **depósito de taxis**.\n" +
+                    "Si se pone al máximo, podría causar una cantidad excesiva y cómica de taxis."
+                },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramDepotScalar)), "Depósito de tranvías" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TramDepotScalar)),
+                    "Cambia cuántos tranvías puede mantener cada **depósito de tranvías**.\n" +
+                    "Se aplica al edificio base." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TrainDepotScalar)), "Depósito de trenes" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
+                    "Cambia cuántos trenes puede mantener cada **depósito de trenes**.\n" +
+                    "Se aplica al edificio base." },
+
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Restablecer depósitos" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
-                    "Vuelve todos los deslizadores de depósito a **100%** (vanilla)." },
+                    "Devuelve todos los deslizadores de depósitos a **100%** (valor predeterminado del juego / vanilla)." },
 
                 // Passenger capacity sliders
-                { m_Setting.GetOptionGroupLocaleID(Setting.PassengerGroup), "Capacidad de pasajeros (max por vehículo)" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusPassengerScalar)), "Bus" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.PassengerGroup), "Capacidad de pasajeros (máx personas por vehículo)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusPassengerScalar)), "Autobús" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.BusPassengerScalar)),
-                    "Cambia la capacidad de pasajeros del **bus**.\n" +
-                    "**10%** = 10% de asientos.\n" +
-                    "**100%** = vanilla.\n" +
-                    "**1000%** = 10× asientos." },
+                    "Cambia la capacidad de **pasajeros del autobús**.\n" +
+                    "**10%** = 10% de los asientos vanilla.\n" +
+                    "**100%** = asientos vanilla (valor predeterminado del juego).\n" +
+                    "**1000%** = 10× más asientos." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramPassengerScalar)), "Tranvía" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TramPassengerScalar)),
-                    "Cambia la capacidad del **tranvía**.\n" +
-                    "**100%** = vanilla." },
+                    "Cambia la capacidad de **pasajeros del tranvía**.\n" +
+                    "**10%** = 10% de los asientos vanilla.\n" +
+                    "**100%** = asientos vanilla (valor predeterminado del juego).\n" +
+                    "**1000%** = 10× más asientos." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TrainPassengerScalar)), "Tren" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainPassengerScalar)),
-                    "Cambia la capacidad del **tren**.\n" +
-                    "Aplica a locomotoras y vagones." },
+                    "Cambia la capacidad de **pasajeros del tren**.\n" +
+                    "Se aplica a locomotoras y secciones.\n" +
+                    "**10%** = 10% de los asientos vanilla.\n" +
+                    "**100%** = asientos vanilla (valor predeterminado del juego).\n" +
+                    "**1000%** = 10× más asientos." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayPassengerScalar)), "Metro" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SubwayPassengerScalar)),
-                    "Cambia la capacidad del **metro**.\n" +
-                    "**100%** = vanilla." },
+                    "Cambia la capacidad de **pasajeros del metro**.\n" +
+                    "**10%** = 10% de los asientos vanilla.\n" +
+                    "**100%** = asientos vanilla (valor predeterminado del juego).\n" +
+                    "**1000%** = 10× más asientos." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ShipPassengerScalar)), "Barco" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ShipPassengerScalar)),
-                    "Cambia la capacidad del **barco de pasajeros** (no carga).\n" +
-                    "**100%** = vanilla." },
+                    "Cambia la capacidad de **barcos de pasajeros** (no barcos de carga).\n" +
+                    "**100%** = asientos vanilla (valor predeterminado del juego)." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryPassengerScalar)), "Ferry" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryPassengerScalar)), "Ferri" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryPassengerScalar)),
-                    "Cambia la capacidad del **ferry**.\n" +
-                    "**100%** = vanilla." },
+                    "Cambia la capacidad de **pasajeros del ferri**.\n" +
+                    "**10%** = 10% de los asientos vanilla.\n" +
+                    "**100%** = asientos vanilla (valor predeterminado del juego).\n" +
+                    "**1000%** = 10× más asientos." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AirplanePassengerScalar)), "Avión" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AirplanePassengerScalar)),
-                    "Cambia la capacidad del **avión**.\n" +
-                    "**100%** = vanilla." },
+                    "Cambia la capacidad de **pasajeros del avión**.\n" +
+                    "**10%** = 10% de los asientos vanilla.\n" +
+                    "**100%** = asientos vanilla (valor predeterminado del juego).\n" +
+                    "**1000%** = 10× más asientos." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DoublePassengersButton)), "Duplicar" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DoublePassengersButton)),
-                    "Pone todos los deslizadores de pasajeros en **200%**.\n" +
-                    "Aplica a bus, tranvía, tren, metro, barco, ferry y avión." },
+                    "Ajusta todos los deslizadores de pasajeros a **200%**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetPassengerToVanillaButton)), "Restablecer todos los pasajeros" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetPassengerToVanillaButton)),
-                    "Vuelve todos los deslizadores de pasajeros a **100%** (vanilla)." },
+                    "Devuelve todos los deslizadores de pasajeros a **100%**\n" +
+                    "(valor predeterminado del juego / vanilla)." },
 
                 // ----------------
                 // INDUSTRY tab
@@ -146,47 +169,53 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.DeliveryGroup), "Vehículos de reparto (capacidad de carga)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "Camiones (tráiler)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "Camiones articulados" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
-                    "Capacidad de **tráilers**.\n" +
-                    "Incluye tráilers de industrias especiales (granjas, forestal, pesca, etc.).\n" +
-                    "Multiplicador: **1×** = vanilla (**25t**), **10×** = 10×." },
+                    "Capacidad de los **camiones articulados**.\n" +
+                    "Incluye:\n" +
+                    "* Camiones articulados de industria especializada (granjas, pesca, silvicultura, etc.).\n" +
+                    "* Camiones articulados que llevan correo hacia/desde estaciones de carga (no es lo mismo que el reparto local de correo).\n" +
+                    "**1× = 25t** (vanilla)\n" +
+                    "**10×** = 10× más." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "Furgonetas" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "Furgonetas de reparto" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**Furgonetas de reparto**\n" +
-                    "Multiplicador: **1×** = vanilla (**4t**), **10×** = 10×." },
+                    "**1× = 4t** (vanilla)\n" +
+                    "**10×** = 10× más." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "Materias (petróleo/carbón/mena/piedra)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "Camiones de materias primas" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**Camiones de materias** (petróleo/carbón/mena/piedra)\n" +
-                    "Multiplicador: **1×** = vanilla (**20t**), **10×** = 10×." },
+                    "**Camiones de materias primas** (petróleo, carbón, mineral, piedra)\n" +
+                    "**1× = 20t** (vanilla)\n" +
+                    "**10×** = 10× más." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Moto" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Moto de reparto" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
-                    "**Reparto en moto**\n" +
-                    "Multiplicador: **1×** = vanilla, **10×** = 10×." },
+                    "**El reparto en moto** normalmente lleva productos farmacéuticos a un hospital/clínica.\n" +
+                    "**1× = 0.1t** (vanilla)\n" +
+                    "**10×** = 10× más." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Restablecer reparto" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "Vuelve los multiplicadores de reparto a **1×** (vanilla)." },
+                    "Devuelve los multiplicadores de reparto a **1×** (valor predeterminado del juego / vanilla)." },
 
-                { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "Flota de carga (puerto/tren/aeropuerto)" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "Flota de carga (puerto, tren, aeropuerto)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "Max flota de estación de carga" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "Flota máx de estación de carga" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "Multiplicador del máximo de transportistas activos en **estaciones de carga**.\n" +
-                    "**1×** = vanilla, **5×** = 5×." },
+                    "Multiplicador para los transportistas activos máximos de las **estaciones de transporte de carga**.\n" +
+                    "**1×** = vanilla, **5×** = 5× más." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "Flota de extractores" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "Multiplicador del **max camiones** de extractores\n" +
-                    "(granjas, forestal, pesca, mena, petróleo + carbón/piedra si existe).\n" +
-                    "**1×** = vanilla, **5×** = 5×." },
+                    "Multiplicador para los **camiones máximos de extractores** industriales\n" +
+                    "(granjas, pesca, silvicultura, mineral, petróleo, carbón, piedra).\n" +
+                    "**1×** = vanilla, **5×** = 5× más." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "Restablecer flota carga + extractores" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "Restablecer carga + extractores" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
-                    "Vuelve carga + extractores a **1×** (vanilla)." },
+                    "Devuelve los multiplicadores de estaciones de carga + extractores a **1×** (valor predeterminado del juego / vanilla)." },
 
                 // -------------------
                 // Parks-Roads
@@ -194,119 +223,123 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.ParkMaintenanceGroup), "Mantenimiento de parques" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)), "Capacidad de turno" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)), "Capacidad del turno de trabajo" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)),
-                    "Multiplicador de **capacidad de turno** (capacidad del vehículo).\n" +
-                    "Trabajo total antes de volver al edificio.\n" +
-                    "Más = más tiempo fuera." },
+                    "Multiplicador para la **capacidad del turno de trabajo** (capacidad del vehículo).\n" +
+                    "Trabajo total que puede hacer un camión antes de volver al edificio.\n" +
+                    "Piénsalo así: más suministros = permanece fuera más tiempo." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)), "Velocidad de trabajo" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)), "Ritmo del vehículo" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)),
-                    "Multiplicador de **velocidad de trabajo**.\n" +
-                    "Velocidad = trabajo por tick cuando está parado." },
+                    "Multiplicador para la **tasa de trabajo del vehículo**.\n" +
+                    "Tasa = cuánto trabajo hace por tick de simulación mientras está parado." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)), "Tamaño de flota" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)), "Tamaño de flota del depósito" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)),
-                    "Multiplicador del **max vehículos** del edificio.\n" },
+                    "Multiplicador para los **vehículos máximos** del edificio depósito.\n" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)), "Restablecer parques" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)), "Restablecer mantenimiento de parques" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)),
-                    "Restablece a **100%** (vanilla)." },
+                    "Restablece todos los valores a **100%** (valor predeterminado del juego / vanilla)." },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.RoadMaintenanceGroup), "Mantenimiento de carreteras" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)), "Tamaño de flota" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)), "Tamaño de flota del depósito" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)),
-                    "Multiplicador de **max vehículos** por depósito.\n" +
+                    "Multiplicador para los **vehículos máximos del depósito** por edificio.\n" +
                     "Más alto = más camiones.\n" +
-                    "<Nota: muy pocos o demasiados puede empeorar el tráfico.>" },
+                    "<Nota de equilibrio: demasiado pocos o demasiados pueden perjudicar el tráfico.>" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)), "Capacidad de turno" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)), "Capacidad del turno de trabajo" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
-                    "Multiplicador de **capacidad de turno**.\n" +
-                    "Trabajo total antes de volver al depósito.\n" +
-                    "Más alto = menos regresos." },
+                    "Multiplicador para la **capacidad del turno de trabajo**.\n" +
+                    "Trabajo total que puede hacer un camión antes de volver al depósito.\n" +
+                    "**Más alto = menos regresos.**" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Tasa de reparación (alpha)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Tasa de reparación" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
-                    "Tasa = trabajo por tick cuando está parado.\n" +
-                    "En vanilla, reparar puede requerir varias paradas.\n" +
-                    "<Alpha: todavía en pruebas.>" },
+                    "Tasa = cuánto trabajo hace por tick de simulación mientras está parado.\n" +
+                    "Los camiones aún hacen una parada+avance rápido incluso con la tasa más alta (hacen más trabajo por parada).\n"
+                },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Desgaste de carreteras (alpha)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Desgaste de carreteras" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<Función alpha: en pruebas>\n" +
-                    "Qué tan rápido se acumula el desgaste con el tiempo.\n" +
+                    "<NUEVA función Alpha>\n" +
+                    "Controla qué tan rápido se deterioran las carreteras por factores de **tiempo y tráfico**.\n" +
+                    "**10%** = desgaste 10× más lento (se necesitan menos reparaciones)\n" +
                     "**100%** = vanilla\n" +
-                    "**10%** = 10× más lento (menos reparaciones)\n" +
-                    "**400%** = 4× más rápido (más reparaciones)" },
+                    "**500%** = daño 5× más rápido (se necesitan más reparaciones/camiones)\n" +
+                    "Si el factor m_Wear <= 2.5, no hay ralentización.\n" +
+                    "Si m_Wear >= 17.5, penalización máxima, los vehículos son 50% más lentos en las carreteras.\n" +
+                    "Ver infovista de carreteras: muestra en rojo las carreteras muy dañadas que ralentizan a los vehículos."
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Restablecer carreteras" },
+                },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Restablecer mantenimiento de carreteras" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)),
-                    "Restablece todo a **100%** (vanilla)." },
+                    "Devuelve todos los valores a **100%** (valor predeterminado del juego / vanilla)." },
 
-                // --------------------
+                // -------------------
                 // About tab
-                // --------------------
+                // -------------------
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.AboutInfoGroup), "Info" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.AboutLinksGroup), "Enlaces" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "Depurar / Logs" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.AboutLinksGroup), "Enlaces de soporte" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "Debug / Registro" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModNameDisplay)), "Mod" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModNameDisplay)), "Nombre mostrado del mod." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModNameDisplay)), "Nombre mostrado de este mod." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersionDisplay)), "Versión" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersionDisplay)), "Versión actual del mod." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenParadoxMods)), "Paradox" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenParadoxMods)), "Abrir la página del autor en Paradox Mods." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenParadoxMods)), "Abre el sitio web de Paradox Mods para los mods del autor." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenDiscord)), "Discord" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenDiscord)), "Abrir el Discord en el navegador." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenDiscord)), "Abre el Discord de la comunidad en un navegador." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RunPrefabScanButton)), "Informe de scan (prefabs)" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RunPrefabScanButton)), "Informe de escaneo (prefabs)" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RunPrefabScanButton)),
-                    "Informe único: prefabs relevantes + valores de desgaste del carril.\n" +
-                    "Archivo: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
-                    "No hagas spam; espera a que el estado muestre Done." },
+                    "Crea un informe <único> para depuración.\n" +
+                    "No es necesario para una partida normal.\n" +
+                    "Ubicación del archivo: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
+                    "Consejo: hacer clic <una vez>; si el estado muestra Done > entonces usar <Abrir carpeta de informes>." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Estado del scan de prefabs" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Estado del escaneo de prefabs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Muestra el estado: Inactivo / En cola / En ejecución / Listo / Error.\n" +
-                    "En cola/En ejecución muestra el tiempo; Listo muestra duración + hora de fin." },
+                    "Muestra el estado del escaneo: Idle / Queued / Running / Done / No Data.\n" +
+                    "Queued/Running muestra el tiempo transcurrido; Done muestra duración + hora de finalización." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Logs detallados" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Registros debug detallados" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "ON = envía más detalles a DispatchBoss.log.\n" +
-                    "Útil para solucionar problemas.\n" +
-                    "Para jugar normal, **déjalo OFF**.\n" +
-                    "<Si no sabes qué es esto,>\n" +
-                    "**déjalo OFF**.\n" +
-                    "<El spam de logs afecta el rendimiento.>" },
+                    "Envía detalles adicionales a <DispatchBoss.log> para solucionar problemas.\n" +
+                    "**Desactivar** para una partida normal.\n" +
+                    "<Esto solo aumenta el registro y no cambia los valores de juego.>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "Abrir carpeta de logs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "Abre la carpeta de logs.\n" +
-                    "Luego abre <DispatchBoss.log> (recomendado Notepad++)." },
+                    "Siguiente: abrir <DispatchBoss.log> con el editor de texto (se recomienda Notepad++)." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "Abrir carpeta de informes" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenReportButton)),
                     "Abre la carpeta de informes.\n" +
-                    "Luego abre <ScanReport-Prefabs.txt>." },
+                    "Siguiente: abrir <ScanReport-Prefabs.txt> con el editor de texto (por ejemplo, Notepad++)." },
 
-                // ---- Status Text (format string templates) ----
+                // ---- Scan Report Status Text (format string templates) ----
                 { "DB_SCAN_IDLE", "Inactivo" },
                 { "DB_SCAN_QUEUED_FMT", "En cola ({0})" },
                 { "DB_SCAN_RUNNING_FMT", "En ejecución ({0})" },
-                { "DB_SCAN_DONE_FMT", "Listo ({0} | {1})" },
-                { "DB_SCAN_FAILED", "Error" },
-                { "DB_SCAN_FAIL_NO_CITY", "CARGA UNA CIUDAD PRIMERO." },
+                { "DB_SCAN_DONE_FMT", "Hecho ({0} | {1})" },
+                { "DB_SCAN_FAILED", "Falló" },
+                { "DB_SCAN_FAIL_NO_CITY", "Cargar ciudad primero" },
                 { "DB_SCAN_UNKNOWN_TIME", "hora desconocida" },
+
             };
         }
 
-        public void Unload()
+        public void Unload( )
         {
         }
     }
