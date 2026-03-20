@@ -27,7 +27,7 @@ Scale **fleet sizes**, **vehicle capacities** in: all Public Transit, Parks/Road
 - Remove "Adjust Transit Capacity" mod; it's already included in this mod.
 - **Adjust Sliders** at any time, no restart needed; Supports switching cities.
 - Transit lines: follows the game’s **route cycle time** (travel time + stops) formula; math is tweaked so you can have just 1 bus per line or ~30-60buses.
-PWP is made differently than older policy adjusters; no Harmony patch is used and max is not static so no it will not be 250 buses on one line. You will still get tons of buses. Based on testing, even 30 buses backed up traffic bumper to bumper.
+PwP is made differently than older policy adjusters; no Harmony patch is used and max is not static so it will not be 250 buses on one line. You still get tons of buses.
 - Depot capacity = maximum number of vehicles a single depot can maintain/spawn (does not scale extension buildings).
 - **Avoid** other depot/passenger capacity mods to avoid conflicts (they override each other).
 - No Harmony or Reflection; more compatible - less likely to break with game updates.
