@@ -1,9 +1,10 @@
-// File: Localization/LocaleZH_CN.cs
+﻿// File: Localization/LocaleZH_CN.cs
 // Simplified Chinese (zh-HANS) strings for Options UI.
 
 namespace DispatchBoss
 {
     using Colossal;
+    using Colossal.IO.AssetDatabase.Internal;
     using System.Collections.Generic;
 
     public sealed class LocaleZH_CN : IDictionarySource
@@ -304,7 +305,7 @@ namespace DispatchBoss
                     "创建用于调试的<一次性>报告。\n" +
                     "正常游玩不需要。\n" +
                     "文件位置：<ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
-                    "提示：点击<一次>，如果状态显示 Done > 然后使用 <打开报告文件夹>。" },
+                    "提示：点击<一次>；当状态显示为完成时，使用 <打开报告文件夹>。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab 扫描状态" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),

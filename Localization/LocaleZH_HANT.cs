@@ -1,9 +1,10 @@
-// File: Localization/LocaleZH_HANT.cs
+﻿// File: Localization/LocaleZH_HANT.cs
 // Traditional Chinese (zh-HANT) strings for Options UI.
 
 namespace DispatchBoss
 {
     using Colossal;
+    using Colossal.IO.AssetDatabase.Internal;
     using System.Collections.Generic;
 
     public sealed class LocaleZH_HANT : IDictionarySource
@@ -304,7 +305,7 @@ namespace DispatchBoss
                     "建立用於除錯的<一次性>報告。\n" +
                     "正常遊玩不需要。\n" +
                     "檔案位置：<ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
-                    "提示：點擊<一次>，如果狀態顯示 Done > 然後使用 <開啟報告資料夾>。" },
+                    "提示：點擊<一次>；當狀態顯示為完成時，使用 <開啟報告資料夾>。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab 掃描狀態" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),

@@ -1,4 +1,4 @@
-# File: .editorconfig
+# File: .editorconfig version 0.5.0 for Resharper
 # Purpose:
 #   - Consistent whitespace + line endings across the repo.
 #   - C# style preferences (explicit types, naming scheme).
@@ -16,6 +16,8 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = space
 
+[*.ps1]
+end_of_line = crlf
 
 # =========================
 # C# files

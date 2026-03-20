@@ -1,4 +1,4 @@
-// File: Localization/LocaleFR.cs
+﻿// File: Localization/LocaleFR.cs
 // French (fr-FR) strings for Options UI.
 
 namespace DispatchBoss
@@ -304,7 +304,7 @@ namespace DispatchBoss
                     "Crée un rapport <ponctuel> pour le débogage.\n" +
                     "Inutile pour une partie normale.\n" +
                     "Emplacement du fichier : <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
-                    "Astuce : cliquer <une fois>, si l’état affiche Done > alors utiliser <Ouvrir le dossier du rapport>." },
+                    "Astuce : cliquez <une fois>, puis si l’état affiche Terminé, utilisez <Ouvrir le dossier du rapport>." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "État de l’analyse des prefabs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),

@@ -1,4 +1,6 @@
-﻿* text=auto
+# .gitattributes
+
+* text=auto
 
 # Windows-style line endings for VS project files and C#
 *.sln      text eol=crlf

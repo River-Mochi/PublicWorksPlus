@@ -1,4 +1,4 @@
-// File: Localization/LocaleIT.cs
+﻿// File: Localization/LocaleIT.cs
 // Italian (it-IT) strings for Options UI.
 
 namespace DispatchBoss
@@ -304,7 +304,7 @@ namespace DispatchBoss
                     "Crea un rapporto <una tantum> per il debug.\n" +
                     "Non serve per il gameplay normale.\n" +
                     "Posizione file: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
-                    "Suggerimento: fare clic <una volta>; se lo stato mostra Done > allora usare <Apri cartella rapporti>." },
+                    "Suggerimento: fare clic <una volta>; se lo stato mostra Completato, usare <Apri cartella rapporti>." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Stato scansione prefab" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),

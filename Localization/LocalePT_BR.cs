@@ -1,9 +1,10 @@
-// File: Localization/LocalePT_BR.cs
+﻿// File: Localization/LocalePT_BR.cs
 // Portuguese-Brazil (pt-BR) strings for Options UI.
 
 namespace DispatchBoss
 {
     using Colossal;
+    using Colossal.IO.AssetDatabase.Internal;
     using System.Collections.Generic;
 
     public sealed class LocalePT_BR : IDictionarySource
@@ -304,7 +305,7 @@ namespace DispatchBoss
                     "Cria um relatório <único> para depuração.\n" +
                     "Não é necessário para jogabilidade normal.\n" +
                     "Local do arquivo: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
-                    "Dica: clique <uma vez>; se o status mostrar Done > então use <Abrir pasta do relatório>." },
+                    "Dica: clique <uma vez>; quando o status mostrar Concluído, use <Abrir pasta do relatório>." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Status da varredura de prefabs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),

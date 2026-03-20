@@ -1,4 +1,4 @@
-// File: Localization/LocaleJA.cs
+﻿// File: Localization/LocaleJA.cs
 // Japanese (ja-JP) strings for Options UI.
 
 namespace DispatchBoss
@@ -304,7 +304,7 @@ namespace DispatchBoss
                     "デバッグ用の<一回限り>レポートを作成します。\n" +
                     "通常プレイには不要です。\n" +
                     "ファイル場所: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
-                    "ヒント: <一度>クリックし、状態が Done を示したら > <レポートフォルダーを開く> を使ってください。" },
+                    "ヒント: <一度>クリックし、状態が完了になったら <レポートフォルダーを開く> を使ってください。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefabスキャン状態" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
