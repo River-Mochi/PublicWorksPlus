@@ -1,65 +1,86 @@
-// Settings/Setting.cs
-// Options UI + saved settings
+// File: Settings/Setting.cs
+// Purpose: Options UI + saved settings for Public Works Plus (Public Transit + Industry + Parks/Roads + About).
 
-namespace AdjustTransitCapacity
+namespace PublicWorksPlus
 {
+    using Colossal.IO.AssetDatabase; // FileLocation
+    using Game;                     // IsGame
+    using Game.Modding;             // IMod, ModSetting
+    using Game.SceneFlow;           // GameManager
+    using Game.Settings;            // Settings UI attributes
+    using System;                   // Exception
+    using Unity.Entities;           // World
+    using UnityEngine;              // Application.OpenURL
 
-    using System;                               // Exception
-    using System.Diagnostics;                   // Process, ProcessStartInfo
-    using System.IO;                            // Path, File, Directory
-    using Colossal.IO.AssetDatabase;            // FileLocation, LoadSettings
-    using Colossal.Logging;                     // UnityLogger
-    using Game;                                 // GameManager, GameMode
-    using Game.Modding;                         // ModSetting
-    using Game.SceneFlow;                       // GameMode
-    using Game.Settings;                        // SettingsUI attributes, ModSetting APIs
-    using Game.UI;                              // Unit enum (kPercentage)
-    using Unity.Entities;                       // World, ECS system lookup
-    using UnityEngine;                          // Application.OpenURL, persistentDataPath
-
-
-    /// <summary>
-    /// ATC options: depot/passenger percent sliders, about info, links, and debug toggle.
-    /// </summary>
-    [FileLocation("ModsSettings/AdjustTransitCapacity/AdjustTransitCapacity")]  // Settings file location.
-    [SettingsUITabOrder(
-    ActionsTab,
-    AboutTab
-)]
+    [FileLocation("ModsSettings/PublicWorksPlus/PublicWorksPlus")]
+    [SettingsUITabOrder(PublicTransitTab, IndustryTab, ParksRoadsTab, AboutTab)]
     [SettingsUIGroupOrder(
-    DepotGroup, PassengerGroup,
-    AboutInfoGroup, AboutLinksGroup,
-    DebugGroup, LogGroup
-)]
+        LineVehiclesGroup, DepotGroup, PassengerGroup,
+        DeliveryGroup, CargoStationsGroup,
+        RoadMaintenanceGroup, ParkMaintenanceGroup,
+        AboutInfoGroup, AboutLinksGroup, DebugGroup
+    )]
     [SettingsUIShowGroupName(
-    DepotGroup, PassengerGroup,
-    AboutLinksGroup, DebugGroup, LogGroup
-)]
-    public sealed class Setting : ModSetting
+        LineVehiclesGroup, DepotGroup, PassengerGroup,
+        DeliveryGroup, CargoStationsGroup,
+        RoadMaintenanceGroup, ParkMaintenanceGroup,
+        AboutLinksGroup, DebugGroup
+    )]
+    public sealed partial class Setting : ModSetting
     {
-        // Tabs
-        public const string ActionsTab = "Actions";
+        // Tab ids (must match Locale ids).
+        public const string PublicTransitTab = "Public-Transit";
+        public const string IndustryTab = "Industry";
+        public const string ParksRoadsTab = "Parks-Roads";
         public const string AboutTab = "About";
 
-        // Groups (Actions tab)
+        // Group ids (must match Locale ids).
+        public const string LineVehiclesGroup = "LineVehicles";
         public const string DepotGroup = "DepotCapacity";
         public const string PassengerGroup = "PassengerCapacity";
 
-        // Groups (About tab)
+        public const string DeliveryGroup = "DeliveryVehicles";
+        public const string CargoStationsGroup = "CargoStations";
+
+        public const string RoadMaintenanceGroup = "RoadMaintenance";
+        public const string ParkMaintenanceGroup = "ParkMaintenance";
+
         public const string AboutInfoGroup = "AboutInfo";
         public const string AboutLinksGroup = "AboutLinks";
         public const string DebugGroup = "Debug";
-        public const string LogGroup = "Log";
 
-        // Slider ranges in percent:
-        // Depots    : 100–1000 (100% = vanilla 1.0x, 1000% = 10.0x)
-        // Passengers: 10–1000  (10% = 0.1x,    1000% = 10.0x)
-        public const float DepotMinPercent = 100f;
-        public const float PassengerMinPercent = 10f;
-        public const float MaxPercent = 1000f;
-        public const float StepPercent = 10f;
+        // -----------------------
+        // Slider ranges
+        // -----------------------
 
-        // External links
+        // Public-Transit sliders (percent).
+        public const float DepotMinPercent      = 100f;
+        public const float PassengerMinPercent  = 10f;
+        public const float MaxPercent           = 1000f;
+        public const float StepPercent          = 10f;
+
+        private const float kVanillaPercent = 100f;
+
+        // Industry sliders (scalar 1x..10x).
+        public const float ServiceMinScalar = 1f;
+        public const float ServiceMaxScalar = 10f;
+        public const float ServiceStepScalar = 1f;
+
+        // Cargo station / extractors (scalar 1x..5x).
+        public const float CargoStationMinScalar = 1f;
+        public const float CargoStationMaxScalar = 5f;
+        public const float CargoStationStepScalar = 1f;
+
+        // Parks+Roads: display as percent (100%..500% = 1x..5x).
+        public const float MaintenanceMinPercent = 100f;
+        public const float MaintenanceMaxPercent = 500f;
+        public const float MaintenanceStepPercent = 10f;
+
+        // Road wear speed: percent (10%..500% = 0.1x..5x).
+        public const float RoadWearMinPercent = 10f;
+        public const float RoadWearMaxPercent = 500f;
+        public const float RoadWearStepPercent = 10f;
+
         private const string UrlParadox =
             "https://mods.paradoxplaza.com/authors/River-mochi/cities_skylines_2?games=cities_skylines_2&orderBy=desc&sortBy=best&time=alltime";
 
@@ -69,37 +90,39 @@ namespace AdjustTransitCapacity
         public Setting(IMod mod)
             : base(mod)
         {
-            // For brand-new settings file -> populate defaults.
-            if (BusDepotScalar == 0f)
-            {
-                SetDefaults();
-            }
+            // New install starts with defaults. LoadSettings overwrites when .coc exists.
+            SetDefaults();
         }
 
-        // ----------------
-        // Defaults / Apply
-        // ----------------
+        /// <summary>
+        /// Repair missing/out-of-range/invalid values after LoadSettings.
+        /// No auto-save performed.
+        /// </summary>
+        public void SanitizeAfterLoad()
+        {
+            RepairAndClamp();
+        }
 
         public override void SetDefaults()
         {
-            ResetDepotToVanilla();
-            ResetPassengerToVanilla();
+            SetDefaults_Transit();
+            SetDefaults_Industry();
+            SetDefaults_ParksRoads();
 
-            // Verbose logging off by default.
+            // Debug defaults.
             EnableDebugLogging = false;
         }
 
         public override void Apply()
         {
+            // Repair in-memory values first so ECS always sees sane inputs.
+            RepairAndClamp();
+
             base.Apply();
 
-            // Always save slider values, but only try to apply them
-            // when actual gameplay is running (city is loaded).
-            GameManager? gm = GameManager.instance;
+            GameManager gm = GameManager.instance;
             if (gm == null || !gm.gameMode.IsGame())
             {
-                // Main menu - settings are saved.
-                // First use when city finishes loading.
                 return;
             }
 
@@ -109,198 +132,39 @@ namespace AdjustTransitCapacity
                 return;
             }
 
-            AdjustTransitCapacitySystem system =
-                world.GetExistingSystemManaged<AdjustTransitCapacitySystem>();
-            if (system != null)
+            // Settings changes re-run systems once.
+            TryEnableOnce<TransitSystem>(world, "TransitSystem");
+            TryEnableOnce<MaintenanceSystem>(world, "MaintenanceSystem");
+            TryEnableOnce<IndustrySystem>(world, "IndustrySystem");
+            TryEnableOnce<LaneWearSystem>(world, "LaneWearSystem");
+            TryEnableOnce<VehicleCountPolicyTunerSystem>(world, "TransitLinePolicyTunerSystem");
+        }
+
+        private static void TryEnableOnce<T>(World world, string label) where T : GameSystemBase
+        {
+            try
             {
-                // Run one more tick in the current city to reapply new slider values.
-                system.Enabled = true;
-            }
-        }
-
-        // ------------------------
-        // Actions tab: depot (max)
-        // ------------------------
-
-        // Stored as percent: 100–1000. Runtime scalar = value / 100f.
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, DepotGroup)]
-        public float BusDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, DepotGroup)]
-        public float TaxiDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, DepotGroup)]
-        public float TramDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, DepotGroup)]
-        public float TrainDepotScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, DepotGroup)]
-        public float SubwayDepotScalar
-        {
-            get; set;
-        }
-
-        // Convenience button to reset all depots.
-        [SettingsUIButtonGroup(DepotGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(ActionsTab, DepotGroup)]
-        public bool ResetDepotToVanillaButton
-        {
-            set
-            {
-                if (!value)
+                T sys = world.GetExistingSystemManaged<T>();
+                if (sys != null)
                 {
-                    return;
+                    sys.Enabled = true;
                 }
-
-                ResetDepotToVanilla();
-                Apply();
             }
-        }
-
-        // -----------------------------
-        // Actions tab: passengers (max)
-        // -----------------------------
-
-        // Stored as percent: 10–1000. Runtime scalar = value / 100f.
-        // Taxi passengers is not changed (CS2 keeps 4 seats, more complex dispatch system).
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, PassengerGroup)]
-        public float BusPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, PassengerGroup)]
-        public float TramPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, PassengerGroup)]
-        public float TrainPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, PassengerGroup)]
-        public float SubwayPassengerScalar
-        {
-            get; set;
-        }
-
-        // Passenger-only types (not cargo).
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, PassengerGroup)]
-        public float ShipPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, PassengerGroup)]
-        public float FerryPassengerScalar
-        {
-            get; set;
-        }
-
-        [SettingsUISlider(min = PassengerMinPercent, max = MaxPercent, step = StepPercent,
-            scalarMultiplier = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(ActionsTab, PassengerGroup)]
-        public float AirplanePassengerScalar
-        {
-            get; set;
-        }
-
-        // Convenience button: set all passenger sliders to 200% (2.0x).
-        [SettingsUIButtonGroup(PassengerGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(ActionsTab, PassengerGroup)]
-        public bool DoublePassengersButton
-        {
-            set
+            catch (Exception ex)
             {
-                if (!value)
-                {
-                    return;
-                }
-
-                BusPassengerScalar = 200f;
-                TramPassengerScalar = 200f;
-                TrainPassengerScalar = 200f;
-                SubwayPassengerScalar = 200f;
-                ShipPassengerScalar = 200f;
-                FerryPassengerScalar = 200f;
-                AirplanePassengerScalar = 200f;
-
-                Apply();
+                Mod.s_Log.Warn($"{Mod.ModTag} Apply: failed enabling {label}: {ex.GetType().Name}: {ex.Message}");
             }
         }
 
-        // Convenience button: set all passenger to vanilla defaults (100%).
-        [SettingsUIButtonGroup(PassengerGroup)]
-        [SettingsUIButton]
-        [SettingsUISection(ActionsTab, PassengerGroup)]
-        public bool ResetPassengerToVanillaButton
-        {
-            set
-            {
-                if (!value)
-                {
-                    return;
-                }
-
-                ResetPassengerToVanilla();
-                Apply();
-            }
-        }
-
-        // --------------------
-        // About tab: info/link
-        // --------------------
+        // ----------------
+        // About tab
+        // ----------------
 
         [SettingsUISection(AboutTab, AboutInfoGroup)]
         public string ModNameDisplay => $"{Mod.ModName} {Mod.ModTag}";
 
         [SettingsUISection(AboutTab, AboutInfoGroup)]
         public string ModVersionDisplay => Mod.ModVersion;
-
-        // About tab: links
 
         [SettingsUIButtonGroup(AboutLinksGroup)]
         [SettingsUIButton]
@@ -309,18 +173,15 @@ namespace AdjustTransitCapacity
         {
             set
             {
-                if (!value)
-                {
-                    return;
-                }
+                if (!value) return;
 
                 try
                 {
                     Application.OpenURL(UrlParadox);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // ignore
+                    Mod.s_Log.Info($"{Mod.ModTag} OpenParadoxMods failed: {ex.GetType().Name}: {ex.Message}");
                 }
             }
         }
@@ -332,163 +193,137 @@ namespace AdjustTransitCapacity
         {
             set
             {
-                if (!value)
-                {
-                    return;
-                }
+                if (!value) return;
 
                 try
                 {
                     Application.OpenURL(UrlDiscord);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // ignore
+                    Mod.s_Log.Info($"{Mod.ModTag} OpenDiscord failed: {ex.GetType().Name}: {ex.Message}");
                 }
             }
         }
 
-        // About tab: debug toggle
+        // DEBUG/LOGGING
 
-        [SettingsUISection(AboutTab, DebugGroup)]
-        public bool EnableDebugLogging
-        {
-            get; set;
-        }
-
-        // ABOUT TAB: Open Log Button
-        // Opens the log file if it exists, or the log folder if not.
-
-        [SettingsUIButtonGroup(LogGroup)]
+        [SettingsUIButtonGroup(DebugGroup)]
         [SettingsUIButton]
-        [SettingsUISection(AboutTab, LogGroup)]
-        public bool OpenLogButton
+        [SettingsUISection(AboutTab, DebugGroup)]
+        public bool RunPrefabScanButton
         {
             set
             {
-                if (!value)
+                if (!value) return;
+
+                GameManager gm = GameManager.instance;
+                if (gm == null || !gm.gameMode.IsGame())
                 {
+                    PrefabScanState.MarkFailed(PrefabScanState.FailCode.NoCityLoaded, null);
+                    return;
+                }
+
+                if (!PrefabScanState.RequestScan())
+                {
+                    Mod.s_Log.Info($"{Mod.ModTag} Prefab scan already queued/running.");
                     return;
                 }
 
                 try
                 {
-                    // 1. Prefer logPath from the logger if available.
-                    string? logPath = null;
-
-                    if (Mod.s_Log is UnityLogger unityLogger &&
-                        !string.IsNullOrEmpty(unityLogger.logPath))
+                    World world = World.DefaultGameObjectInjectionWorld;
+                    if (world != null)
                     {
-                        logPath = unityLogger.logPath;
+                        PrefabScanSystem scan = world.GetOrCreateSystemManaged<PrefabScanSystem>();
+                        scan.Enabled = true;
                     }
-                    else
-                    {
-                        // Fallback orig method path
-                        var logsDir = Path.Combine(Application.persistentDataPath, "Logs");
-                        logPath = Path.Combine(logsDir, "AdjustTransitCapacity.log");
-                    }
-
-                    // 2. Try to open the log file with Unity (works cross-platform)
-                    if (!string.IsNullOrEmpty(logPath) && File.Exists(logPath))
-                    {
-                        OpenWithUnityFileUrl(logPath);
-                        return;
-                    }
-
-                    // 3. If no file, try the folder.
-                    var folder = Path.GetDirectoryName(logPath ?? string.Empty);
-
-                    if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
-                    {
-                        OpenWithUnityFileUrl(folder, isDirectory: true);
-                        return;
-                    }
-
-                    Mod.s_Log.Info($"{Mod.ModTag} OpenLogButton: no log file yet, and log folder not found.");
                 }
                 catch (Exception ex)
                 {
-                    // Unity fails for any reason, then use Windows shell (always works).
-                    try
-                    {
-                        var logsDir = Path.Combine(Application.persistentDataPath, "Logs");
-                        var logPath = Path.Combine(logsDir, "AdjustTransitCapacity.log");
-
-                        if (File.Exists(logPath))
-                        {
-                            var psi = new ProcessStartInfo(logPath)
-                            {
-                                UseShellExecute = true,
-                                ErrorDialog = false,
-                                Verb = "open"
-                            };
-
-                            Process.Start(psi);
-                        }
-                        else if (Directory.Exists(logsDir))
-                        {
-                            var psi2 = new ProcessStartInfo(logsDir)
-                            {
-                                UseShellExecute = true,
-                                ErrorDialog = false,
-                                Verb = "open"
-                            };
-
-                            Process.Start(psi2);
-                        }
-                    }
-                    catch
-                    {
-                        // Do not crash options UI, just log problem.
-                    }
-
-                    Mod.s_Log.Warn($"{Mod.ModTag} OpenLogButton failed: {ex.GetType().Name}: {ex.Message}");
+                    PrefabScanState.MarkFailed(PrefabScanState.FailCode.Exception, $"{ex.GetType().Name}: {ex.Message}");
+                    Mod.s_Log.Warn($"{Mod.ModTag} RunPrefabScanButton failed: {ex.GetType().Name}: {ex.Message}");
                 }
             }
         }
 
-        // ----------------
-        // HELPERS: logging
-        // ----------------
+        [SettingsUIButtonGroup(DebugGroup)]
+        [SettingsUISection(AboutTab, DebugGroup)]
+        public string PrefabScanStatus => PrefabScanStatusText.Format(PrefabScanState.GetSnapshot());
 
-        // Helper: open a file or folder via Unity, using a file:/// URI.
-        private static void OpenWithUnityFileUrl(string path, bool isDirectory = false)
+        [SettingsUIButtonGroup(DebugGroup)]
+        [SettingsUIButton]
+        [SettingsUISection(AboutTab, DebugGroup)]
+        public bool OpenReportButton
         {
-            // Normalize to forward slashes for URI.
-            string normalized = path.Replace('\\', '/');
+            set => ShellOpen.OpenFolderSafe(ShellOpen.GetModsDataFolder(), "OpenReport");
+        }
 
-            // Some platforms like a trailing slash for directories.
-            if (isDirectory && !normalized.EndsWith("/", StringComparison.Ordinal))
+        [SettingsUISection(AboutTab, DebugGroup)]
+        public bool EnableDebugLogging { get; set; }
+
+        [SettingsUIButton]
+        [SettingsUISection(AboutTab, DebugGroup)]
+        public bool OpenLogButton
+        {
+            set => ShellOpen.OpenFolderSafe(ShellOpen.GetLogsFolder(), "OpenLog");
+        }
+
+        // ------------------------
+        // Robust repair/clamp
+        // ------------------------
+
+        private void RepairAndClamp()
+        {
+            RepairAndClamp_Transit();
+            RepairAndClamp_Industry();
+            RepairAndClamp_ParksRoads();
+
+            // Debug toggle is a bool; no repair needed.
+        }
+
+        private static float ClampPercentOrVanilla(float value, float min, float max, float vanilla)
+        {
+            if (!IsFinite(value) || value == 0f)
             {
-                normalized += "/";
+                return vanilla;
             }
 
-            string uri = "file:///" + normalized;
-            Application.OpenURL(uri);
+            if (value < min || value > max)
+            {
+                return vanilla;
+            }
+
+            return value;
         }
 
-        // -------------------------
-        // Helpers: slider defaults
-        // -------------------------
-
-        public void ResetDepotToVanilla()
+        private static float ClampScalarOrDefault(float value, float min, float max, float def)
         {
-            BusDepotScalar = 100f;
-            TaxiDepotScalar = 100f;
-            TramDepotScalar = 100f;
-            TrainDepotScalar = 100f;
-            SubwayDepotScalar = 100f;
+            if (!IsFinite(value) || value == 0f)
+            {
+                return def;
+            }
+
+            if (value < min || value > max)
+            {
+                return def;
+            }
+
+            return value;
         }
 
-        public void ResetPassengerToVanilla()
+        private static bool IsFinite(float v)
         {
-            BusPassengerScalar = 100f;
-            TramPassengerScalar = 100f;
-            TrainPassengerScalar = 100f;
-            SubwayPassengerScalar = 100f;
-            ShipPassengerScalar = 100f;
-            FerryPassengerScalar = 100f;
-            AirplanePassengerScalar = 100f;
+            return !(float.IsNaN(v) || float.IsInfinity(v));
         }
+
+        // Partial hooks keep files organized without duplicating boilerplate.
+        partial void SetDefaults_Transit();
+        partial void SetDefaults_Industry();
+        partial void SetDefaults_ParksRoads();
+
+        partial void RepairAndClamp_Transit();
+        partial void RepairAndClamp_Industry();
+        partial void RepairAndClamp_ParksRoads();
     }
 }

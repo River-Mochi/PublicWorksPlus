@@ -1,26 +1,26 @@
-﻿## Internal Systems & Behaviour — Adjust Transit Capacity [ATC]
+## Internal Systems & Behaviour — Public Works Plus [PWP]
 
-Quick reference for how ATC works under the hood.
+Quick reference for how PWP works under the hood.
 
 ## Overview Table
 
 | Area / Feature | What it does | Implementation (high level) |
 |----------------|--------------|------------------------------|
-| **Depot capacity scaling** | Multiplies how many vehicles each depot can maintain/spawn. | Reads vanilla depot values from `PrefabBase`, writes scaled values into `TransportDepotData.m_VehicleCapacity`. |
-| **Passenger capacity scaling** | Scales passenger seats for buses, trams, trains, subways, ships, ferries, airplanes. | Reads vanilla seat counts from `PublicTransport` prefab, writes scaled values into `m_PassengerCapacity`. |
-| **Tram special handling** | Trams have 3 sections; UI shows combined total. | Debug logs show per-section base → new and a 3× total line. |
-| **Prefab-based vanilla protection** | Prevents stacking or multiplying already-modified values. | Always reads from `PrefabBase` (original prefab) instead of current runtime data. |
-| **One-shot per city** | Applies all changes once when a city loads. | System enables once, runs, then sets `Enabled = false`. |
-| **Settings changes reapply** | Changing sliders in Options UI updates the current city instantly. | `Setting.Apply()` enables the system for one more pass. |
-| **Debug logging** | Optional detailed logs showing base→new values and a city summary. | Controlled by `EnableDebugLogging`; prints via `Mod.s_Log`. |
-| **PrisonVan guard** | Prevents scaling Prison Vans (they’re flagged as Bus type). | Checks prefab name for `"PrisonVan"` and skips. |
-| **City type summary (debug)** | Shows which transport types exist in this save. | Tracks via `m_SeenDepotTypes` / `m_SeenPassengerTypes`. |
-| **Safe locale loading** | Localization issues can’t break mod startup. | `AddLocaleSource()` wraps `LocalizationManager.AddSource` in try/catch. |
-| **Options UI – Actions tab** | All depot sliders, passenger sliders, “Double Up”, and reset buttons. | Defined in `Setting` via `SettingsUISlider`, `SettingsUIButton`, etc. |
-| **Options UI – About tab** | Shows version, mod name, Paradox button, Discord, debug toggle, open log. | Locale-backed display fields in `Setting`. |
-| **Log file opener** | Opens the ATC log file or Logs folder. | Uses `file:///` URI + Windows shell fallback. |
-| **Defaults & slider ranges** | Depots: 100–1000%. Passengers: 10–1000%. Steps: 10%. | Constants in `Setting` (`DepotMinPercent`, etc.). |
-| **Settings persistence** | Saves values across sessions. | `AssetDatabase.global.LoadSettings(ModId, setting, new Setting(this));`. |
-| **System scheduling** | Ensures all prefabs exist before scaling. | `updateSystem.UpdateAfter(..., PrefabUpdate)`. |
-| **Localization** | Full localizations: EN, FR, ES, DE, IT, JA, KO, PT-BR, ZH-HANS, ZH-HANT, PL. | Each locale file implements `IDictionarySource`. |
-| **Minimal runtime work** | System does zero work unless explicitly triggered. | Full exit if not gameplay mode
+| **Depot capacity** | Multiplies how many vehicles each transit depot can maintain/spawn. | Reads vanilla from `PrefabBase`, writes scaled values to `TransportDepotData.m_VehicleCapacity` (prefab entities). |
+| **Passenger capacity** | Scales seats for public transport vehicles. | Reads vanilla from `PublicTransport` prefab, writes scaled values to `PublicTransportVehicleData.m_PassengerCapacity` (prefab entities). |
+| **Industry cargo** | Scales cargo capacity for delivery vehicle prefabs (semi/van/raw/motorbike). | Buckets `DeliveryTruckData` prefabs, reads vanilla from `PrefabBase`, writes scaled `DeliveryTruckData.m_CargoCapacity` (prefab entities). |
+| **Cargo stations fleet** | Scales max active transporters for cargo stations. | Reads baseline from `CargoTransportStation` prefab (`transports`), writes scaled `TransportCompanyData.m_MaxTransports` (prefab entities). |
+| **Extractor fleet** | Scales max trucks for industrial extractors. | Filters `TransportCompanyData` by prefab name patterns, scales `m_MaxTransports` (prefab entities). |
+| **Maintenance vehicles** | Scales maintenance work capacity/rate. | Reads vanilla from `MaintenanceVehicle` prefab, writes scaled `MaintenanceVehicleData` fields (prefab entities). |
+| **Maintenance depots** | Scales maximum maintenance vehicles allowed per depot. | Reads vanilla from `MaintenanceDepot` prefab, writes scaled `MaintenanceDepotData.m_VehicleCapacity` (prefab entities). |
+| **Road wear speed (alpha)** | Adjusts how fast lanes deteriorate over time and traffic. | Scales `LaneDeteriorationData.m_TimeFactor` **and** `LaneDeteriorationData.m_TrafficFactor` (prefab entities). |
+| **Prefab-based vanilla protection** | Prevents stacking multipliers across runs. | Reads baselines from `PrefabBase` (authoring components) instead of current `*Data` values. |
+| **One-shot per apply** | Systems run only when explicitly triggered (load/apply/button). | Systems enable, run once, then set `Enabled = false`. |
+| **Settings changes reapply** | Slider changes apply immediately to the loaded city. | `Setting.Apply()` re-enables the systems for one more pass. |
+| **Transit line slider tuner** | Optional widening of the line vehicle slider limits. | Edits `VehicleCountPolicy` RouteModifier range when enabled. |
+| **Prefab scan report** | Debug report of relevant prefabs + current policy ranges. | Button enables `PrefabScanSystem`, writes `ModsData/PublicWorksPlus/ScanReport-Prefabs.txt`. |
+| **Debug logging** | Optional detailed logs to the mod log file. | Controlled by `EnableDebugLogging`, logs via `Mod.s_Log`. |
+| **Safe locale loading** | Localization issues can’t break startup. | Locale sources wrapped in try/catch around `LocalizationManager.AddSource`. |
+| **Options UI layout** | Tabs: Public-Transit / Industry / Parks-Roads / About. | `Setting` uses CO `SettingsUI*` attributes + Locale-backed labels/descs. |
+| **Log/report folder opener** | Opens Logs or ModsData folder. | `ShellOpen.OpenFolderSafe(...)` uses `file:///` + shell fallback. |
+| **Minimal runtime work** | No background polling in Release build. | No work unless gameplay mode + system enabled by apply or button.; DEBUG builds includes probes for verbose debug.  |

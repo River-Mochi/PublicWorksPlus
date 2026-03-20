@@ -1,0 +1,363 @@
+// File: Systems/TransitSystem.cs
+// Purpose: Apply multipliers for depot max vehicles and passenger max riders.
+// Notes:
+// - PrefabSystem + PrefabBase used for vanilla base values so results never stack.
+// - Depots: Bus / Ferry / Taxi / Tram / Train / Subway.
+// - Passengers: Bus / Tram / Train / Subway / Ship / Ferry / Airplane.
+
+namespace PublicWorksPlus
+{
+    using Colossal.Serialization.Entities;
+    using Game;
+    using Game.Prefabs;
+    using Game.SceneFlow;
+    using System;
+    using System.Collections.Generic;
+    using Unity.Entities;
+
+    public sealed partial class TransitSystem : GameSystemBase
+    {
+        private PrefabSystem m_PrefabSystem = null!;
+
+        private HashSet<TransportType> m_SeenDepotTypes = null!;
+        private HashSet<TransportType> m_SeenPassengerTypes = null!;
+        private bool m_LoggedTypesOnce;
+
+        private Dictionary<TransportType, SeatSummary> m_PassengerSeatSummary = null!;
+
+        private const int kTramSections = 3;
+
+        private struct SeatSummary
+        {
+            public bool HasData;
+            public int MinBase;
+            public int MaxBase;
+            public int MinNew;
+            public int MaxNew;
+
+            public void AddSample(int baseSeats, int newSeats)
+            {
+                if (!HasData)
+                {
+                    HasData = true;
+                    MinBase = baseSeats;
+                    MaxBase = baseSeats;
+                    MinNew = newSeats;
+                    MaxNew = newSeats;
+                    return;
+                }
+
+                if (baseSeats < MinBase) MinBase = baseSeats;
+                if (baseSeats > MaxBase) MaxBase = baseSeats;
+                if (newSeats < MinNew) MinNew = newSeats;
+                if (newSeats > MaxNew) MaxNew = newSeats;
+            }
+        }
+
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+
+            m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
+
+            m_SeenDepotTypes = new HashSet<TransportType>();
+            m_SeenPassengerTypes = new HashSet<TransportType>();
+            m_LoggedTypesOnce = false;
+            m_PassengerSeatSummary = new Dictionary<TransportType, SeatSummary>();
+
+            EntityQuery depotQuery = SystemAPI.QueryBuilder()
+                .WithAll<PrefabData, TransportDepotData>()
+                .Build();
+
+            EntityQuery vehicleQuery = SystemAPI.QueryBuilder()
+                .WithAll<PrefabData, PublicTransportVehicleData>()
+                .Build();
+
+            RequireForUpdate(depotQuery);
+            RequireForUpdate(vehicleQuery);
+
+            Enabled = false;
+        }
+
+        protected override void OnGameLoadingComplete(Purpose purpose, GameMode mode)
+        {
+            base.OnGameLoadingComplete(purpose, mode);
+
+            bool isRealGame =
+                mode == GameMode.Game &&
+                (purpose == Purpose.NewGame || purpose == Purpose.LoadGame);
+
+            if (!isRealGame)
+            {
+                return;
+            }
+
+            m_SeenDepotTypes.Clear();
+            m_SeenPassengerTypes.Clear();
+            m_LoggedTypesOnce = false;
+            m_PassengerSeatSummary.Clear();
+
+            Mod.s_Log.Info($"{Mod.ModTag} City Loading Complete -> applying transit settings");
+            Enabled = true;
+        }
+
+        protected override void OnUpdate()
+        {
+            GameManager gm = GameManager.instance;
+            if (gm == null || !gm.gameMode.IsGame())
+            {
+                Enabled = false;
+                return;
+            }
+
+            if (Mod.Settings == null)
+            {
+                Enabled = false;
+                return;
+            }
+
+            Setting settings = Mod.Settings;
+            bool debug = settings.EnableDebugLogging;
+
+            // DEPOTS — prefab-only
+            foreach ((RefRW<TransportDepotData> depotRef, Entity entity) in SystemAPI
+                         .Query<RefRW<TransportDepotData>>()
+                         .WithAll<PrefabData>()  
+                         .WithEntityAccess())
+            {
+                ref TransportDepotData depotData = ref depotRef.ValueRW;
+
+                if (!IsHandledDepotType(depotData.m_TransportType))
+                {
+                    continue;
+                }
+
+                m_SeenDepotTypes.Add(depotData.m_TransportType);
+
+                float scalar = GetDepotScalar(settings, depotData.m_TransportType);
+
+                if (!TryGetDepotBaseCapacity(entity, out int baseCapacity))
+                {
+                    baseCapacity = depotData.m_VehicleCapacity;
+                }
+
+                int newCapacity = ScalarMath.ScaleIntRoundedMin1(baseCapacity, scalar);
+
+                if (newCapacity != depotData.m_VehicleCapacity)
+                {
+                    if (debug)
+                    {
+                        Mod.s_Log.Info(
+                            $"{Mod.ModTag} Depot apply: entity={entity.Index}:{entity.Version} " +
+                            $"type={depotData.m_TransportType} BaseDepot={baseCapacity} scalar={scalar:F2} " +
+                            $"OldDepot={depotData.m_VehicleCapacity} NewDepot={newCapacity}");
+                    }
+
+                    depotData.m_VehicleCapacity = newCapacity;
+                }
+            }
+
+            // PASSENGERS — prefab-only
+            foreach ((RefRW<PublicTransportVehicleData> vehicleRef, Entity entity) in SystemAPI
+                         .Query<RefRW<PublicTransportVehicleData>>()
+                         .WithAll<PrefabData>()
+                         .WithEntityAccess())
+            {
+                ref PublicTransportVehicleData vehicleData = ref vehicleRef.ValueRW;
+
+                if (!IsHandledPassengerType(vehicleData.m_TransportType))
+                {
+                    continue;
+                }
+
+                m_SeenPassengerTypes.Add(vehicleData.m_TransportType);
+
+                if (IsPrisonVan(entity))
+                {
+                    continue;
+                }
+
+                float scalar = GetPassengerScalar(settings, vehicleData.m_TransportType);
+
+                int basePassengers;
+                if (!TryGetPassengerBaseCapacity(entity, out basePassengers))
+                {
+                    basePassengers = vehicleData.m_PassengerCapacity;
+                }
+
+                int newPassengers = ScalarMath.ScaleIntRoundedMin1(basePassengers, scalar);
+
+                if (newPassengers != vehicleData.m_PassengerCapacity)
+                {
+                    if (debug)
+                    {
+                        Mod.s_Log.Info(
+                            $"{Mod.ModTag} Passengers apply: entity={entity.Index}:{entity.Version} " +
+                            $"type={vehicleData.m_TransportType} BaseSeats={basePassengers} scalar={scalar:F2} " +
+                            $"OldSeats={vehicleData.m_PassengerCapacity} NewSeats={newPassengers}");
+                    }
+
+                    vehicleData.m_PassengerCapacity = newPassengers;
+                }
+
+                if (debug)
+                {
+                    if (!m_PassengerSeatSummary.TryGetValue(vehicleData.m_TransportType, out SeatSummary summary))
+                    {
+                        summary = new SeatSummary();
+                    }
+
+                    summary.AddSample(basePassengers, newPassengers);
+                    m_PassengerSeatSummary[vehicleData.m_TransportType] = summary;
+                }
+            }
+
+            if (debug && !m_LoggedTypesOnce)
+            {
+                m_LoggedTypesOnce = true;
+
+                string depotSummary = m_SeenDepotTypes.Count > 0 ? string.Join(", ", m_SeenDepotTypes) : "(none)";
+                string passengerSummary = m_SeenPassengerTypes.Count > 0 ? string.Join(", ", m_SeenPassengerTypes) : "(none)";
+
+                Mod.s_Log.Info($"{Mod.ModTag} Debug: City Summary -> DepotTypes=[{depotSummary}] PassengerTypes=[{passengerSummary}]");
+
+                if (m_PassengerSeatSummary.Count > 0)
+                {
+                    foreach (KeyValuePair<TransportType, SeatSummary> kvp in m_PassengerSeatSummary)
+                    {
+                        TransportType type = kvp.Key;
+                        SeatSummary summary = kvp.Value;
+                        if (!summary.HasData)
+                        {
+                            continue;
+                        }
+
+                        float scalar = GetPassengerScalar(settings, type);
+                        float percent = scalar * 100f;
+
+                        if (type == TransportType.Tram)
+                        {
+                            int perSectionBase = summary.MinBase;
+                            int perSectionNew = summary.MinNew;
+                            int totalNew = perSectionNew * kTramSections;
+
+                            Mod.s_Log.Info(
+                                $"{Mod.ModTag} Debug: Tram passengers scaled {percent:F0}%, " +
+                                $"{perSectionBase} -> {perSectionNew} x {kTramSections} sections = {totalNew} (per vehicle prefab type)");
+                        }
+                        else if (summary.MinBase == summary.MaxBase && summary.MinNew == summary.MaxNew)
+                        {
+                            Mod.s_Log.Info($"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase} -> {summary.MinNew} (per vehicle prefab type)");
+                        }
+                        else
+                        {
+                            Mod.s_Log.Info($"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase}-{summary.MaxBase} -> {summary.MinNew}-{summary.MaxNew} (per vehicle prefab types)");
+                        }
+                    }
+                }
+            }
+
+            Enabled = false;
+        }
+
+        private static bool IsHandledDepotType(TransportType type)
+        {
+            switch (type)
+            {
+                case TransportType.Bus:
+                case TransportType.Ferry:
+                case TransportType.Taxi:
+                case TransportType.Tram:
+                case TransportType.Train:
+                case TransportType.Subway:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private static bool IsHandledPassengerType(TransportType type)
+        {
+            switch (type)
+            {
+                case TransportType.Bus:
+                case TransportType.Tram:
+                case TransportType.Train:
+                case TransportType.Subway:
+                case TransportType.Ship:
+                case TransportType.Ferry:
+                case TransportType.Airplane:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private bool IsPrisonVan(Entity entity)
+        {
+            string name = PrefabNameUtil.GetNameSafe(m_PrefabSystem, entity);
+            return !string.IsNullOrEmpty(name) && name.IndexOf("PrisonVan", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private bool TryGetDepotBaseCapacity(Entity entity, out int baseCapacity)
+        {
+            baseCapacity = 0;
+
+            if (!PrefabComponentUtil.TryGetComponent(m_PrefabSystem, entity, out TransportDepot depotComponent))
+            {
+                return false;
+            }
+
+            baseCapacity = depotComponent.m_VehicleCapacity;
+            return true;
+        }
+
+        private bool TryGetPassengerBaseCapacity(Entity entity, out int basePassengers)
+        {
+            basePassengers = 0;
+
+            if (!PrefabComponentUtil.TryGetComponent(m_PrefabSystem, entity, out PublicTransport publicTransport))
+            {
+                return false;
+            }
+
+            basePassengers = publicTransport.m_PassengerCapacity;
+            return true;
+        }
+
+        private static float GetDepotScalar(Setting settings, TransportType type)
+        {
+            float percent;
+            switch (type)
+            {
+                case TransportType.Bus: percent = settings.BusDepotScalar; break;
+                case TransportType.Ferry: percent = settings.FerryDepotScalar; break;
+                case TransportType.Subway: percent = settings.SubwayDepotScalar; break;
+                case TransportType.Taxi: percent = settings.TaxiDepotScalar; break;
+                case TransportType.Train: percent = settings.TrainDepotScalar; break;
+                case TransportType.Tram: percent = settings.TramDepotScalar; break;
+                default: return 1f;
+            }
+
+            return ScalarMath.PercentToScalarClamped(percent, Setting.DepotMinPercent, Setting.MaxPercent);
+        }
+
+        private static float GetPassengerScalar(Setting settings, TransportType type)
+        {
+            float percent;
+            switch (type)
+            {
+                case TransportType.Airplane: percent = settings.AirplanePassengerScalar; break;
+                case TransportType.Bus: percent = settings.BusPassengerScalar; break;
+                case TransportType.Ferry: percent = settings.FerryPassengerScalar; break;
+                case TransportType.Ship: percent = settings.ShipPassengerScalar; break;
+                case TransportType.Subway: percent = settings.SubwayPassengerScalar; break;
+                case TransportType.Tram: percent = settings.TramPassengerScalar; break;
+                case TransportType.Train: percent = settings.TrainPassengerScalar; break;
+                default: return 1f;
+            }
+
+            return ScalarMath.PercentToScalarClamped(percent, Setting.PassengerMinPercent, Setting.MaxPercent);
+        }
+    }
+}

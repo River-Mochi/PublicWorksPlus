@@ -1,56 +1,54 @@
-﻿# Adjust Transit Capacity
+# Public Works Plus
 
-**Adjust Transit Capacity** (Redux)
-- ATC Lets players scale how many vehicles each transport depot can maintain or spawn in *Cities: Skylines II*
-— plus how many passengers each public transic vehicle can carry.
+Public Works Plus lets you scale **fleet sizes** and **vehicle capacities** in *Cities: Skylines II*.
 
----
+## Features
 
-## What it does
+### Public Transit
+- **Depot capacity** (max vehicles per depot): Bus, **Ferry**, Taxi, Tram, Train, Subway
+- **Passenger capacity** (seats per vehicle): Bus, Tram, Train, Subway, Ship, Ferry, Airplane
+- Optional: **Expand Transit Line in-game slider limits** (can allow down to 1 vehicle on most routes; max is also higher than vanilla)
 
-- Adds sliders in the mod’s **Options** panel.
-- **Depot capacity:** Bus, Taxi, Tram, Train, Subway  
-  (scales the maximum vehicles per depot)
-- **Passenger capacity:** Bus, Taxi, Tram, Train, Subway, Ship, Ferry, Airplane  
-  (scales how many passengers each vehicle can carry)
-- Each slider ranges from **100% → 1000%** of vanilla.
-- Changing a slider automatically re-applies the new capacities in the loaded city.
-- Buttons to Reset sliders to vanilla (100%).
+### Industry & Cargo
+- **Delivery vehicle cargo capacity**: Semi Trucks, Delivery Vans, Raw Material trucks, Motorbike delivery
+- **Cargo station fleet** (harbor/train/airport cargo stations): max active transporters
+- **Extractor fleet**: max trucks for industrial extractors
 
-### Notes
-- *Depot capacity* = maximum number of vehicles a single depot can maintain or spawn.
-- *Passenger capacity* = maximum passengers each vehicle can carry.
-- Capacities reset correctly when loading a different city or save.
+### Parks & Roads
+- **Park maintenance**
+  - Depot fleet size
+  - Vehicle maintenance capacity
+  - Vehicle maintenance rate
+- **Road maintenance**
+  - Depot fleet size
+  - Work Shift capacity
+  - Repair rate (alpha)
+- **Road wear speed** (alpha)
 
----
+### Debug Tools (About tab)
+- **Prefab Scan Report** (writes `ModsData/PublicWorksPlus/ScanReport-Prefabs.txt`)
+- **Open log folder** / **Open report folder**
+- Optional verbose logging (disable for normal gameplay)
 
-## 11 Languages
+## Notes
+- Avoid running multiple mods that change the same capacities/policies (they can override each other).
+- Changes apply while a city is loaded; no restart needed.
+- Safe to remove any time (use reset buttons if you want to return to vanilla first).
 
-- English (en-US), Français French, Deutsch German, Español Spanish, Italiano Italian
-- 한국어 Korean, 日本語 Japanese, 简体中文 (Simplified Chinese)
-- 繁體中文 Traditional Chinese, Português Brazilian, Polski Polish
-
----
+## Languages (11)
+English, Français, Deutsch, Español, Italiano, 한국어, 日本語, 简体中文, 繁體中文, Português (Brazil), Polski
 
 ## Credits
-
-- **River-Mochi** author/maintainer, localization  
-- Thanks to **Wayz** for the original *Depot Capacity Changer* (retired from modding)
-- yenyang - code review and technical advice
-- Necko1996 - testing
-- BugsyG - testing
-- StarQ for technical support
-
----
+- River-Mochi — author/maintainer, localization
+- Inspired by Wayz’s original **Depot Capacity Changer**
+- yenyang — code review & technical advice
+- Necko1996, BugsyG — testing
+- StarQ — technical advice
 
 ## Links
-
-- [Github repo](https://github.com/River-Mochi/AdjustTransitCapacity)
-- [Paradox Mods page](https://mods.paradoxplaza.com/authors/kimosabe1/cities_skylines_2?games=cities_skylines_2&orderBy=desc&sortBy=best&time=alltime)
-- [Support Discord](https://discord.gg/HTav7ARPs2)
-
----
+- GitHub: https://github.com/River-Mochi/PublicWorksPlus
+- Paradox Mods: https://mods.paradoxplaza.com/authors/River-mochi/cities_skylines_2?games=cities_skylines_2&orderBy=desc&sortBy=best&time=alltime
+- Support Discord: https://discord.gg/HTav7ARPs2
 
 ## License
-
-MIT — same as the original.
+MIT

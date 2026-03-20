@@ -1,36 +1,31 @@
-// Mod.cs
-// Entrypoint: registers settings, locales, and the ECS system.
+// File: Mod.cs
+// Entrypoint: registers settings, locales, and the ECS systems.
 
-namespace AdjustTransitCapacity
+namespace PublicWorksPlus
 {
-    using System;                         // Exception (localization wrapper)
-    using System.Reflection;              // Metadata: Assembly version
     using Colossal;                       // IDictionarySource
     using Colossal.IO.AssetDatabase;      // AssetDatabase.LoadSettings
     using Colossal.Localization;          // LocalizationManager
     using Colossal.Logging;               // ILog, defines shared s_Log
-    using Game;                           // UpdateSystem, GameManager
-    using Game.Modding;                   // IMod, ModSetting base
-    using Game.SceneFlow;                 // GameMode, GameManager access
-    using Unity.Entities;                 // World, ECS system registration
+    using Game;                           // UpdateSystem, GameManager, SystemUpdatePhase
+    using Game.Modding;                   // IMod
+    using Game.SceneFlow;                // GameManager
+    using System;                         // Exception
+    using System.Reflection;              // Assembly
 
-    /// <summary>Mod entry point: registers settings, locales, and ECS system.</summary>
+    /// <summary>Mod entry point: registers settings, locales, and ECS systems.</summary>
     public sealed class Mod : IMod
     {
-        // ---- PUBLIC CONSTANTS / METADATA ----
-        public const string ModName = "Adjust Transit Capacity";
-        public const string ModId = "AdjustTransitCapacity";
-        public const string ModTag = "[ATC]";
+        public const string ModName = "Public Works Plus";
+        public const string ShortName = "Public Works Plus";
+        public const string ModId = "PublicWorksPlus";
+        public const string ModTag = "[PWP]";
 
-        /// <summary>
-        /// Read Version from .csproj (3-part).
-        /// </summary>
         public static readonly string ModVersion =
             Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
 
         private static bool s_BannerLogged;
 
-        // ----- Logger & public properties -----
         public static readonly ILog s_Log =
             LogManager.GetLogger(ModId).SetShowsErrorsInUI(false);
 
@@ -38,18 +33,17 @@ namespace AdjustTransitCapacity
 
         public void OnLoad(UpdateSystem updateSystem)
         {
-            // metadata banner (once)
             if (!s_BannerLogged)
             {
                 s_BannerLogged = true;
                 s_Log.Info($"{ModName} v{ModVersion} OnLoad");
             }
 
-            // Settings first so locale labels can resolve
-            Setting setting = new Setting(this);
+            // Settings first so locale labels can resolve.
+            Setting setting = new(this);
             Settings = setting;
 
-            // Register languages via helper (safe AddSource wrapper)
+            // Register ALL languages (keep these lines!)
             AddLocaleSource("en-US", new LocaleEN(setting));
             AddLocaleSource("fr-FR", new LocaleFR(setting));
             AddLocaleSource("es-ES", new LocaleES(setting));
@@ -62,14 +56,37 @@ namespace AdjustTransitCapacity
             AddLocaleSource("zh-HANS", new LocaleZH_CN(setting));    // Simplified Chinese
             AddLocaleSource("zh-HANT", new LocaleZH_HANT(setting));  // Traditional Chinese
 
-            // Load saved settings (location is in Setting.cs [FileLocation])
+            // Load settings (.coc) into the instance.
+            // The default instance passed here provides defaults for missing fields.
             AssetDatabase.global.LoadSettings(ModId, setting, new Setting(this));
 
-            // Show in Options -> Mods
+            // Repair missing/out-of-range/invalid values in-memory (no auto-save).
+            setting.SanitizeAfterLoad();
+
             setting.RegisterInOptionsUI();
 
-            // Scheduled after PrefabUpdate so prefab data and components are initialized.
-            updateSystem.UpdateAfter<AdjustTransitCapacitySystem>(SystemUpdatePhase.PrefabUpdate);
+            // Systems
+            updateSystem.UpdateAfter<TransitSystem>(SystemUpdatePhase.PrefabUpdate);
+            updateSystem.UpdateAfter<MaintenanceSystem>(SystemUpdatePhase.PrefabUpdate);
+            updateSystem.UpdateAfter<LaneWearSystem>(SystemUpdatePhase.PrefabUpdate);
+
+            // Industry (prefab editing window)
+            updateSystem.UpdateAfter<IndustrySystem>(SystemUpdatePhase.PrefabUpdate);
+            updateSystem.UpdateBefore<IndustrySystem>(SystemUpdatePhase.PrefabReferences);
+
+            // Allow transit lines range to be 1-and higher than vanilla
+            updateSystem.UpdateAfter<VehicleCountPolicyTunerSystem>(SystemUpdatePhase.PrefabUpdate);
+
+            // Prefab scan: must work even while Options UI is open
+            updateSystem.UpdateAt<PrefabScanSystem>(SystemUpdatePhase.PrefabUpdate);
+
+#if DEBUG
+            // Debug probe: logs LaneCondition.m_Wear deltas (runtime)
+            updateSystem.UpdateAt<LaneWearProbeSystem>(SystemUpdatePhase.GameSimulation);
+            // Proof logger: checks live delivery vehicles carrying above vanilla caps.
+            updateSystem.UpdateAt<DeliveryCargoProbeSystem>(SystemUpdatePhase.GameSimulation);
+#endif
+            s_Log.Info($"{ModId}.{nameof(OnLoad)} Completed.");
         }
 
         public void OnDispose()
@@ -83,14 +100,10 @@ namespace AdjustTransitCapacity
             }
         }
 
-        // --------------------------------------------------------------------
-        // Localization helper
-        // --------------------------------------------------------------------
+        //---------------
+        // HELPERS
+        //---------------
 
-        /// <summary>
-        /// Wrapper for LocalizationManager.AddSource that catches exceptions
-        /// so localization issues can't break mod loading.
-        /// </summary>
         private static void AddLocaleSource(string localeId, IDictionarySource source)
         {
             if (string.IsNullOrEmpty(localeId))
@@ -115,5 +128,25 @@ namespace AdjustTransitCapacity
                     $"AddLocaleSource: AddSource for '{localeId}' failed: {ex.GetType().Name}: {ex.Message}");
             }
         }
+
+        internal static string L(string id, string fallback)
+        {
+            try
+            {
+                LocalizationManager? lm = GameManager.instance?.localizationManager;
+                if (lm != null &&
+                    lm.activeDictionary != null &&
+                    lm.activeDictionary.TryGetValue(id, out string result))
+                {
+                    return result;
+                }
+            }
+            catch
+            {
+            }
+
+            return fallback;
+        }
     }
 }
+
