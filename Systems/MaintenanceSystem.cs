@@ -5,7 +5,7 @@
 // - Uses PrefabSystem + PrefabBase to read vanilla/base values so results do NOT stack.
 // - Includes name-based fallback for depots with MaintenanceType.None (extra garages / sub-prefabs).
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal.Serialization.Entities;
     using Game;

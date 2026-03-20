@@ -1,7 +1,7 @@
 ﻿// File: Localization/LocaleKO.cs
 // Korean (ko-KR) strings for Options UI.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal;
     using System.Collections.Generic;
@@ -303,7 +303,7 @@ namespace DispatchBoss
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RunPrefabScanButton)),
                     "디버깅용 <1회성> 보고서를 생성합니다.\n" +
                     "일반 플레이에는 필요하지 않습니다.\n" +
-                    "파일 위치: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
+                    "파일 위치: <ModsData/PublicWorksPlus/ScanReport-Prefabs.txt>\n" +
                     "팁: <한 번> 클릭하고, 상태가 완료로 표시되면 <보고서 폴더 열기>를 사용하세요." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab 스캔 상태" },
@@ -313,14 +313,14 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "상세 디버그 로그" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "문제 해결용 추가 세부 정보를 <DispatchBoss.log> 로 보냅니다.\n" +
+                    "문제 해결용 추가 세부 정보를 <PublicWorksPlus.log> 로 보냅니다.\n" +
                     "일반 플레이에서는 **비활성화**하세요.\n" +
                     "<이 옵션은 로깅만 늘리며 게임플레이 값은 변경하지 않습니다.>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "로그 폴더 열기" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "로그 폴더를 엽니다.\n" +
-                    "다음: 텍스트 편집기로 <DispatchBoss.log> 를 여세요 (Notepad++ 권장)." },
+                    "다음: 텍스트 편집기로 <PublicWorksPlus.log> 를 여세요 (Notepad++ 권장)." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "보고서 폴더 열기" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenReportButton)),
@@ -328,13 +328,13 @@ namespace DispatchBoss
                     "다음: 텍스트 편집기로 <ScanReport-Prefabs.txt> 를 여세요 (예: Notepad++)." },
 
                 // ---- Scan Report Status Text (format string templates) ----
-                { "DB_SCAN_IDLE", "대기 중" },
-                { "DB_SCAN_QUEUED_FMT", "대기열 ({0})" },
-                { "DB_SCAN_RUNNING_FMT", "실행 중 ({0})" },
-                { "DB_SCAN_DONE_FMT", "완료 ({0} | {1})" },
-                { "DB_SCAN_FAILED", "실패" },
-                { "DB_SCAN_FAIL_NO_CITY", "먼저 도시 로드" },
-                { "DB_SCAN_UNKNOWN_TIME", "알 수 없는 시간" },
+                { "PWP_SCAN_IDLE", "대기 중" },
+                { "PWP_SCAN_QUEUED_FMT", "대기열 ({0})" },
+                { "PWP_SCAN_RUNNING_FMT", "실행 중 ({0})" },
+                { "PWP_SCAN_DONE_FMT", "완료 ({0} | {1})" },
+                { "PWP_SCAN_FAILED", "실패" },
+                { "PWP_SCAN_FAIL_NO_CITY", "먼저 도시 로드" },
+                { "PWP_SCAN_UNKNOWN_TIME", "알 수 없는 시간" },
 
             };
         }

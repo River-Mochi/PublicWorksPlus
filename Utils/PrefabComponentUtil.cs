@@ -4,7 +4,7 @@
 // - Centralizes PrefabSystem.TryGetPrefab + PrefabBase.TryGet.
 // - PrefabBase.TryGet<T> requires T : ComponentBase.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Game.Prefabs;
     using Unity.Entities;

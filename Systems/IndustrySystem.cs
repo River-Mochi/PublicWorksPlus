@@ -9,7 +9,7 @@
 // - Scales all delivery-truck prefabs by bucket (Semi / Van / Raw / Motorbike).
 // - Tags changed prefab entities with Updated via ECB (structural change safe).
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal.Serialization.Entities;
     using Game;

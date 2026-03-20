@@ -1,7 +1,7 @@
 // File: Settings/Setting.ParksRoads.cs
 // Purpose: Parks/Roads settings (maintenance + road wear).
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Game.Settings;     // Settings UI attributes
     using Game.UI;           // Unit

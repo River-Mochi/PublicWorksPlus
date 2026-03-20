@@ -1,7 +1,7 @@
 ﻿// File: Localization/LocaleJA.cs
 // Japanese (ja-JP) strings for Options UI.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal;
     using System.Collections.Generic;
@@ -303,7 +303,7 @@ namespace DispatchBoss
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RunPrefabScanButton)),
                     "デバッグ用の<一回限り>レポートを作成します。\n" +
                     "通常プレイには不要です。\n" +
-                    "ファイル場所: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
+                    "ファイル場所: <ModsData/PublicWorksPlus/ScanReport-Prefabs.txt>\n" +
                     "ヒント: <一度>クリックし、状態が完了になったら <レポートフォルダーを開く> を使ってください。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefabスキャン状態" },
@@ -313,14 +313,14 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "詳細デバッグログ" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "トラブルシュート用に <DispatchBoss.log> へ追加詳細を書き込みます。\n" +
+                    "トラブルシュート用に <PublicWorksPlus.log> へ追加詳細を書き込みます。\n" +
                     "通常プレイでは**無効化**してください。\n" +
                     "<これはログ量を増やすだけで、ゲームプレイ値は変更しません。>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "ログフォルダーを開く" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "ログフォルダーを開きます。\n" +
-                    "次に: テキストエディタで <DispatchBoss.log> を開きます（Notepad++ 推奨）。" },
+                    "次に: テキストエディタで <PublicWorksPlus.log> を開きます（Notepad++ 推奨）。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "レポートフォルダーを開く" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenReportButton)),
@@ -328,13 +328,13 @@ namespace DispatchBoss
                     "次に: テキストエディタで <ScanReport-Prefabs.txt> を開きます（例: Notepad++）。" },
 
                 // ---- Scan Report Status Text (format string templates) ----
-                { "DB_SCAN_IDLE", "待機中" },
-                { "DB_SCAN_QUEUED_FMT", "待機列 ({0})" },
-                { "DB_SCAN_RUNNING_FMT", "実行中 ({0})" },
-                { "DB_SCAN_DONE_FMT", "完了 ({0} | {1})" },
-                { "DB_SCAN_FAILED", "失敗" },
-                { "DB_SCAN_FAIL_NO_CITY", "先に都市をロード" },
-                { "DB_SCAN_UNKNOWN_TIME", "時刻不明" },
+                { "PWP_SCAN_IDLE", "待機中" },
+                { "PWP_SCAN_QUEUED_FMT", "待機列 ({0})" },
+                { "PWP_SCAN_RUNNING_FMT", "実行中 ({0})" },
+                { "PWP_SCAN_DONE_FMT", "完了 ({0} | {1})" },
+                { "PWP_SCAN_FAILED", "失敗" },
+                { "PWP_SCAN_FAIL_NO_CITY", "先に都市をロード" },
+                { "PWP_SCAN_UNKNOWN_TIME", "時刻不明" },
 
             };
         }

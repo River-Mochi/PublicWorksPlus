@@ -1,7 +1,7 @@
 // File: Mod.cs
 // Entrypoint: registers settings, locales, and the ECS systems.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal;                       // IDictionarySource
     using Colossal.IO.AssetDatabase;      // AssetDatabase.LoadSettings
@@ -16,10 +16,10 @@ namespace DispatchBoss
     /// <summary>Mod entry point: registers settings, locales, and ECS systems.</summary>
     public sealed class Mod : IMod
     {
-        public const string ModName = "Dispatch Boss";
-        public const string ShortName = "Dispatch Boss";
-        public const string ModId = "DispatchBoss";
-        public const string ModTag = "[DB]";
+        public const string ModName = "Public Works Plus";
+        public const string ShortName = "Public Works Plus";
+        public const string ModId = "PublicWorksPlus";
+        public const string ModTag = "[PWP]";
 
         public static readonly string ModVersion =
             Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
@@ -86,7 +86,7 @@ namespace DispatchBoss
             // Proof logger: checks live delivery vehicles carrying above vanilla caps.
             updateSystem.UpdateAt<DeliveryCargoProbeSystem>(SystemUpdatePhase.GameSimulation);
 #endif
-            s_Log.Info($"{nameof(DispatchBoss)}.{nameof(OnLoad)} Completed.");
+            s_Log.Info($"{ModId}.{nameof(OnLoad)} Completed.");
         }
 
         public void OnDispose()

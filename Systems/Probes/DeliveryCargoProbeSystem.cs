@@ -8,7 +8,7 @@
 // - Work is gated by EnableDebugLogging in OnUpdate.
 // - GetUpdateInterval is throttling only; it must always return a power-of-2 (or 1).
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal.Serialization.Entities;
     using Game;

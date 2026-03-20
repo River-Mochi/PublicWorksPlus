@@ -1,7 +1,7 @@
 ﻿// File: Localization/LocalePT_BR.cs
 // Portuguese-Brazil (pt-BR) strings for Options UI.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal;
     using Colossal.IO.AssetDatabase.Internal;
@@ -304,7 +304,7 @@ namespace DispatchBoss
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RunPrefabScanButton)),
                     "Cria um relatório <único> para depuração.\n" +
                     "Não é necessário para jogabilidade normal.\n" +
-                    "Local do arquivo: <ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
+                    "Local do arquivo: <ModsData/PublicWorksPlus/ScanReport-Prefabs.txt>\n" +
                     "Dica: clique <uma vez>; quando o status mostrar Concluído, use <Abrir pasta do relatório>." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Status da varredura de prefabs" },
@@ -314,14 +314,14 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Logs de debug detalhados" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "Envia detalhes extras para <DispatchBoss.log> para solução de problemas.\n" +
+                    "Envia detalhes extras para <PublicWorksPlus.log> para solução de problemas.\n" +
                     "**Desative** para jogabilidade normal.\n" +
                     "<Isto só aumenta o log e não altera valores de jogabilidade.>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "Abrir pasta de logs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "Abre a pasta de logs.\n" +
-                    "Próximo: abra <DispatchBoss.log> com o editor de texto (Notepad++ recomendado)." },
+                    "Próximo: abra <PublicWorksPlus.log> com o editor de texto (Notepad++ recomendado)." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "Abrir pasta do relatório" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenReportButton)),
@@ -329,13 +329,13 @@ namespace DispatchBoss
                     "Próximo: abra <ScanReport-Prefabs.txt> com o editor de texto (por ex., Notepad++)." },
 
                 // ---- Scan Report Status Text (format string templates) ----
-                { "DB_SCAN_IDLE", "Inativo" },
-                { "DB_SCAN_QUEUED_FMT", "Na fila ({0})" },
-                { "DB_SCAN_RUNNING_FMT", "Em execução ({0})" },
-                { "DB_SCAN_DONE_FMT", "Concluído ({0} | {1})" },
-                { "DB_SCAN_FAILED", "Falhou" },
-                { "DB_SCAN_FAIL_NO_CITY", "Carregue a cidade primeiro" },
-                { "DB_SCAN_UNKNOWN_TIME", "hora desconhecida" },
+                { "PWP_SCAN_IDLE", "Inativo" },
+                { "PWP_SCAN_QUEUED_FMT", "Na fila ({0})" },
+                { "PWP_SCAN_RUNNING_FMT", "Em execução ({0})" },
+                { "PWP_SCAN_DONE_FMT", "Concluído ({0} | {1})" },
+                { "PWP_SCAN_FAILED", "Falhou" },
+                { "PWP_SCAN_FAIL_NO_CITY", "Carregue a cidade primeiro" },
+                { "PWP_SCAN_UNKNOWN_TIME", "hora desconhecida" },
 
             };
         }

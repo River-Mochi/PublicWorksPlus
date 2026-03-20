@@ -5,7 +5,7 @@
 // - Fallback: OS shell open (Windows/macOS/Linux).
 // - Safe: catches exceptions; no crash on failure.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal.PSI.Environment;
     using System;

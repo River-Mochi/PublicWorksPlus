@@ -1,7 +1,7 @@
 ﻿// File: Localization/LocaleZH_CN.cs
 // Simplified Chinese (zh-HANS) strings for Options UI.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal;
     using Colossal.IO.AssetDatabase.Internal;
@@ -304,7 +304,7 @@ namespace DispatchBoss
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RunPrefabScanButton)),
                     "创建用于调试的<一次性>报告。\n" +
                     "正常游玩不需要。\n" +
-                    "文件位置：<ModsData/DispatchBoss/ScanReport-Prefabs.txt>\n" +
+                    "文件位置：<ModsData/PublicWorksPlus/ScanReport-Prefabs.txt>\n" +
                     "提示：点击<一次>；当状态显示为完成时，使用 <打开报告文件夹>。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab 扫描状态" },
@@ -314,14 +314,14 @@ namespace DispatchBoss
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "详细调试日志" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "将额外细节发送到 <DispatchBoss.log> 以便排查问题。\n" +
+                    "将额外细节发送到 <PublicWorksPlus.log> 以便排查问题。\n" +
                     "正常游玩请**禁用**。\n" +
                     "<这只会增加日志记录，不会改变游戏数值。>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "打开日志文件夹" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "打开日志文件夹。\n" +
-                    "下一步：用文本编辑器打开 <DispatchBoss.log>（推荐 Notepad++）。" },
+                    "下一步：用文本编辑器打开 <PublicWorksPlus.log>（推荐 Notepad++）。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "打开报告文件夹" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenReportButton)),
@@ -329,13 +329,13 @@ namespace DispatchBoss
                     "下一步：用文本编辑器打开 <ScanReport-Prefabs.txt>（例如 Notepad++）。" },
 
                 // ---- Scan Report Status Text (format string templates) ----
-                { "DB_SCAN_IDLE", "空闲" },
-                { "DB_SCAN_QUEUED_FMT", "排队中 ({0})" },
-                { "DB_SCAN_RUNNING_FMT", "运行中 ({0})" },
-                { "DB_SCAN_DONE_FMT", "完成 ({0} | {1})" },
-                { "DB_SCAN_FAILED", "失败" },
-                { "DB_SCAN_FAIL_NO_CITY", "请先加载城市" },
-                { "DB_SCAN_UNKNOWN_TIME", "未知时间" },
+                { "PWP_SCAN_IDLE", "空闲" },
+                { "PWP_SCAN_QUEUED_FMT", "排队中 ({0})" },
+                { "PWP_SCAN_RUNNING_FMT", "运行中 ({0})" },
+                { "PWP_SCAN_DONE_FMT", "完成 ({0} | {1})" },
+                { "PWP_SCAN_FAILED", "失败" },
+                { "PWP_SCAN_FAIL_NO_CITY", "请先加载城市" },
+                { "PWP_SCAN_UNKNOWN_TIME", "未知时间" },
 
             };
         }

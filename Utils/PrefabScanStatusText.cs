@@ -4,20 +4,20 @@
 // - Uses localization keys with English fallbacks.
 // - Does not translate FailDetails (usually exception text).
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using System;
 
     public static class PrefabScanStatusText
     {
         // Locale keys (templates)
-        private const string KeyIdle = "DB_SCAN_IDLE";
-        private const string KeyQueuedFmt = "DB_SCAN_QUEUED_FMT";     // "{0}" = elapsed
-        private const string KeyRunningFmt = "DB_SCAN_RUNNING_FMT";   // "{0}" = elapsed
-        private const string KeyDoneFmt = "DB_SCAN_DONE_FMT";         // "{0}" = duration, "{1}" = timestamp
-        private const string KeyFailed = "DB_SCAN_FAILED";
-        private const string KeyFailNoCity = "DB_SCAN_FAIL_NO_CITY";
-        private const string KeyUnknownTime = "DB_SCAN_UNKNOWN_TIME";
+        private const string KeyIdle = "PWP_SCAN_IDLE";
+        private const string KeyQueuedFmt = "PWP_SCAN_QUEUED_FMT";     // "{0}" = elapsed
+        private const string KeyRunningFmt = "PWP_SCAN_RUNNING_FMT";   // "{0}" = elapsed
+        private const string KeyDoneFmt = "PWP_SCAN_DONE_FMT";         // "{0}" = duration, "{1}" = timestamp
+        private const string KeyFailed = "PWP_SCAN_FAILED";
+        private const string KeyFailNoCity = "PWP_SCAN_FAIL_NO_CITY";
+        private const string KeyUnknownTime = "PWP_SCAN_UNKNOWN_TIME";
 
         public static string Format(PrefabScanState.Snapshot s)
         {

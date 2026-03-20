@@ -1,6 +1,6 @@
-# Dispatch Boss
+# Public Works Plus
 
-Dispatch Boss lets you scale **fleet sizes** and **vehicle capacities** in *Cities: Skylines II*.
+Public Works Plus lets you scale **fleet sizes** and **vehicle capacities** in *Cities: Skylines II*.
 
 ## Features
 
@@ -10,7 +10,7 @@ Dispatch Boss lets you scale **fleet sizes** and **vehicle capacities** in *Citi
 - Optional: **Expand Transit Line in-game slider limits** (can allow down to 1 vehicle on most routes; max is also higher than vanilla)
 
 ### Industry & Cargo
-- **Delivery vehicle cargo capacity**: Semi Trucks, Delivery Vans, Raw Materials trucks, Motorbike delivery
+- **Delivery vehicle cargo capacity**: Semi Trucks, Delivery Vans, Raw Material trucks, Motorbike delivery
 - **Cargo station fleet** (harbor/train/airport cargo stations): max active transporters
 - **Extractor fleet**: max trucks for industrial extractors
 
@@ -21,12 +21,12 @@ Dispatch Boss lets you scale **fleet sizes** and **vehicle capacities** in *Citi
   - Vehicle maintenance rate
 - **Road maintenance**
   - Depot fleet size
-  - Vehicle maintenance capacity
-  - Vehicle maintenance rate (alpha)
+  - Work Shift capacity
+  - Repair rate (alpha)
 - **Road wear speed** (alpha)
 
 ### Debug Tools (About tab)
-- **Prefab Scan Report** (writes `ModsData/DispatchBoss/ScanReport-Prefabs.txt`)
+- **Prefab Scan Report** (writes `ModsData/PublicWorksPlus/ScanReport-Prefabs.txt`)
 - **Open log folder** / **Open report folder**
 - Optional verbose logging (disable for normal gameplay)
 
@@ -43,10 +43,10 @@ English, Français, Deutsch, Español, Italiano, 한국어, 日本語, 简体中
 - Inspired by Wayz’s original **Depot Capacity Changer**
 - yenyang — code review & technical advice
 - Necko1996, BugsyG — testing
-- StarQ — technical support
+- StarQ — technical advice
 
 ## Links
-- GitHub: https://github.com/River-Mochi/DispatchBoss
+- GitHub: https://github.com/River-Mochi/PublicWorksPlus
 - Paradox Mods: https://mods.paradoxplaza.com/authors/River-mochi/cities_skylines_2?games=cities_skylines_2&orderBy=desc&sortBy=best&time=alltime
 - Support Discord: https://discord.gg/HTav7ARPs2
 

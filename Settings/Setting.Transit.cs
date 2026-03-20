@@ -1,7 +1,7 @@
 // File: Settings/Setting.Transit.cs
 // Purpose: Public Transit settings (depots, passengers, line vehicle policy toggle).
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Game;              // IsGame
     using Game.SceneFlow;    // GameManager

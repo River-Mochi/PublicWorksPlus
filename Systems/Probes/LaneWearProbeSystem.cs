@@ -6,7 +6,7 @@
 // - Uses EntityQuery shared-component filtering (UpdateFrame) instead of obsolete shared-component APIs.
 // - GetUpdateInterval must return a power of 2 for any phase; settings gating belongs in OnUpdate.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Game;
     using Game.Net;

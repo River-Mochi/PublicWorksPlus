@@ -1,7 +1,7 @@
 // File: Settings/Setting.cs
-// Purpose: Options UI + saved settings for Dispatch Boss (Public Transit + Industry + Parks/Roads + About).
+// Purpose: Options UI + saved settings for Public Works Plus (Public Transit + Industry + Parks/Roads + About).
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal.IO.AssetDatabase; // FileLocation
     using Game;                     // IsGame
@@ -12,7 +12,7 @@ namespace DispatchBoss
     using Unity.Entities;           // World
     using UnityEngine;              // Application.OpenURL
 
-    [FileLocation("ModsSettings/DispatchBoss/DispatchBoss")]
+    [FileLocation("ModsSettings/PublicWorksPlus/PublicWorksPlus")]
     [SettingsUITabOrder(PublicTransitTab, IndustryTab, ParksRoadsTab, AboutTab)]
     [SettingsUIGroupOrder(
         LineVehiclesGroup, DepotGroup, PassengerGroup,

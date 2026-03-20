@@ -5,7 +5,7 @@
 // - Caches original m_TimeFactor + m_TrafficFactor per prefab entity so changes do not stack.
 // - Affects how quickly lanes accumulate deterioration from BOTH time and traffic.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal.Serialization.Entities;
     using Game;

@@ -4,7 +4,7 @@
 // - Logs exception only once (rare, but keeps logs clean).
 // - Returns a stable fallback string if name can't be resolved.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Game.Prefabs;
     using System;

@@ -5,7 +5,7 @@
 // - Prefer the ComponentLookup overload when calling from a system (SystemAPI.GetComponentLookup).
 // - Keep EntityManager overload only as a fallback for non-SystemAPI callers.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Game.Economy;   // Resource
     using Game.Prefabs;   // CarTrailerType, CarTractorData, CarTrailerData

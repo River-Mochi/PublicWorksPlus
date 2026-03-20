@@ -1,7 +1,7 @@
 // File: Settings/Setting.Industry.cs
 // Purpose: Industry settings (delivery vehicles, cargo stations, extractors).
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Game;              // IsGame
     using Game.SceneFlow;    // GameManager

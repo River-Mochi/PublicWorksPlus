@@ -4,7 +4,7 @@
 // - Managed-only state (RAM). Not saved.
 // - Guards against spam clicks, and provides running timer + last result metadata.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using System;
     using System.Diagnostics;

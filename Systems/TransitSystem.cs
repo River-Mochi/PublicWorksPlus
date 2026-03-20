@@ -5,7 +5,7 @@
 // - Depots: Bus / Ferry / Taxi / Tram / Train / Subway.
 // - Passengers: Bus / Tram / Train / Subway / Ship / Ferry / Airplane.
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal.Serialization.Entities;
     using Game;

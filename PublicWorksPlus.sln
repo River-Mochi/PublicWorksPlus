@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11612.150 stable
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicWorksPlus", "PublicWorksPlus.csproj", "{61C9982E-E392-7025-A835-BD6951512DC5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61C9982E-E392-7025-A835-BD6951512DC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61C9982E-E392-7025-A835-BD6951512DC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61C9982E-E392-7025-A835-BD6951512DC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61C9982E-E392-7025-A835-BD6951512DC5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FA76F3E1-D993-4E3C-A18B-CC078E7CDAB9}
+	EndGlobalSection
+EndGlobal

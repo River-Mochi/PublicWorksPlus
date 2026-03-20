@@ -1,13 +1,13 @@
 // File: Systems/Probes/PrefabScanSystem.cs
 // Purpose: One-shot prefab scan triggered by OptionsUI button.
-// Output: Writes report to {EnvPath.kUserDataPath}/ModsData/DispatchBoss/ScanReport-Prefabs.txt
+// Output: Writes report to {EnvPath.kUserDataPath}/ModsData/PublicWorksPlus/ScanReport-Prefabs.txt
 // Notes:
 // - Runs only when requested (PrefabScanState.RequestScan()).
 // - Uses SystemAPI.Query + SystemAPI.QueryBuilder.
 // - Deduped + capped to prevent giant outputs and logger issues.
 // - Logs only a summary line to the mod log (no spam).
 
-namespace DispatchBoss
+namespace PublicWorksPlus
 {
     using Colossal.PSI.Environment; // EnvPath
     using Game;
