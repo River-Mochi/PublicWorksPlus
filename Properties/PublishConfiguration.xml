@@ -10,18 +10,16 @@
 	<LongDescription>
 ### Public Works Plus (PWP)
 
-Scale *fleet sizes*, *vehicle capacities* in: all Public Transit, Parks/Roads Maintenance, All Industry Deliveries, Cargo stations, Extractors.
+Scale **fleet sizes**, *vehicle capacities* in: all Public Transit, Parks/Roads Maintenance, All Industry Deliveries, Cargo stations, Extractors.
 Includes everything from "Adjust Transit Capacity" (ATC) mod AND all the new mods below were *combined* into one PwP mod.
 
 ### Features
-- NEW *Industry Deliveries*: scale cargo capacity for delivery vehicles (Semi trucks, Delivery vans, Motorbike delivery, Raw material trucks - coal, oil, etc.)
+- NEW **Industry Deliveries**: scale cargo capacity for delivery vehicles (Semi trucks, Delivery vans, Motorbike delivery, Raw material trucks - coal, oil, etc.)
 - NEW *Extractor companies*: Fish, Grain, etc.; scale max fleet size (usually semi trucks)
 - NEW *Cargo Stations*: scale max fleet of cargo stations (harbor/train/airport)
 - NEW: *Transit Line Slider* (when you only want 1 bus or need ~30-60 buses).
 - NEW *Parks + Roads maintenance*: fleet size, work shift, and rate (alpha)
 - NEW *Road wear speed* (alpha): scale how fast or slow roads accumulate wear (damage) over time
-- *Transit depots*: change max vehicles per depot (Bus, Ferry, Subway, Taxi, Tram, Train)
-- *Passengers*: change total seats per vehicle (Bus, Tram, Train, Subway, Ship, Ferry, Airplane)
 
 #### From ATC mod
 - *Transit depots*: change max vehicles per depot (Bus, Ferry, Subway, Taxi, Tram, Train)
