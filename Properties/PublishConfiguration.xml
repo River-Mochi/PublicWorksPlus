@@ -67,6 +67,7 @@ delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extrac
 	<Thumbnail Value="Properties/Thumbnail-PublicWorksPlus.jpg" />
 	<!--Screenshot, can be set multiple times-->
 	<Screenshot Value="Properties/image10-Transit.jpg" />
+    <Screenshot Value="Properties/image15-PwP-Before-After.jpg" />
 	<Screenshot Value="Properties/image20-Passengers.jpg" />
 	<Screenshot Value="Properties/image30-Industry.jpg" />
 	<Screenshot Value="Properties/image40-Maintenance.jpg" />

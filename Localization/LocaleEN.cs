@@ -1,4 +1,4 @@
-﻿// File: Localization/LocaleEN.cs
+// File: Localization/LocaleEN.cs
 // English (en-US) strings for Options UI.
 
 namespace PublicWorksPlus
@@ -254,12 +254,13 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "Multiplier for **work shift capacity**.\n" +
                     "Total work a truck can do before it returns to the depot.\n" +
-                    "**Higher = fewer returns.**" },
+                    "**Higher = fewer returns** needed back to the main building. More efficient." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Repair rate" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "Rate = how much work it does per simulation tick while stopped.\n" +
-                    "Trucks still do a quick stop+go even with highest rate (they do more work per stop).\n"
+                    "Trucks still do a quick stop+go even with highest rate; they just do more work per stop.\n" +
+                    "In vanilla, one stop does not necessarily bring the road to 100% repaired, so this is where this feature gets better over time.\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Road wear" },
@@ -269,6 +270,7 @@ namespace PublicWorksPlus
                     "**10%** = 10× slower wear (fewer repairs needed)\n" +
                     "**100%** = vanilla\n" +
                     "**500%** = 5× faster damage (more repairs/trucks needed)\n" +
+                    "How it works in game:\n" +
                     "If m_Wear <= 2.5 factor, no slowdown.\n" +
                     "If m_Wear >= 17.5, max penalty, vehicles are 50% slower on roads.\n" +
                     "See Roads Infoview: shows red over badly damaged roads that slow vehicles down."
