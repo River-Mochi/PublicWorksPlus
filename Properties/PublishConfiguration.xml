@@ -32,13 +32,14 @@
         - No Harmony or Reflection; more compatible - less likely to break with game updates.
         - Safe to remove any time (use Reset buttons to return to vanilla game default values).
         - Remove "Adjust Transit Capacity"; it's included in this mod.
-        - Transit line toggle [x] included: it's your choice if you want to use the new built-in one or older transit policy mod, but not two mods for the same thing.
+        - ✅ Transit Line toggle: it's your choice if you want to use this built-in one. Pick one, don't use other mods that also adjust the in-game slider (e.g. Transport Policy Adjuster).
+ If you forget, it's not going to explode, it will be inconsistent like two people changing the radio station.
 
         ### Support and feedback
         - If the mod helps you, give it a Like, it's free + easy :)
-        - This mod is like 5-6 mods combined into one; feedback was to combine more features into a single mod.
-        Therefore, not all details are above but might be answered in forums.
-        - For questions after reading it all, try Github, Discord, etc., links are on this page.
+        - This mod is 5-6 new mods combined; feedback was to combine more features into a single mod.
+        Therefore, not all details are above as it's already long, but might be answered in forums.
+        - For questions, try Github, Discord, etc., links on this page.
 
         ### Credits
         - River-Mochi: author
@@ -47,7 +48,7 @@
         - Necko1996: testing
         - BugsyG: testing
 
-        ### Performance: this is designed to *not* run in the city per-frame. Player makes changes in Options Menu > then mod goes idle. Debug tools are off by default.
+        ### Performance advantage: this is designed to *not* run in the city per-frame. Player makes changes in Options Menu > then mod goes idle. Debug tools are off by default.
 
         ### 11 Languages
 
