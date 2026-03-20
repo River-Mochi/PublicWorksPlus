@@ -164,7 +164,7 @@ namespace PublicWorksPlus
 
         partial void SetDefaults_Transit()
         {
-            m_EnableLineVehicleCountTuner = false;
+            m_EnableLineVehicleCountTuner = true;
 
             ResetDepotToVanilla();
             ResetPassengerToVanilla();
