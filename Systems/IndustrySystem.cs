@@ -15,7 +15,6 @@ namespace PublicWorksPlus
     using Game;
     using Game.Common;
     using Game.Companies;
-    using Game.Economy;           // Resource
     using Game.Prefabs;
     using Game.SceneFlow;
     using System;
@@ -123,7 +122,9 @@ namespace PublicWorksPlus
                     int baseMax = GetOrCacheCargoStationBase(prefabEntity, company.m_MaxTransports);
 
                     if (baseMax <= 0 && company.m_MaxTransports <= 0)
+                    {
                         continue;
+                    }
 
                     int newMax = ScalarMath.ScaleIntRoundedAllowZeroMin1(baseMax, scalar);
 
@@ -163,27 +164,7 @@ namespace PublicWorksPlus
                     int baseCap = GetOrCacheDeliveryTruckBase(prefabEntity, data.m_CargoCapacity);
 
                     if (baseCap <= 0 && data.m_CargoCapacity <= 0)
-                        continue;
-
-                    // IMPORTANT:
-                    // Garbage "dump trucks" can share meshes/names with raw-material trucks (e.g. CoalTruck01),
-                    // but they must NOT be controlled by the Industry raw-material slider.
-                    // Keep them at vanilla/base capacity so Reset/100% behaves correctly.
-                    if (data.m_TransportedResources == Resource.Garbage)
                     {
-                        if (data.m_CargoCapacity != baseCap)
-                        {
-                            if (verbose)
-                            {
-                                string n = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefabEntity);
-                                Mod.s_Log.Info(
-                                    $"{Mod.ModTag} Delivery cargo (Garbage): '{n}' Base={baseCap} -> {baseCap} (excluded from Industry sliders)");
-                            }
-
-                            data.m_CargoCapacity = baseCap;
-                            TagPrefabUpdatedIfMissing(prefabEntity, ref ecb, ref anyPrefabTaggedUpdated);
-                        }
-
                         continue;
                     }
 
@@ -207,15 +188,16 @@ namespace PublicWorksPlus
                         hasTrailer,
                         trailerType);
 
+                    if (bucket == VehicleHelpers.DeliveryBucket.Other)
+                    {
+                        continue;
+                    }
+
                     float scalar =
                         bucket == VehicleHelpers.DeliveryBucket.Semi ? semiScalar :
                         bucket == VehicleHelpers.DeliveryBucket.Van ? vanScalar :
                         bucket == VehicleHelpers.DeliveryBucket.RawMaterials ? rawScalar :
-                        bucket == VehicleHelpers.DeliveryBucket.Motorbike ? mbikeScalar :
-                        1f;
-
-                    if (scalar == 1f)
-                        continue;
+                        mbikeScalar;
 
                     int newCap = ScalarMath.ScaleIntRoundedAllowZeroMin1(baseCap, scalar);
 
@@ -254,7 +236,9 @@ namespace PublicWorksPlus
                 {
                     string name = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefabEntity);
                     if (!IsTargetIndustrialCompany(name))
+                    {
                         continue;
+                    }
 
                     ref TransportCompanyData tc = ref tcRef.ValueRW;
 
@@ -313,14 +297,20 @@ namespace PublicWorksPlus
         private static bool IsTargetIndustrialCompany(string name)
         {
             if (string.IsNullOrEmpty(name))
+            {
                 return false;
+            }
 
             if (s_KnownIndustrialCompanies.Contains(name))
+            {
                 return true;
+            }
 
             if (name.StartsWith("Industrial_", StringComparison.OrdinalIgnoreCase) &&
                 name.IndexOf("Extractor", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -328,13 +318,19 @@ namespace PublicWorksPlus
         private int GetOrCacheCargoStationBase(Entity prefabEntity, int currentValue)
         {
             if (m_CargoStationBaseMaxTransports.TryGetValue(prefabEntity, out int baseMax))
+            {
                 return baseMax;
+            }
 
             int vanilla;
             if (TryGetCargoStationVanillaMax(prefabEntity, out vanilla) && vanilla > 0)
+            {
                 baseMax = vanilla;
+            }
             else
+            {
                 baseMax = currentValue;
+            }
 
             m_CargoStationBaseMaxTransports[prefabEntity] = baseMax;
             return baseMax;
@@ -345,7 +341,9 @@ namespace PublicWorksPlus
             baseMax = 0;
 
             if (!PrefabComponentUtil.TryGetComponent(m_PrefabSystem, prefabEntity, out CargoTransportStation station))
+            {
                 return false;
+            }
 
             baseMax = station.transports;
             return true;
@@ -354,13 +352,19 @@ namespace PublicWorksPlus
         private int GetOrCacheDeliveryTruckBase(Entity prefabEntity, int currentValue)
         {
             if (m_DeliveryTruckBaseCargoCapacity.TryGetValue(prefabEntity, out int baseCap))
+            {
                 return baseCap;
+            }
 
             int vanilla;
             if (TryGetDeliveryTruckVanillaCargo(prefabEntity, out vanilla) && vanilla >= 0)
+            {
                 baseCap = vanilla;
+            }
             else
+            {
                 baseCap = currentValue;
+            }
 
             m_DeliveryTruckBaseCargoCapacity[prefabEntity] = baseCap;
             return baseCap;
@@ -371,7 +375,9 @@ namespace PublicWorksPlus
             baseCap = 0;
 
             if (!PrefabComponentUtil.TryGetComponent(m_PrefabSystem, prefabEntity, out Game.Prefabs.DeliveryTruck truck))
+            {
                 return false;
+            }
 
             baseCap = truck.m_CargoCapacity;
             return true;
@@ -380,7 +386,9 @@ namespace PublicWorksPlus
         private int GetOrCacheExtractorCompanyBase(Entity prefabEntity, int currentValue)
         {
             if (m_ExtractorCompanyBaseMaxTransports.TryGetValue(prefabEntity, out int baseMax))
+            {
                 return baseMax;
+            }
 
             baseMax = currentValue;
             m_ExtractorCompanyBaseMaxTransports[prefabEntity] = baseMax;
