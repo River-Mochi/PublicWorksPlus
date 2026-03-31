@@ -14,12 +14,12 @@ Scale **fleet sizes**, *vehicle capacities* in: all Public Transit, Parks/Roads 
 Includes everything from "Adjust Transit Capacity" (ATC) mod AND all the new mods below are *combined* into one PwP mod.
 
 ### Features
-- NEW **Industry Deliveries**: scale cargo capacity for delivery vehicles (Semi trucks, Delivery vans, Motorbike delivery, Raw material trucks - coal, oil, etc.)
-- NEW *Extractor companies*: Fish, Grain, etc.; scale max fleet size (usually semi trucks)
-- NEW *Cargo Stations*: scale max fleet of cargo stations (harbor/train/airport)
-- NEW: *Transit Line Slider* (when you only want 1 bus or need ~30-60 buses).
-- NEW *Parks + Roads maintenance*: fleet size, work shift, and rate (alpha)
-- NEW *Road wear speed* (alpha): scale how fast or slow roads accumulate wear (damage) over time
+- new **Industry Deliveries**: scale cargo capacity for delivery vehicles (Semi trucks, Delivery vans, Motorbike delivery, Raw material trucks - coal, oil, etc.)
+- new *Extractor companies*: Fish, Grain, etc.; scale max fleet size (usually semi trucks)
+- new *Cargo Stations*: scale max fleet of cargo stations (harbor/train/airport)
+- new *Transit Line Slider* (when you only want 1 bus or need ~30-60 buses).
+- new *Parks + Roads maintenance*: fleet size, work shift, and rate (alpha)
+- new *Road wear speed* (alpha): scale how fast or slow roads accumulate wear (damage) over time
 
 #### From ATC mod
 - *Transit depots*: change max vehicles per depot (Bus, Ferry, Subway, Taxi, Tram, Train)
@@ -87,7 +87,7 @@ delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extrac
 	<Dependency Id="" />
 	<!-- Change log for new version. Single line or multi line. Supports minimal markdown subset -->
 <ChangeLog>
-- Fixed transit lines toggle default = true for new installs.
+- fixed delivery vehicles capacity reset to vanilla.
 </ChangeLog>
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
 <ExternalLink Type="discord" Url="https://discord.gg/HTav7ARPs2" />
