@@ -50,7 +50,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "Increases the **range** of in-game Transit Line Slider per each route.\n" +
                     "**As low as (1)** on all routes tested.\n" +
-                    "**Maximum limit varies**; but all are 3x or more higher than vanilla, e.g., 30-60\n" +
+                    "**Maximum limit varies**; but all are 3x or more higher than vanilla.\n" +
                     "Tech note: game uses route time (driving time + stop count); this creates a variable max (this mod follows game logic so does not set a static max limit like 200).\n" +
                     "Works for all transit: bus, ferry, tram, train, subway, ship, airplane.\n\n" +
                     "**---------------**\n" +

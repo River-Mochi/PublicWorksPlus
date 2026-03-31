@@ -17,7 +17,7 @@ namespace PublicWorksPlus
     public sealed class Mod : IMod
     {
         public const string ModName = "Public Works Plus";
-        public const string ShortName = "Public Works Plus";
+        public const string ShortName = "Public Works +";
         public const string ModId = "PublicWorksPlus";
         public const string ModTag = "[PWP]";
 
