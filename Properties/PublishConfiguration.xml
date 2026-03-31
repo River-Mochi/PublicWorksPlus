@@ -17,8 +17,8 @@
 
         ### Features
         - new Transit Line adjuster (when you only want 1 bus or need ~30-60 buses).
-        - new *Parks + Roads maintenance*: fleet size, work shift, and rate
-        - new Road wear (alpha): scale how fast or slow roads accumulate damage over time
+        - new *Parks + Roads Repairs*: fleet size, work shift, and rate
+        - new Road wear (alpha): scale speed roads accumulate damage over time
         - new **Industry Deliveries**: scale cargo capacity for delivery vehicles (Semi trucks, Delivery vans, Motorbike delivery, Raw material trucks - coal, oil, etc.)
         - new *Extractor companies*: Fish, Grain, etc.; scale max fleet size (usually semi trucks)
         - new *Cargo Stations*: scale max fleet of cargo stations (harbor/train/airport)
@@ -26,7 +26,7 @@
         #### Complete ATC features included
 
         - **Transit depots:** change max vehicles per depot (Bus, Ferry, Subway, Taxi, Tram, Train)
-        - **Passengers:** change seats per vehicle (Bus, Tram, Train, Subway, Ship, Ferry, Airplane)
+        - **Passengers:** change maximum seats (Bus, Tram, Train, Subway, Ship, Ferry, Airplane)
 
 
         ### Notes 🚍🚋🚆✈️🚢
@@ -37,14 +37,15 @@
         - No Harmony or Reflection used; more compatible - less likely to break on patch days.
         - Safe to remove any time (use Reset buttons to return to vanilla game default values).
         - ✅ New Toggle, Transit Line: it's your choice if you want to use the PwP version.
-        Don't use other mods that also adjust the in-game slider (e.g. Transport Policy Adjuster) - Pick One.
+        Pick one - Don't use other mods that also adjust the in-game slider (e.g. Transport Policy Adjuster).
         If both are enabled, it's not going to explode, it may be inconsistent like two people changing the radio station.
-        - PwP Transit lines: follows the game’s method (travel time + stops); you can have just 1 bus per line or ~30-60+ buses (see before/after screenshot). PwP is made differently than older mods; no Harmony patch is used and maximum is not static (will not be 250 buses on one line). You still get many more buses per each route line than game vanilla gives.
+        - PwP Transit lines: follows the game’s method (travel time + stops); you can have just 1 bus per line or ~30-60+ buses (see before/after screenshot).
+ PwP is made differently than older mods; no Harmony patch used and maximum is not static (will not be 250 buses on one line). You still get many more buses per each route line than game vanilla gives.
 
 
         ### Support and feedback
         - If the mod helps you, give it a Like, it's free + easy :)
-        - This mod is 5-6 new mods combined; feedback was to combine more features into a single mod.
+        - This mod is 5 new mods combined +ATC; feedback was to combine more features into a single mod.
         All details may not be above, but might be answered in forums or in tool tips of the mod.
         - Feedback on: Github, Discord, etc., links on this page.
 
