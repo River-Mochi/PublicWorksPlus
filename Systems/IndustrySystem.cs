@@ -4,8 +4,8 @@
 //          - Cargo station max fleet (TransportCompanyData.m_MaxTransports for CargoTransportStationData)
 //          - Delivery truck cargo capacity (DeliveryTruckData.m_CargoCapacity)
 // Notes:
-// - Uses SystemAPI queries.
-// - Uses tractor/trailer lookups for better Semi detection.
+// - SystemAPI queries.
+// - tractor/trailer lookups for better Semi detection.
 // - Scales all delivery-truck prefabs by bucket (Semi / Van / Raw / Motorbike).
 // - Tags changed prefab entities with Updated via ECB (structural change safe).
 
@@ -15,6 +15,7 @@ namespace PublicWorksPlus
     using Game;
     using Game.Common;
     using Game.Companies;
+    using Game.Economy;           // Resource
     using Game.Prefabs;
     using Game.SceneFlow;
     using System;
@@ -164,6 +165,28 @@ namespace PublicWorksPlus
                     if (baseCap <= 0 && data.m_CargoCapacity <= 0)
                         continue;
 
+                    // IMPORTANT:
+                    // Garbage "dump trucks" can share meshes/names with raw-material trucks (e.g. CoalTruck01),
+                    // but they must NOT be controlled by the Industry raw-material slider.
+                    // Keep them at vanilla/base capacity so Reset/100% behaves correctly.
+                    if (data.m_TransportedResources == Resource.Garbage)
+                    {
+                        if (data.m_CargoCapacity != baseCap)
+                        {
+                            if (verbose)
+                            {
+                                string n = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefabEntity);
+                                Mod.s_Log.Info(
+                                    $"{Mod.ModTag} Delivery cargo (Garbage): '{n}' Base={baseCap} -> {baseCap} (excluded from Industry sliders)");
+                            }
+
+                            data.m_CargoCapacity = baseCap;
+                            TagPrefabUpdatedIfMissing(prefabEntity, ref ecb, ref anyPrefabTaggedUpdated);
+                        }
+
+                        continue;
+                    }
+
                     string prefabName = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefabEntity);
 
                     VehicleHelpers.GetTrailerTypeInfo(
@@ -307,7 +330,8 @@ namespace PublicWorksPlus
             if (m_CargoStationBaseMaxTransports.TryGetValue(prefabEntity, out int baseMax))
                 return baseMax;
 
-            if (TryGetCargoStationVanillaMax(prefabEntity, out int vanilla) && vanilla > 0)
+            int vanilla;
+            if (TryGetCargoStationVanillaMax(prefabEntity, out vanilla) && vanilla > 0)
                 baseMax = vanilla;
             else
                 baseMax = currentValue;
@@ -332,7 +356,8 @@ namespace PublicWorksPlus
             if (m_DeliveryTruckBaseCargoCapacity.TryGetValue(prefabEntity, out int baseCap))
                 return baseCap;
 
-            if (TryGetDeliveryTruckVanillaCargo(prefabEntity, out int vanilla) && vanilla >= 0)
+            int vanilla;
+            if (TryGetDeliveryTruckVanillaCargo(prefabEntity, out vanilla) && vanilla >= 0)
                 baseCap = vanilla;
             else
                 baseCap = currentValue;
