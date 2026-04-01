@@ -1,4 +1,4 @@
-﻿// File: Localization/LocaleJA.cs
+// File: Localization/LocaleJA.cs
 // Japanese (ja-JP) strings for Options UI.
 
 namespace PublicWorksPlus
@@ -50,7 +50,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "各路線ごとのゲーム内交通路線スライダーの**範囲**を広げます。\n" +
                     "テストしたすべての路線で**最小 (1)** まで下げられます。\n" +
-                    "**最大上限は可変**ですが、すべてバニラより3x以上高くなります。例: 30-60\n" +
+                    "**最大上限は可変**ですが、すべてバニラより3×以上高くなります。\n" +
                     "技術メモ: ゲームは路線時間（走行時間 + 停留所数）を使用するため、最大値は可変になります（このMODはゲームロジックに従うため、200のような固定上限は設定しません）。\n" +
                     "すべての交通機関で動作します: バス、フェリー、トラム、列車、地下鉄、船、飛行機。\n\n" +
                     "**---------------**\n" +
@@ -70,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10倍。\n" +
                     "ベース建物に適用されます。" },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "フェリー車庫" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "フェリー車庫" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**フェリー車庫**の建物ごとの最大車両数です。\n" +
                     "**100%** = バニラ（ゲーム既定値）。\n" +
@@ -98,7 +98,6 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "各**列車車庫**が維持できる列車数を変更します。\n" +
                     "ベース建物に適用されます。" },
-
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "車庫設定をリセット" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -259,7 +258,8 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "修理率" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "作業率 = 停車中にシミュレーションtickごとにこなす作業量。\n" +
-                    "最高レートでもトラックは短い停止+発進を行います（1回の停止でこなす作業量が増えます）。\n"
+                    "最高レートでもトラックは短い停止+発進を行います（1回の停止でこなす作業量が増えます）。\n" +
+                    "バニラでは1回の停止で道路が必ず100%修理されるわけではないため、この機能は時間とともに効果が増します。\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "道路摩耗" },
@@ -269,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = 摩耗が10×遅い（修理回数減少）\n" +
                     "**100%** = バニラ\n" +
                     "**500%** = ダメージが5×速い（より多くの修理/トラックが必要）\n" +
+                    "ゲーム内での仕組み:\n" +
                     "m_Wear <= 2.5 の場合、減速なし。\n" +
                     "m_Wear >= 17.5 の場合、最大ペナルティで車両は道路上で50%遅くなります。\n" +
                     "道路インフォビュー参照: ひどく損傷した道路は赤く表示され、車両を減速させます。"
-
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "道路メンテナンスをリセット" },
@@ -308,8 +308,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefabスキャン状態" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "スキャン状態を表示します: Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running は経過時間を表示し、Done は所要時間 + 完了時刻を表示します。" },
+                    "スキャン状態を表示します: 待機中 / 待機列 / 実行中 / 完了 / データなし.\n" +
+                    "待機列/実行中 は経過時間を表示し、完了 は所要時間 + 完了時刻を表示します。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "詳細デバッグログ" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),

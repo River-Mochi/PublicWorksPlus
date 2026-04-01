@@ -1,4 +1,4 @@
-﻿// File: Localization/LocaleIT.cs
+// File: Localization/LocaleIT.cs
 // Italian (it-IT) strings for Options UI.
 
 namespace PublicWorksPlus
@@ -50,7 +50,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "Aumenta l’**intervallo** del cursore delle linee di trasporto in gioco per ogni percorso.\n" +
                     "**Fino a (1)** su tutti i percorsi testati.\n" +
-                    "Il **limite massimo varia**; ma tutti sono 3x o più alti del vanilla, ad es. 30-60\n" +
+                    "Il **limite massimo varia**; ma tutti sono 3× o più alti del vanilla.\n" +
                     "Nota tecnica: il gioco usa il tempo del percorso (tempo di guida + numero di fermate); questo crea un massimo variabile (questa mod segue la logica del gioco quindi non imposta un limite massimo statico come 200).\n" +
                     "Funziona per tutti i trasporti: autobus, traghetto, tram, treno, metropolitana, nave, aereo.\n\n" +
                     "**---------------**\n" +
@@ -70,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10× in più.\n" +
                     "Si applica all’edificio base." },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Deposito traghetti" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Deposito traghetti" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**Deposito traghetti** max veicoli per edificio.\n" +
                     "**100%** = vanilla (predefinito del gioco).\n" +
@@ -98,7 +98,6 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "Cambia quanti treni ogni **deposito treni** può mantenere.\n" +
                     "Si applica all’edificio base." },
-
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Reimposta depositi" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -254,12 +253,13 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "Moltiplicatore per la **capacità turno di lavoro**.\n" +
                     "Lavoro totale che un camion può fare prima di tornare al deposito.\n" +
-                    "**Più alto = meno ritorni.**" },
+                    "**Più alto = meno ritorni** necessari verso l’edificio principale. Più efficiente." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Velocità riparazione" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "Velocità = quanto lavoro svolge per tick di simulazione mentre è fermo.\n" +
-                    "I camion fanno comunque una rapida sosta+ripartenza anche con la velocità più alta (fanno più lavoro per sosta).\n"
+                    "I camion fanno comunque una rapida sosta+ripartenza anche con la velocità più alta; fanno semplicemente più lavoro per sosta.\n" +
+                    "In vanilla, una sola sosta non porta necessariamente la strada al 100% di riparazione, quindi questa funzione migliora nel tempo.\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Usura stradale" },
@@ -269,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = usura 10× più lenta (meno riparazioni necessarie)\n" +
                     "**100%** = vanilla\n" +
                     "**500%** = danni 5× più rapidi (più riparazioni/camion necessari)\n" +
+                    "Come funziona in gioco:\n" +
                     "Se fattore m_Wear <= 2.5, nessun rallentamento.\n" +
                     "Se m_Wear >= 17.5, penalità massima, i veicoli sono il 50% più lenti sulle strade.\n" +
                     "Vedi infovista Strade: mostra in rosso le strade molto danneggiate che rallentano i veicoli."
-
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Reimposta manutenzione strade" },
@@ -308,8 +308,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Stato scansione prefab" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Mostra lo stato della scansione: Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running mostra il tempo trascorso; Done mostra durata + ora di fine." },
+                    "Mostra lo stato della scansione: Inattivo / In coda / In esecuzione / Completato / Nessun dato.\n" +
+                    "In coda/In esecuzione mostra il tempo trascorso; Completato mostra durata + ora di fine." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Log debug dettagliati" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),

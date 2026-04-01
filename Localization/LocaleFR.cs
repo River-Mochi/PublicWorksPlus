@@ -1,4 +1,4 @@
-﻿// File: Localization/LocaleFR.cs
+// File: Localization/LocaleFR.cs
 // French (fr-FR) strings for Options UI.
 
 namespace PublicWorksPlus
@@ -50,14 +50,14 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "Augmente la **plage** du curseur des lignes de transport en jeu pour chaque itinéraire.\n" +
                     "**Jusqu’à (1)** sur tous les itinéraires testés.\n" +
-                    "La **limite maximale varie** ; mais toutes sont 3x ou plus élevées que le vanilla, par ex. 30-60\n" +
-                    "Note technique : le jeu utilise le temps d’itinéraire (temps de conduite + nombre d’arrêts) ; cela crée un maximum variable (ce mod suit la logique du jeu et ne fixe donc pas une limite maximale statique comme 200).\n" +
+                    "La **limite maximale varie** ; mais toutes sont 3× ou plus au-dessus du vanilla.\n" +
+                    "Note technique : le jeu utilise le temps d’itinéraire (temps de conduite + nombre d’arrêts) ; cela crée un maximum variable (ce mod suit la logique du jeu et ne définit donc pas de limite maximale statique comme 200).\n" +
                     "Fonctionne pour tous les transports : bus, ferry, tram, train, métro, navire, avion.\n\n" +
                     "**---------------**\n" +
                     "Astuce : si le maximum du curseur doit être encore un peu plus élevé, ajouter quelques arrêts à l’itinéraire.\n" +
                     "Le jeu augmente automatiquement le maximum selon les arrêts ajoutés + des facteurs ; ajouter des arrêts est un ajustement simple pour le joueur.\n" +
                     "<Éviter les conflits> : retirer les mods qui modifient la même politique des lignes de transport.\n" +
-                    "Désactiver si la fonctionnalité n’est pas nécessaire ou si elle doit être désactivée pour utiliser un autre mod qui fait la même chose."
+                    "Désactiver si la fonctionnalité n’est pas nécessaire ou si elle doit être désactivée pour utiliser un autre mod pour la même chose."
                 },
 
                 // Depot Capacity sliders
@@ -70,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10× plus.\n" +
                     "S’applique au bâtiment de base." },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Dépôt de ferry" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Dépôt de ferry" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**Dépôt de ferry** : véhicules max par bâtiment.\n" +
                     "**100%** = vanilla (valeur par défaut du jeu).\n" +
@@ -99,13 +99,12 @@ namespace PublicWorksPlus
                     "Modifie combien de trains chaque **dépôt de train** peut entretenir.\n" +
                     "S’applique au bâtiment de base." },
 
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Réinitialiser les dépôts" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
                     "Remet tous les curseurs des dépôts à **100%** (valeur par défaut du jeu / vanilla)." },
 
                 // Passenger capacity sliders
-                { m_Setting.GetOptionGroupLocaleID(Setting.PassengerGroup), "Capacité passagers (personnes max par véhicule)" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.PassengerGroup), "Capacité passagers (max personnes par véhicule)" },
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusPassengerScalar)), "Bus" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.BusPassengerScalar)),
                     "Modifie la capacité de **passagers des bus**.\n" +
@@ -254,12 +253,13 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "Multiplicateur pour la **capacité du quart de travail**.\n" +
                     "Travail total qu’un camion peut effectuer avant de retourner au dépôt.\n" +
-                    "**Plus élevé = moins de retours.**" },
+                    "**Plus élevé = moins de retours** nécessaires vers le bâtiment principal. Plus efficace." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Cadence de réparation" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "Cadence = quantité de travail effectuée par tick de simulation à l’arrêt.\n" +
-                    "Les camions font quand même un arrêt+repart rapide même avec la cadence la plus élevée (ils effectuent plus de travail par arrêt).\n"
+                    "Les camions font quand même un arrêt+repart rapide même avec la cadence la plus élevée ; ils effectuent simplement plus de travail par arrêt.\n" +
+                    "En vanilla, un seul arrêt ne ramène pas forcément la route à 100% de réparation, donc cette fonctionnalité devient meilleure avec le temps.\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Usure des routes" },
@@ -269,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = usure 10× plus lente (moins de réparations nécessaires)\n" +
                     "**100%** = vanilla\n" +
                     "**500%** = dégâts 5× plus rapides (plus de réparations/camions nécessaires)\n" +
-                    "Si facteur m_Wear <= 2.5, pas de ralentissement.\n" +
+                    "Comment cela fonctionne en jeu :\n" +
+                    "Si le facteur m_Wear <= 2.5, pas de ralentissement.\n" +
                     "Si m_Wear >= 17.5, pénalité maximale, les véhicules sont 50% plus lents sur les routes.\n" +
                     "Voir l’infovue Routes : les routes très endommagées apparaissent en rouge et ralentissent les véhicules."
-
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Réinitialiser l’entretien des routes" },
@@ -285,7 +285,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.AboutInfoGroup), "Info" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.AboutLinksGroup), "Liens de support" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "Debug / Journalisation" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "Débogage / Journalisation" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModNameDisplay)), "Mod" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModNameDisplay)), "Nom d’affichage de ce mod." },
@@ -304,12 +304,12 @@ namespace PublicWorksPlus
                     "Crée un rapport <ponctuel> pour le débogage.\n" +
                     "Inutile pour une partie normale.\n" +
                     "Emplacement du fichier : <ModsData/PublicWorksPlus/ScanReport-Prefabs.txt>\n" +
-                    "Astuce : cliquez <une fois>, puis si l’état affiche Terminé, utilisez <Ouvrir le dossier du rapport>." },
+                    "Astuce : cliquer <une fois>, puis si l’état affiche Terminé, utiliser <Ouvrir le dossier du rapport>." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "État de l’analyse des prefabs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Affiche l’état de l’analyse : Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running affiche le temps écoulé ; Done affiche la durée + l’heure de fin." },
+                    "Affiche l’état de l’analyse : Inactif / En file / En cours / Terminé / Aucune donnée.\n" +
+                    "En file/En cours affiche le temps écoulé ; Terminé affiche la durée + l’heure de fin." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Journaux debug détaillés" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),

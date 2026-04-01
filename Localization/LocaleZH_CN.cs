@@ -1,10 +1,9 @@
-﻿// File: Localization/LocaleZH_CN.cs
+// File: Localization/LocaleZH_CN.cs
 // Simplified Chinese (zh-HANS) strings for Options UI.
 
 namespace PublicWorksPlus
 {
     using Colossal;
-    using Colossal.IO.AssetDatabase.Internal;
     using System.Collections.Generic;
 
     public sealed class LocaleZH_CN : IDictionarySource
@@ -51,7 +50,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "增加每条线路的游戏内交通线路滑块**范围**。\n" +
                     "在所有已测试线路上，**最低可到 (1)**。\n" +
-                    "**最大上限会变化**；但都比原版高 3x 或更多，例如 30-60\n" +
+                    "**最大上限会变化**；但都比原版高 3× 或更多。\n" +
                     "技术说明：游戏使用线路时间（行驶时间 + 站点数量）；这会形成可变的最大值（本模组遵循游戏逻辑，因此不会设置像 200 这样的固定上限）。\n" +
                     "适用于所有公共交通：公交、渡轮、电车、火车、地铁、客船、飞机。\n\n" +
                     "**---------------**\n" +
@@ -71,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10× 更多。\n" +
                     "适用于基础建筑。" },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "渡轮车库" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "渡轮车库" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**渡轮车库**每栋建筑的最大车辆数。\n" +
                     "**100%** = 原版（游戏默认值）。\n" +
@@ -99,7 +98,6 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "修改每个**火车车库**可维护的火车数量。\n" +
                     "适用于基础建筑。" },
-
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "重置车库默认值" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -255,12 +253,13 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "**工作班次容量**的倍率。\n" +
                     "卡车在返回车库前可完成的总工作量。\n" +
-                    "**越高 = 返回次数越少。**" },
+                    "**越高 = 返回主建筑次数越少。** 效率更高。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "修理速率" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "速率 = 车辆停下时每个模拟 tick 完成的工作量。\n" +
-                    "即使在最高速率下，卡车仍会短暂停车+再前进（只是每次停车完成更多工作）。\n"
+                    "即使在最高速率下，卡车仍会短暂停车+再前进；只是每次停车完成更多工作。\n" +
+                    "原版中，一次停车不一定能把道路修到 100%，所以这个功能会随着时间推移变得更有帮助。\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "道路磨损" },
@@ -270,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = 磨损速度慢 10×（所需维修更少）\n" +
                     "**100%** = 原版\n" +
                     "**500%** = 损坏速度快 5×（需要更多维修/卡车）\n" +
+                    "游戏内工作方式：\n" +
                     "如果 m_Wear <= 2.5，则无减速。\n" +
                     "如果 m_Wear >= 17.5，则达到最大惩罚，车辆在道路上速度会降低 50%。\n" +
                     "查看道路信息视图：严重损坏的道路会显示为红色，并减慢车辆速度。"
-
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "重置道路维护" },
@@ -309,8 +308,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab 扫描状态" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "显示扫描状态：Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running 显示已用时间；Done 显示耗时 + 完成时间。" },
+                    "显示扫描状态：空闲 / 排队中 / 运行中 / 完成 / 无数据。\n" +
+                    "排队中/运行中 显示已用时间；完成 显示耗时 + 完成时间。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "详细调试日志" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),

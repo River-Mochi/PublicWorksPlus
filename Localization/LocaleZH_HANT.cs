@@ -1,10 +1,9 @@
-﻿// File: Localization/LocaleZH_HANT.cs
+// File: Localization/LocaleZH_HANT.cs
 // Traditional Chinese (zh-HANT) strings for Options UI.
 
 namespace PublicWorksPlus
 {
     using Colossal;
-    using Colossal.IO.AssetDatabase.Internal;
     using System.Collections.Generic;
 
     public sealed class LocaleZH_HANT : IDictionarySource
@@ -36,7 +35,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetSettingsLocaleID(), title },
 
                 // Tabs (match Setting.cs tab ids)
-                { m_Setting.GetOptionTabLocaleID(Setting.PublicTransitTab), "公共運輸" },
+                { m_Setting.GetOptionTabLocaleID(Setting.PublicTransitTab), "大眾運輸" },
                 { m_Setting.GetOptionTabLocaleID(Setting.IndustryTab),      "工業" },
                 { m_Setting.GetOptionTabLocaleID(Setting.ParksRoadsTab),    "公園-道路" },
                 { m_Setting.GetOptionTabLocaleID(Setting.AboutTab),         "關於" },
@@ -47,18 +46,18 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.LineVehiclesGroup), "交通路線（遊戲內滑桿範圍）" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "擴展交通路線最小/最大值" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "擴充交通路線最小/最大值" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "增加每條路線的遊戲內交通路線滑桿**範圍**。\n" +
                     "在所有已測試路線上，**最低可到 (1)**。\n" +
-                    "**最大上限會變動**；但都比原版高 3x 或更多，例如 30-60\n" +
+                    "**最大上限會變動**；但都比原版高 3× 或更多。\n" +
                     "技術說明：遊戲使用路線時間（行駛時間 + 站點數量）；這會形成可變的最大值（本模組遵循遊戲邏輯，因此不會設定像 200 這樣的固定上限）。\n" +
-                    "適用於所有公共運輸：公車、渡輪、電車、火車、地鐵、客船、飛機。\n\n" +
+                    "適用於所有大眾運輸：公車、渡輪、電車、火車、地鐵、客船、飛機。\n\n" +
                     "**---------------**\n" +
-                    "提示：如果想把滑桿上限再稍微提高一些，可以為路線增加幾個站點。\n" +
-                    "遊戲會根據新增站點 + 各種因素自動提高最大值；增加站點是玩家很容易做到的調整。\n" +
+                    "提示：如果想把滑桿上限再稍微提高一些，可以替路線增加幾個站點。\n" +
+                    "遊戲會依照新增站點 + 各種因素自動提高最大值；增加站點是玩家很容易做到的調整。\n" +
                     "<避免衝突>：移除修改同一交通路線政策的模組。\n" +
-                    "如果不需要此功能，或需要關閉它以使用其他做相同事情的模組，請停用。"
+                    "如果不需要此功能，或需要關閉它以使用其他實作相同功能的模組，請停用。"
                 },
 
                 // Depot Capacity sliders
@@ -71,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10× 更多。\n" +
                     "適用於基礎建築。" },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "渡輪車庫" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "渡輪車庫" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**渡輪車庫**每棟建築的最大車輛數。\n" +
                     "**100%** = 原版（遊戲預設值）。\n" +
@@ -87,7 +86,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TaxiDepotScalar)), "計程車車庫" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TaxiDepotScalar)),
                     "每個**計程車車庫**可維護的計程車數量。\n" +
-                    "如果設到最大，可能會出現數量過多、甚至有點搞笑的計程車。"
+                    "若設到最大，可能會出現數量過多、甚至有點滑稽的計程車。"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramDepotScalar)), "電車車庫" },
@@ -99,7 +98,6 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "修改每個**火車車庫**可維護的火車數量。\n" +
                     "適用於基礎建築。" },
-
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "重設車庫預設值" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -249,18 +247,19 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)),
                     "每棟建築**車庫最大車輛數**的倍率。\n" +
                     "越高 = 卡車越多。\n" +
-                    "<平衡說明：太少或太多都可能損害交通。>" },
+                    "<平衡說明：太少或太多都可能傷害交通。>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)), "工作班次容量" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "**工作班次容量**的倍率。\n" +
                     "卡車在返回車庫前可完成的總工作量。\n" +
-                    "**越高 = 返回次數越少。**" },
+                    "**越高 = 返回主建築次數越少。** 效率更高。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "修理速率" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "速率 = 車輛停下時每個模擬 tick 完成的工作量。\n" +
-                    "即使在最高速率下，卡車仍會短暫停車+再前進（只是每次停車完成更多工作）。\n"
+                    "即使在最高速率下，卡車仍會短暫停車再前進；只是每次停車完成更多工作。\n" +
+                    "原版中，一次停車不一定能把道路修到 100%，所以這個功能會隨時間推移變得更有幫助。\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "道路磨損" },
@@ -270,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = 磨損速度慢 10×（所需維修更少）\n" +
                     "**100%** = 原版\n" +
                     "**500%** = 損壞速度快 5×（需要更多維修/卡車）\n" +
+                    "遊戲內運作方式：\n" +
                     "如果 m_Wear <= 2.5，則無減速。\n" +
                     "如果 m_Wear >= 17.5，則達到最大懲罰，車輛在道路上速度會降低 50%。\n" +
-                    "查看道路資訊視圖：嚴重損壞的道路會顯示為紅色，並降低車輛速度。"
-
+                    "查看道路資訊檢視：嚴重損壞的道路會顯示為紅色，並減慢車輛速度。"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "重設道路維護" },
@@ -286,7 +285,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.AboutInfoGroup), "資訊" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.AboutLinksGroup), "支援連結" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "除錯 / 記錄" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "除錯 / 日誌" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModNameDisplay)), "模組" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModNameDisplay)), "此模組的顯示名稱。" },
@@ -309,19 +308,19 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab 掃描狀態" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "顯示掃描狀態：Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running 顯示已用時間；Done 顯示耗時 + 完成時間。" },
+                    "顯示掃描狀態：閒置 / 排隊中 / 執行中 / 完成 / 無資料。\n" +
+                    "排隊中/執行中 會顯示已用時間；完成 會顯示耗時 + 完成時間。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "詳細除錯日誌" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "將額外細節送到 <PublicWorksPlus.log> 以便排查問題。\n" +
+                    "將額外細節寫入 <PublicWorksPlus.log> 以便排查問題。\n" +
                     "正常遊玩請**停用**。\n" +
                     "<這只會增加日誌記錄，不會改變遊戲數值。>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "開啟日誌資料夾" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "開啟日誌資料夾。\n" +
-                    "下一步：用文字編輯器開啟 <PublicWorksPlus.log>（建議使用 Notepad++）。" },
+                    "下一步：用文字編輯器開啟 <PublicWorksPlus.log>（推薦 Notepad++）。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "開啟報告資料夾" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenReportButton)),
@@ -330,7 +329,7 @@ namespace PublicWorksPlus
 
                 // ---- Scan Report Status Text (format string templates) ----
                 { "PWP_SCAN_IDLE", "閒置" },
-                { "PWP_SCAN_QUEUED_FMT", "佇列中 ({0})" },
+                { "PWP_SCAN_QUEUED_FMT", "排隊中 ({0})" },
                 { "PWP_SCAN_RUNNING_FMT", "執行中 ({0})" },
                 { "PWP_SCAN_DONE_FMT", "完成 ({0} | {1})" },
                 { "PWP_SCAN_FAILED", "失敗" },

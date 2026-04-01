@@ -10,38 +10,43 @@
 	<LongDescription>
 ### Public Works Plus (PWP)
 
-Scale **fleet sizes**, *vehicle capacities* in: all Public Transit, Parks/Roads Maintenance, All Industry Deliveries, Cargo stations, Extractors.
-Includes everything from "Adjust Transit Capacity" (ATC) mod AND all the new mods below are *combined* into one PwP mod.
+Everything is OPTIONAL - you choose!
+
+- Scale **fleet sizes**, *vehicle capacities* in: all Public Transit, Parks/Roads Maintenance, All Industry Deliveries, Cargo stations, Extractors.
+- Includes everything from *Adjust Transit Capacity* (ATC) mod AND all the new mods below are *combined* into one PwP mod.
 
 ### Features
+- new Transit Line adjuster (when you only want 1 bus or need ~30-60 buses).
+- new *Parks + Roads Repairs*: fleet size, work shift, and rate
+- new Road wear (alpha): scale speed roads accumulate damage over time
 - new **Industry Deliveries**: scale cargo capacity for delivery vehicles (Semi trucks, Delivery vans, Motorbike delivery, Raw material trucks - coal, oil, etc.)
 - new *Extractor companies*: Fish, Grain, etc.; scale max fleet size (usually semi trucks)
 - new *Cargo Stations*: scale max fleet of cargo stations (harbor/train/airport)
-- new *Transit Line Slider* (when you only want 1 bus or need ~30-60 buses).
-- new *Parks + Roads maintenance*: fleet size, work shift, and rate (alpha)
-- new *Road wear speed* (alpha): scale how fast or slow roads accumulate wear (damage) over time
 
-#### From ATC mod
-- *Transit depots*: change max vehicles per depot (Bus, Ferry, Subway, Taxi, Tram, Train)
-- *Passengers*: change seats per vehicle (Bus, Tram, Train, Subway, Ship, Ferry, Airplane)
+#### Complete ATC features included
+
+- **Transit depots:** change max vehicles per depot (Bus, Ferry, Subway, Taxi, Tram, Train)
+- **Passengers:** change maximum seats (Bus, Tram, Train, Subway, Ship, Ferry, Airplane)
 
 
 ### Notes 🚍🚋🚆✈️🚢
 - *Remove* "Adjust Transit Capacity" if you install this mod.
-- *Adjust Sliders* at any time, no restart needed; Supports switching cities.
-- *Depot capacity* = maximum number of vehicles a single depot can maintain/spawn (does not scale extension buildings).
-- *Avoid* other depot/passenger capacity mods to avoid conflicts (they override each other).
+- *Adjust Sliders* at any time, no restart needed; supports switching cities.
+- *Depot capacity* = maximum number of vehicles a single depot can maintain/spawn (extension building not scaled).
+- Avoid other depot/passenger capacity mods to avoid conflicts (they override each other).
 - No Harmony or Reflection used; more compatible - less likely to break on patch days.
 - Safe to remove any time (use Reset buttons to return to vanilla game default values).
-- ✅ New Toggle, Transit Line: it's your choice if you want to use this built-in one. Pick one: don't use other mods that also adjust the in-game slider (e.g. Transport Policy Adjuster).
+- ✅ New Toggle, Transit Line: it's your choice if you want to use the PwP version.
+Pick one - Don't use other mods that also adjust the in-game slider (e.g. Transport Policy Adjuster).
 If both are enabled, it's not going to explode, it may be inconsistent like two people changing the radio station.
-- *PwP Transit lines:* mod follows the game’s method (travel time + stops); you can have just 1 bus per line or ~30-60 buses.
-PwP is made differently than older adjusters; no Harmony patch is used and maximum is not static (will not be 250 buses on one line). You still get tons of buses.
+- PwP Transit lines: follows the game’s method (travel time + stops); you can have just 1 bus per line or ~30-60+ buses (see before/after screenshot).
+PwP is made differently than older mods; no Harmony patch used and maximum is not static (will not be 250 buses on one line). You still get many more buses per each route line than game vanilla gives.
+
 
 ### Support and feedback
 - If the mod helps you, give it a Like, it's free + easy :)
-- This mod is 5-6 new mods combined; feedback was to combine more features into a single mod.
-Therefore, not all details are above as it's already long, but might be answered in forums.
+- This mod is 5 new mods combined +ATC; feedback was to combine more features into a single mod.
+All details may not be above, but might be answered in forums or in tool tips of the mod.
 - Feedback on: Github, Discord, etc., links on this page.
 
 ### Credits
@@ -63,6 +68,7 @@ This is designed to *not* run in the city per-frame. Player makes changes in Opt
 If you want to increase maximum of the transit route slider a little more, add some stops to the route.
 Game auto-increases the max based on different factors, adding stops is just the easiest to nudge.
 
+
 tags: city dispatch, transit line increase, control municipal, public transit system, change size, increase people passengers, depot size demand, decrease passengers,
 delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extractor, fish
 
@@ -80,7 +86,7 @@ delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extrac
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/public-works-plus.1910233/" />
 	<!--Version of the mod-->
-	<ModVersion Value="2.0.2" />
+	<ModVersion Value="2.0.3" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.5.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -88,6 +94,7 @@ delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extrac
 	<!-- Change log for new version. Single line or multi line. Supports minimal markdown subset -->
 <ChangeLog>
 - fixed delivery vehicles capacity reset to vanilla.
+- update all locales
 </ChangeLog>
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
 <ExternalLink Type="discord" Url="https://discord.gg/HTav7ARPs2" />

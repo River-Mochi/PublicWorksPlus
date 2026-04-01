@@ -1,10 +1,9 @@
-﻿// File: Localization/LocalePL.cs
+// File: Localization/LocalePL.cs
 // Polski, Polish (pl-PL) strings for Options UI.
 
 namespace PublicWorksPlus
 {
     using Colossal;
-    using Colossal.IO.AssetDatabase.Internal;
     using System.Collections.Generic;
 
     public sealed class LocalePL : IDictionarySource
@@ -51,7 +50,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "Zwiększa **zakres** suwaka linii transportu w grze dla każdej trasy.\n" +
                     "**Nawet do (1)** na wszystkich testowanych trasach.\n" +
-                    "**Maksymalny limit jest zmienny**; ale wszystkie są 3x lub więcej wyższe niż w vanilli, np. 30-60\n" +
+                    "**Maksymalny limit jest zmienny**; ale wszystkie są 3× lub więcej wyższe niż w vanilli.\n" +
                     "Uwaga techniczna: gra używa czasu trasy (czas jazdy + liczba przystanków); to tworzy zmienne maksimum (ten mod trzyma się logiki gry, więc nie ustawia stałego maksimum jak 200).\n" +
                     "Działa dla całego transportu: autobus, prom, tramwaj, pociąg, metro, statek, samolot.\n\n" +
                     "**---------------**\n" +
@@ -71,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10× więcej.\n" +
                     "Dotyczy podstawowego budynku." },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Zajezdnia promowa" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Zajezdnia promowa" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**Zajezdnia promowa**: maks. pojazdów na budynek.\n" +
                     "**100%** = vanilla (domyślna wartość gry).\n" +
@@ -99,7 +98,6 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "Zmieniaj liczbę pociągów, które każda **zajezdnia kolejowa** może utrzymać.\n" +
                     "Dotyczy podstawowego budynku." },
-
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Resetuj ustawienia zajezdni" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -255,12 +253,13 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "Mnożnik **pojemności zmiany roboczej**.\n" +
                     "Całkowita ilość pracy, jaką ciężarówka może wykonać, zanim wróci do zajezdni.\n" +
-                    "**Wyżej = mniej powrotów.**" },
+                    "**Wyżej = mniej powrotów** do głównego budynku. Większa wydajność." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Tempo napraw" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "Tempo = ile pracy wykonuje w jednym ticku symulacji podczas postoju.\n" +
-                    "Ciężarówki nadal robią szybkie stop+ruszenie nawet przy najwyższym tempie (wykonują więcej pracy na jeden postój).\n"
+                    "Ciężarówki nadal robią szybkie stop+ruszenie nawet przy najwyższym tempie; po prostu wykonują więcej pracy na jeden postój.\n" +
+                    "W vanilli jeden postój niekoniecznie przywraca drogę do 100% naprawy, więc ta funkcja z czasem daje coraz lepszy efekt.\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Zużycie dróg" },
@@ -270,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = 10× wolniejsze zużycie (mniej potrzebnych napraw)\n" +
                     "**100%** = vanilla\n" +
                     "**500%** = 5× szybsze uszkodzenia (więcej potrzebnych napraw/ciężarówek)\n" +
+                    "Jak to działa w grze:\n" +
                     "Jeśli współczynnik m_Wear <= 2.5, brak spowolnienia.\n" +
                     "Jeśli m_Wear >= 17.5, maksymalna kara, pojazdy są o 50% wolniejsze na drogach.\n" +
                     "Zobacz widok informacji o drogach: mocno uszkodzone drogi są zaznaczone na czerwono i spowalniają pojazdy."
-
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Resetuj utrzymanie dróg" },
@@ -309,8 +308,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Status skanowania prefabów" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Pokazuje stan skanowania: Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running pokazuje upływ czasu; Done pokazuje czas trwania + godzinę zakończenia." },
+                    "Pokazuje stan skanowania: Bezczynny / W kolejce / Uruchomione / Gotowe / Brak danych.\n" +
+                    "W kolejce/Uruchomione pokazuje upływ czasu; Gotowe pokazuje czas trwania + godzinę zakończenia." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Szczegółowe logi debug" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),

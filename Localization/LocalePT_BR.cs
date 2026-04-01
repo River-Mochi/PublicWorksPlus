@@ -1,10 +1,9 @@
-﻿// File: Localization/LocalePT_BR.cs
+// File: Localization/LocalePT_BR.cs
 // Portuguese-Brazil (pt-BR) strings for Options UI.
 
 namespace PublicWorksPlus
 {
     using Colossal;
-    using Colossal.IO.AssetDatabase.Internal;
     using System.Collections.Generic;
 
     public sealed class LocalePT_BR : IDictionarySource
@@ -51,7 +50,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "Aumenta o **intervalo** do controle deslizante de Linha de Transporte no jogo para cada rota.\n" +
                     "**Tão baixo quanto (1)** em todas as rotas testadas.\n" +
-                    "O **limite máximo varia**; mas todos ficam 3x ou mais acima do vanilla, por exemplo, 30-60\n" +
+                    "O **limite máximo varia**; mas todos ficam 3× ou mais acima do vanilla.\n" +
                     "Nota técnica: o jogo usa o tempo da rota (tempo de direção + número de paradas); isso cria um máximo variável (este mod segue a lógica do jogo, então não define um máximo fixo como 200).\n" +
                     "Funciona para todo transporte: ônibus, ferry, bonde, trem, metrô, navio, avião.\n\n" +
                     "**---------------**\n" +
@@ -71,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10× mais.\n" +
                     "Aplica-se ao prédio base." },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Depósito de ferry" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Depósito de ferry" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**Depósito de Ferry**: máximo de veículos por prédio.\n" +
                     "**100%** = vanilla (padrão do jogo).\n" +
@@ -99,7 +98,6 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "Altera quantos trens cada **Depósito de Trem** pode manter.\n" +
                     "Aplica-se ao prédio base." },
-
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Redefinir depósitos" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -175,7 +173,7 @@ namespace PublicWorksPlus
                     "Capacidade dos **caminhões semirreboque**.\n" +
                     "Inclui:\n" +
                     "* Semirreboques da indústria especializada (fazendas, pesca, silvicultura etc.).\n" +
-                    "* Semirreboques transportando correio para/de estações de Carga (não é o mesmo que entrega local de correio).\n" +
+                    "* Semirreboques transportando correio para/de estações de carga (não é o mesmo que entrega local de correio).\n" +
                     "**1× = 25t** (vanilla)\n" +
                     "**10×** = 10× mais." },
 
@@ -255,12 +253,13 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "Multiplicador para a **capacidade do turno de trabalho**.\n" +
                     "Quantidade total de trabalho que um caminhão pode fazer antes de voltar ao depósito.\n" +
-                    "**Maior = menos retornos.**" },
+                    "**Maior = menos retornos** ao prédio principal. Mais eficiente." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Taxa de reparo" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "Taxa = quanto trabalho ele faz por tick de simulação enquanto está parado.\n" +
-                    "Os caminhões ainda fazem uma rápida parada+arrancada mesmo com a maior taxa (eles fazem mais trabalho por parada).\n"
+                    "Os caminhões ainda fazem uma rápida parada+arrancada mesmo com a maior taxa; eles apenas fazem mais trabalho por parada.\n" +
+                    "No vanilla, uma parada não necessariamente leva a estrada de volta a 100% de reparo, então esse recurso melhora com o tempo.\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Desgaste das estradas" },
@@ -270,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = desgaste 10× mais lento (menos reparos necessários)\n" +
                     "**100%** = vanilla\n" +
                     "**500%** = dano 5× mais rápido (mais reparos/caminhões necessários)\n" +
-                    "Se m_Wear <= fator 2.5, não há lentidão.\n" +
+                    "Como funciona no jogo:\n" +
+                    "Se m_Wear <= 2.5, não há lentidão.\n" +
                     "Se m_Wear >= 17.5, penalidade máxima, os veículos ficam 50% mais lentos nas estradas.\n" +
                     "Veja a Infoview de Estradas: mostra em vermelho as estradas muito danificadas que reduzem a velocidade dos veículos."
-
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Redefinir manutenção de estradas" },
@@ -309,8 +308,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Status da varredura de prefabs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Mostra o estado da varredura: Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running mostra o tempo decorrido; Done mostra duração + horário de conclusão." },
+                    "Mostra o estado da varredura: Inativo / Na fila / Em execução / Concluído / Sem dados.\n" +
+                    "Na fila/Em execução mostra o tempo decorrido; Concluído mostra duração + horário de conclusão." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Logs de debug detalhados" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),

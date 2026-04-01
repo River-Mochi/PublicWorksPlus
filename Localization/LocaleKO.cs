@@ -1,4 +1,4 @@
-﻿// File: Localization/LocaleKO.cs
+// File: Localization/LocaleKO.cs
 // Korean (ko-KR) strings for Options UI.
 
 namespace PublicWorksPlus
@@ -50,7 +50,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "각 노선별 게임 내 교통 노선 슬라이더의 **범위**를 늘립니다.\n" +
                     "테스트된 모든 노선에서 **최저 (1)** 까지 내려갑니다.\n" +
-                    "**최대 한도는 가변적**이지만, 모두 바닐라보다 3x 이상 높습니다. 예: 30-60\n" +
+                    "**최대 한도는 가변적**이지만, 모두 바닐라보다 3× 이상 높습니다.\n" +
                     "기술 참고: 게임은 노선 시간(주행 시간 + 정류장 수)을 사용하므로 최대값이 가변적입니다(이 모드는 게임 로직을 따르므로 200 같은 고정 최대값은 설정하지 않습니다).\n" +
                     "모든 교통수단에 적용됩니다: 버스, 페리, 트램, 기차, 지하철, 선박, 비행기.\n\n" +
                     "**---------------**\n" +
@@ -70,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10배.\n" +
                     "기본 건물에 적용됩니다." },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "페리 차고" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "페리 차고" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**페리 차고** 건물당 최대 차량 수입니다.\n" +
                     "**100%** = 바닐라 (게임 기본값).\n" +
@@ -98,7 +98,6 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "각 **기차 차고**가 유지할 수 있는 기차 수를 변경합니다.\n" +
                     "기본 건물에 적용됩니다." },
-
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "차고 기본값 리셋" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -254,12 +253,13 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "**작업 교대 용량**에 대한 배수입니다.\n" +
                     "트럭이 차고로 돌아가기 전에 수행할 수 있는 총 작업량입니다.\n" +
-                    "**높을수록 = 복귀 횟수 감소.**" },
+                    "**높을수록 = 복귀 횟수 감소**. 더 효율적입니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "수리율" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "작업률 = 정차 중 시뮬레이션 tick당 수행하는 작업량.\n" +
-                    "최고 수리율에서도 트럭은 잠깐 멈췄다 가는 동작을 합니다 (한 번 멈출 때 더 많은 작업을 수행함).\n"
+                    "최고 수리율에서도 트럭은 잠깐 멈췄다 가는 동작을 합니다. 단지 한 번 멈출 때 더 많은 작업을 수행합니다.\n" +
+                    "바닐라에서는 한 번의 정차로 도로가 반드시 100% 수리되는 것은 아니므로, 이 기능은 시간이 지날수록 더 유용해집니다.\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "도로 마모" },
@@ -269,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = 마모 10× 느림 (수리 필요 감소)\n" +
                     "**100%** = 바닐라\n" +
                     "**500%** = 손상 5× 빠름 (더 많은 수리/트럭 필요)\n" +
+                    "게임 내 작동 방식:\n" +
                     "m_Wear <= 2.5 이면 감속 없음.\n" +
                     "m_Wear >= 17.5 이면 최대 페널티, 도로 위 차량 속도가 50% 느려집니다.\n" +
                     "도로 인포뷰 참조: 심하게 손상된 도로는 빨간색으로 표시되며 차량을 감속시킵니다."
-
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "도로 유지관리 리셋" },
@@ -308,8 +308,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab 스캔 상태" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "스캔 상태 표시: Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running 은 경과 시간을 표시하고, Done 은 소요 시간 + 완료 시각을 표시합니다." },
+                    "스캔 상태 표시: 대기 중 / 대기열 / 실행 중 / 완료 / 데이터 없음.\n" +
+                    "대기열/실행 중 은 경과 시간을 표시하고, 완료 는 소요 시간 + 완료 시각을 표시합니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "상세 디버그 로그" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),

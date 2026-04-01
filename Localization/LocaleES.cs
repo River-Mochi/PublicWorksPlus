@@ -1,4 +1,4 @@
-﻿// File: Localization/LocaleES.cs
+// File: Localization/LocaleES.cs
 // Spanish (es-ES) strings for Options UI.
 
 namespace PublicWorksPlus
@@ -46,16 +46,16 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.LineVehiclesGroup), "Líneas de transporte (rango del deslizador en juego)" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "Ampliar min/máx de líneas de transporte" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "Ampliar mín/máx de líneas de transporte" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "Aumenta el **rango** del deslizador de líneas de transporte en juego para cada ruta.\n" +
                     "**Tan bajo como (1)** en todas las rutas probadas.\n" +
-                    "El **límite máximo varía**; pero todos son 3x o más altos que vanilla, por ejemplo, 30-60\n" +
+                    "El **límite máximo varía**; pero todos son 3× o más altos que vanilla.\n" +
                     "Nota técnica: el juego usa el tiempo de ruta (tiempo de conducción + número de paradas); esto crea un máximo variable (este mod sigue la lógica del juego y por eso no fija un máximo estático como 200).\n" +
                     "Funciona para todo el transporte: autobús, ferry, tranvía, tren, metro, barco, avión.\n\n" +
                     "**---------------**\n" +
-                    "Consejo: si se quiere aumentar un poco más el máximo del deslizador, agregar algunas paradas a la ruta.\n" +
-                    "El juego aumenta automáticamente el máximo según las paradas añadidas + factores; agregar paradas es un ajuste sencillo para el jugador.\n" +
+                    "Consejo: si quieres aumentar un poco más el máximo del deslizador, añade algunas paradas a la ruta.\n" +
+                    "El juego aumenta automáticamente el máximo según las paradas añadidas + factores; añadir paradas es un ajuste sencillo para el jugador.\n" +
                     "<Evitar conflictos>: quitar mods que editen la misma política de líneas de transporte.\n" +
                     "Desactivar si la función no es necesaria o si debe desactivarse para usar otro mod para lo mismo."
                 },
@@ -70,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10× más.\n" +
                     "Se aplica al edificio base." },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Depósito de ferris" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Depósito de ferris" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**Depósito de ferris**: vehículos máximos por edificio.\n" +
                     "**100%** = vanilla (valor predeterminado del juego).\n" +
@@ -98,7 +98,6 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "Cambia cuántos trenes puede mantener cada **depósito de trenes**.\n" +
                     "Se aplica al edificio base." },
-
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Restablecer depósitos" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -254,12 +253,13 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "Multiplicador para la **capacidad del turno de trabajo**.\n" +
                     "Trabajo total que puede hacer un camión antes de volver al depósito.\n" +
-                    "**Más alto = menos regresos.**" },
+                    "**Más alto = menos regresos** necesarios al edificio principal. Más eficiente." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Tasa de reparación" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "Tasa = cuánto trabajo hace por tick de simulación mientras está parado.\n" +
-                    "Los camiones aún hacen una parada+avance rápido incluso con la tasa más alta (hacen más trabajo por parada).\n"
+                    "Los camiones aún hacen una parada+avance rápido incluso con la tasa más alta; simplemente hacen más trabajo por parada.\n" +
+                    "En vanilla, una sola parada no necesariamente deja la carretera al 100% de reparación, así que esta función mejora con el tiempo.\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Desgaste de carreteras" },
@@ -269,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = desgaste 10× más lento (se necesitan menos reparaciones)\n" +
                     "**100%** = vanilla\n" +
                     "**500%** = daño 5× más rápido (se necesitan más reparaciones/camiones)\n" +
+                    "Cómo funciona en el juego:\n" +
                     "Si el factor m_Wear <= 2.5, no hay ralentización.\n" +
                     "Si m_Wear >= 17.5, penalización máxima, los vehículos son 50% más lentos en las carreteras.\n" +
                     "Ver infovista de carreteras: muestra en rojo las carreteras muy dañadas que ralentizan a los vehículos."
-
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Restablecer mantenimiento de carreteras" },
@@ -285,7 +285,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.AboutInfoGroup), "Info" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.AboutLinksGroup), "Enlaces de soporte" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "Debug / Registro" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.DebugGroup), "Depuración / Registro" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModNameDisplay)), "Mod" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModNameDisplay)), "Nombre mostrado de este mod." },
@@ -308,8 +308,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Estado del escaneo de prefabs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Muestra el estado del escaneo: Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running muestra el tiempo transcurrido; Done muestra duración + hora de finalización." },
+                    "Muestra el estado del escaneo: Inactivo / En cola / En ejecución / Hecho / Sin datos.\n" +
+                    "En cola/En ejecución muestra el tiempo transcurrido; Hecho muestra duración + hora de finalización." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Registros debug detallados" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),

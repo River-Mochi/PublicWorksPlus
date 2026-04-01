@@ -1,4 +1,4 @@
-﻿// File: Localization/LocaleDE.cs
+// File: Localization/LocaleDE.cs
 // German (de-DE) strings for Options UI.
 
 namespace PublicWorksPlus
@@ -50,7 +50,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "Erhöht den **Bereich** des Transitlinien-Schiebereglers im Spiel für jede Route.\n" +
                     "**Bis auf (1)** bei allen getesteten Routen.\n" +
-                    "Das **Maximallimit variiert**; aber alle liegen 3x oder mehr über Vanilla, z. B. 30-60\n" +
+                    "Das **Maximallimit variiert**; aber alle liegen 3× oder mehr über Vanilla.\n" +
                     "Technischer Hinweis: Das Spiel nutzt die Routenzeit (Fahrzeit + Haltestellenanzahl); dadurch entsteht ein variables Maximum (dieser Mod folgt der Spiellogik und setzt daher kein statisches Maximum wie 200).\n" +
                     "Funktioniert für alle Verkehrsmittel: Bus, Fähre, Straßenbahn, Zug, U-Bahn, Schiff, Flugzeug.\n\n" +
                     "**---------------**\n" +
@@ -70,7 +70,7 @@ namespace PublicWorksPlus
                     "**1000%** = 10× mehr.\n" +
                     "Gilt für das Basisgebäude." },
 
-                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Fährdepot" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "Fährdepot" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
                     "**Fährdepot** max. Fahrzeuge pro Gebäude.\n" +
                     "**100%** = Vanilla (Spielstandard).\n" +
@@ -98,7 +98,6 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
                     "Ändert, wie viele Züge jedes **Zugdepot** warten kann.\n" +
                     "Gilt für das Basisgebäude." },
-
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "Depot-Standardwerte zurücksetzen" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
@@ -254,12 +253,13 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "Multiplikator für die **Arbeitsschichtkapazität**.\n" +
                     "Gesamtarbeit, die ein LKW leisten kann, bevor er zum Depot zurückkehrt.\n" +
-                    "**Höher = weniger Rückfahrten.**" },
+                    "**Höher = weniger Rückfahrten** zum Hauptgebäude nötig. Effizienter." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Reparaturrate" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
                     "Rate = wie viel Arbeit es pro Simulationstick im Stand erledigt.\n" +
-                    "LKWs machen selbst bei höchster Rate noch einen kurzen Stopp+Losfahr-Moment (sie erledigen mehr Arbeit pro Stopp).\n"
+                    "LKWs machen selbst bei höchster Rate noch einen kurzen Stopp+Losfahr-Moment; sie erledigen einfach mehr Arbeit pro Stopp.\n" +
+                    "In Vanilla bringt ein einzelner Stopp die Straße nicht unbedingt auf 100% Reparatur, daher wird diese Funktion mit der Zeit besser.\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Straßenverschleiß" },
@@ -269,10 +269,10 @@ namespace PublicWorksPlus
                     "**10%** = 10× langsamerer Verschleiß (weniger Reparaturen nötig)\n" +
                     "**100%** = Vanilla\n" +
                     "**500%** = 5× schnellerer Schaden (mehr Reparaturen/LKWs nötig)\n" +
+                    "So funktioniert es im Spiel:\n" +
                     "Wenn Faktor m_Wear <= 2.5, keine Verlangsamung.\n" +
                     "Wenn m_Wear >= 17.5, maximale Strafe, Fahrzeuge sind auf Straßen 50% langsamer.\n" +
                     "Siehe Straßen-Infoview: stark beschädigte Straßen werden rot angezeigt und verlangsamen Fahrzeuge."
-
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Straßenwartung zurücksetzen" },
@@ -308,8 +308,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab-Scanstatus" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Zeigt den Scanstatus: Idle / Queued / Running / Done / No Data.\n" +
-                    "Queued/Running zeigt die verstrichene Zeit; Done zeigt Dauer + Endzeit." },
+                    "Zeigt den Scanstatus: Leerlauf / In Warteschlange / Läuft / Fertig / Keine Daten.\n" +
+                    "In Warteschlange/Läuft zeigt die verstrichene Zeit; Fertig zeigt Dauer + Endzeit." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Ausführliche Debug-Logs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
