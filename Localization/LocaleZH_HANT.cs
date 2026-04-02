@@ -183,9 +183,9 @@ namespace PublicWorksPlus
                     "**1× = 4t**（原版）\n" +
                     "**10×** = 10× 更多。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "原材料卡車" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**原材料卡車**（石油、煤炭、礦石、石材）\n" +
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "原材料卡車" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
+                    "**原材料卡車**（石油、煤炭、礦石、石材，以及用於工業廢棄物的傾卸卡車 - 屬於同一種共用卡車類型）\n" +
                     "**1× = 20t**（原版）\n" +
                     "**10×** = 10× 更多。" },
 

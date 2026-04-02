@@ -15,7 +15,7 @@ namespace PublicWorksPlus
 
         private float m_SemiTruckCargoScalar = kVanillaScalar;
         private float m_DeliveryVanCargoScalar = kVanillaScalar;
-        private float m_OilTruckCargoScalar = kVanillaScalar;
+        private float m_CoalTruckScalar = kVanillaScalar;
         private float m_MotorbikeDeliveryCargoScalar = kVanillaScalar;
 
         private float m_ExtractorMaxTrucksScalar = kVanillaScalar;
@@ -55,15 +55,15 @@ namespace PublicWorksPlus
 
         [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
-        public float OilTruckCargoScalar
+        public float CoalTruckScalar
         {
-            get => m_OilTruckCargoScalar;
+            get => m_CoalTruckScalar;
             set
             {
                 float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
-                if (m_OilTruckCargoScalar == v) return;
+                if (m_CoalTruckScalar == v) return;
 
-                m_OilTruckCargoScalar = v;
+                m_CoalTruckScalar = v;
                 OnIndustryChanged();
             }
         }
@@ -126,7 +126,7 @@ namespace PublicWorksPlus
 
                 m_SemiTruckCargoScalar = kVanillaScalar;
                 m_DeliveryVanCargoScalar = kVanillaScalar;
-                m_OilTruckCargoScalar = kVanillaScalar;
+                m_CoalTruckScalar = kVanillaScalar;
                 m_MotorbikeDeliveryCargoScalar = kVanillaScalar;
 
                 ApplyAndSave();
@@ -166,7 +166,7 @@ namespace PublicWorksPlus
         {
             m_SemiTruckCargoScalar = kVanillaScalar;
             m_DeliveryVanCargoScalar = kVanillaScalar;
-            m_OilTruckCargoScalar = kVanillaScalar;
+            m_CoalTruckScalar = kVanillaScalar;
             m_MotorbikeDeliveryCargoScalar = kVanillaScalar;
 
             m_CargoStationMaxTrucksScalar = kVanillaScalar;
@@ -177,7 +177,7 @@ namespace PublicWorksPlus
         {
             m_SemiTruckCargoScalar = ClampScalarOrDefault(m_SemiTruckCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
             m_DeliveryVanCargoScalar = ClampScalarOrDefault(m_DeliveryVanCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
-            m_OilTruckCargoScalar = ClampScalarOrDefault(m_OilTruckCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
+            m_CoalTruckScalar = ClampScalarOrDefault(m_CoalTruckScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
             m_MotorbikeDeliveryCargoScalar = ClampScalarOrDefault(m_MotorbikeDeliveryCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
 
             m_CargoStationMaxTrucksScalar = ClampScalarOrDefault(m_CargoStationMaxTrucksScalar, CargoStationMinScalar, CargoStationMaxScalar, kVanillaScalar);

@@ -151,7 +151,7 @@ namespace PublicWorksPlus
             {
                 float semiScalar = ScalarMath.ClampScalar(settings.SemiTruckCargoScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
                 float vanScalar = ScalarMath.ClampScalar(settings.DeliveryVanCargoScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
-                float rawScalar = ScalarMath.ClampScalar(settings.OilTruckCargoScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
+                float rawScalar = ScalarMath.ClampScalar(settings.CoalTruckScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
                 float mbikeScalar = ScalarMath.ClampScalar(settings.MotorbikeDeliveryCargoScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
 
                 foreach ((RefRW<DeliveryTruckData> truckRef, Entity prefabEntity) in SystemAPI

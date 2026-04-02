@@ -183,9 +183,9 @@ namespace PublicWorksPlus
                     "**1× = 4t**（バニラ）\n" +
                     "**10×** = 10倍。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "原材料トラック" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**原材料トラック**（石油、石炭、鉱石、石材）\n" +
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "原材料トラック" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
+                    "**原材料トラック**（石油、石炭、鉱石、石材、産業廃棄物用ダンプトラック - 同じ共有トラック種別）\n" +
                     "**1× = 20t**（バニラ）\n" +
                     "**10×** = 10倍。" },
 

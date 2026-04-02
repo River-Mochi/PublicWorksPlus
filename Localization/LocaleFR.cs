@@ -183,9 +183,9 @@ namespace PublicWorksPlus
                     "**1× = 4t** (vanilla)\n" +
                     "**10×** = 10× plus." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "Camions de matières premières" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**Camions de matières premières** (pétrole, charbon, minerai, pierre)\n" +
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "Camions de matières premières" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
+                    "**Camions de matières premières** (pétrole, charbon, minerai, pierre, camions-bennes pour déchets industriels - même type de camion partagé)\n" +
                     "**1× = 20t** (vanilla)\n" +
                     "**10×** = 10× plus." },
 

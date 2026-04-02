@@ -184,9 +184,10 @@ namespace PublicWorksPlus
                     "**1× = 4t** (vanilla)\n" +
                     "**10×** = 10× more." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "Raw material trucks" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**Raw material trucks** (oil, coal, ore, stone)\n" +
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "Raw material trucks" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
+                    "**Raw material trucks** (oil, coal, ore, stone, dump trucks for industrial waste - same shared truck type)\n" +
                     "**1× = 20t** (vanilla)\n" +
                     "**10×** = 10× more." },
 

@@ -183,9 +183,9 @@ namespace PublicWorksPlus
                     "**1× = 4t** (vanilla)\n" +
                     "**10×** = 10× więcej." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "Ciężarówki surowcowe" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**Ciężarówki surowcowe** (ropa, węgiel, ruda, kamień)\n" +
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "Ciężarówki surowcowe" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
+                    "**Ciężarówki surowcowe** (ropa, węgiel, ruda, kamień, wywrotki do odpadów przemysłowych - ten sam współdzielony typ ciężarówki)\n" +
                     "**1× = 20t** (vanilla)\n" +
                     "**10×** = 10× więcej." },
 

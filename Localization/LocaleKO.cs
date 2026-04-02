@@ -183,9 +183,9 @@ namespace PublicWorksPlus
                     "**1× = 4t** (바닐라)\n" +
                     "**10×** = 10배." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "원자재 트럭" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**원자재 트럭** (석유, 석탄, 광석, 석재)\n" +
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "원자재 트럭" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
+                    "**원자재 트럭** (석유, 석탄, 광석, 석재, 산업 폐기물용 덤프트럭 - 같은 공유 트럭 유형)\n" +
                     "**1× = 20t** (바닐라)\n" +
                     "**10×** = 10배." },
 

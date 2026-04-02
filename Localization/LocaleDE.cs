@@ -183,9 +183,9 @@ namespace PublicWorksPlus
                     "**1× = 4t** (Vanilla)\n" +
                     "**10×** = 10× mehr." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OilTruckCargoScalar)), "Rohstoff-LKW" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OilTruckCargoScalar)),
-                    "**Rohstoff-LKW** (Öl, Kohle, Erz, Stein)\n" +
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "Rohstoff-LKW" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
+                    "**Rohstoff-LKW** (Öl, Kohle, Erz, Stein, Deponie-LKW für Industrieabfälle - derselbe gemeinsam genutzte LKW-Typ)\n" +
                     "**1× = 20t** (Vanilla)\n" +
                     "**10×** = 10× mehr." },
 
