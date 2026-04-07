@@ -193,15 +193,6 @@ namespace AdjustTransit
                     "로그 폴더를 엽니다.\n" +
                     "다음: 텍스트 편집기로 <AdjustTransit.log> 를 여세요 (Notepad++ 권장)." },
 
-                // ---- Scan Report Status Text (format string templates) ----
-                { "PWP_SCAN_IDLE", "대기 중" },
-                { "PWP_SCAN_QUEUED_FMT", "대기열 ({0})" },
-                { "PWP_SCAN_RUNNING_FMT", "실행 중 ({0})" },
-                { "PWP_SCAN_DONE_FMT", "완료 ({0} | {1})" },
-                { "PWP_SCAN_FAILED", "실패" },
-                { "PWP_SCAN_FAIL_NO_CITY", "먼저 도시 로드" },
-                { "PWP_SCAN_UNKNOWN_TIME", "알 수 없는 시간" },
-
             };
         }
 

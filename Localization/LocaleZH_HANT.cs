@@ -192,15 +192,6 @@ namespace AdjustTransit
                     "開啟日誌資料夾。\n" +
                     "下一步：用文字編輯器開啟 <AdjustTransit.log>（推薦 Notepad++）。" },
 
-                // ---- Scan Report Status Text (format string templates) ----
-                { "PWP_SCAN_IDLE", "閒置" },
-                { "PWP_SCAN_QUEUED_FMT", "排隊中 ({0})" },
-                { "PWP_SCAN_RUNNING_FMT", "執行中 ({0})" },
-                { "PWP_SCAN_DONE_FMT", "完成 ({0} | {1})" },
-                { "PWP_SCAN_FAILED", "失敗" },
-                { "PWP_SCAN_FAIL_NO_CITY", "請先載入城市" },
-                { "PWP_SCAN_UNKNOWN_TIME", "未知時間" },
-
             };
         }
 

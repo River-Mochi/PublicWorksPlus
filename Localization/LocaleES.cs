@@ -193,17 +193,6 @@ namespace AdjustTransit
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "Abre la carpeta de logs.\n" +
                     "Siguiente: abrir <AdjustTransit.log> con el editor de texto (se recomienda Notepad++)." },
-
-
-                // ---- Scan Report Status Text (format string templates) ----
-                { "PWP_SCAN_IDLE", "Inactivo" },
-                { "PWP_SCAN_QUEUED_FMT", "En cola ({0})" },
-                { "PWP_SCAN_RUNNING_FMT", "En ejecución ({0})" },
-                { "PWP_SCAN_DONE_FMT", "Hecho ({0} | {1})" },
-                { "PWP_SCAN_FAILED", "Falló" },
-                { "PWP_SCAN_FAIL_NO_CITY", "Cargar ciudad primero" },
-                { "PWP_SCAN_UNKNOWN_TIME", "hora desconocida" },
-
             };
         }
 

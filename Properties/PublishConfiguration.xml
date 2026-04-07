@@ -66,7 +66,7 @@
 	<!--Tag, can be set multiple times-->
 	<Tag Value="Code Mod" />
 	<!--Link to the forum post where the mod can be discussed-->
-	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/public-works-plus.1910233/" />
+	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/adjust-transit-capactiy.1866178/" />
 	<!--Version of the mod-->
 	<ModVersion Value="1.3.5" />
 	<!--Recommended version of the base game to use the mod-->
@@ -81,5 +81,5 @@
 </ChangeLog>
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
 <ExternalLink Type="discord" Url="https://discord.gg/HTav7ARPs2" />
-<ExternalLink Type="github" Url="https://github.com/River-Mochi/PublicWorksPlus" />
+<ExternalLink Type="github" Url="https://github.com/River-Mochi/PublicWorksPlus/tree/atc-mod" />
 </Publish>

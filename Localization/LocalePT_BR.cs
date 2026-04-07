@@ -192,15 +192,6 @@ namespace AdjustTransit
                     "Abre a pasta de logs.\n" +
                     "Próximo: abra <AdjustTransit.log> com o editor de texto (Notepad++ recomendado)." },
 
-                // ---- Scan Report Status Text (format string templates) ----
-                { "PWP_SCAN_IDLE", "Inativo" },
-                { "PWP_SCAN_QUEUED_FMT", "Na fila ({0})" },
-                { "PWP_SCAN_RUNNING_FMT", "Em execução ({0})" },
-                { "PWP_SCAN_DONE_FMT", "Concluído ({0} | {1})" },
-                { "PWP_SCAN_FAILED", "Falhou" },
-                { "PWP_SCAN_FAIL_NO_CITY", "Carregue a cidade primeiro" },
-                { "PWP_SCAN_UNKNOWN_TIME", "hora desconhecida" },
-
             };
         }
 
