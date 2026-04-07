@@ -1,4 +1,4 @@
-## Internal Systems & Behaviour — Public Works Plus [PWP]
+## Internal Systems & Behaviour — Adjust Transit Capacity [ATC]
 
 Quick reference for how PWP works under the hood.
 
@@ -18,7 +18,7 @@ Quick reference for how PWP works under the hood.
 | **One-shot per apply** | Systems run only when explicitly triggered (load/apply/button). | Systems enable, run once, then set `Enabled = false`. |
 | **Settings changes reapply** | Slider changes apply immediately to the loaded city. | `Setting.Apply()` re-enables the systems for one more pass. |
 | **Transit line slider tuner** | Optional widening of the line vehicle slider limits. | Edits `VehicleCountPolicy` RouteModifier range when enabled. |
-| **Prefab scan report** | Debug report of relevant prefabs + current policy ranges. | Button enables `PrefabScanSystem`, writes `ModsData/PublicWorksPlus/ScanReport-Prefabs.txt`. |
+| **Prefab scan report** | Debug report of relevant prefabs + current policy ranges. | Button enables `PrefabScanSystem`, writes `ModsData/AdjustTransit/ScanReport-Prefabs.txt`. |
 | **Debug logging** | Optional detailed logs to the mod log file. | Controlled by `EnableDebugLogging`, logs via `Mod.s_Log`. |
 | **Safe locale loading** | Localization issues can’t break startup. | Locale sources wrapped in try/catch around `LocalizationManager.AddSource`. |
 | **Options UI layout** | Tabs: Public-Transit / Industry / Parks-Roads / About. | `Setting` uses CO `SettingsUI*` attributes + Locale-backed labels/descs. |

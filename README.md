@@ -1,6 +1,6 @@
-# Public Works Plus
+# Adjust Transit Capacity
 
-Public Works Plus lets you scale **fleet sizes** and **vehicle capacities** in *Cities: Skylines II*.
+Adjust Transit Capacity lets you scale **fleet sizes** and **vehicle capacities** in *Cities: Skylines II*.
 
 ## Features
 
@@ -9,24 +9,9 @@ Public Works Plus lets you scale **fleet sizes** and **vehicle capacities** in *
 - **Passenger capacity** (seats per vehicle): Bus, Tram, Train, Subway, Ship, Ferry, Airplane
 - Optional: **Expand Transit Line in-game slider limits** (can allow down to 1 vehicle on most routes; max is also higher than vanilla)
 
-### Industry & Cargo
-- **Delivery vehicle cargo capacity**: Semi Trucks, Delivery Vans, Raw Material trucks, Motorbike delivery
-- **Cargo station fleet** (harbor/train/airport cargo stations): max active transporters
-- **Extractor fleet**: max trucks for industrial extractors
-
-### Parks & Roads
-- **Park maintenance**
-  - Depot fleet size
-  - Vehicle maintenance capacity
-  - Vehicle maintenance rate
-- **Road maintenance**
-  - Depot fleet size
-  - Work Shift capacity
-  - Repair rate (alpha)
-- **Road wear speed** (alpha)
 
 ### Debug Tools (About tab)
-- **Prefab Scan Report** (writes `ModsData/PublicWorksPlus/ScanReport-Prefabs.txt`)
+- **Prefab Scan Report** (writes `ModsData/AdjustTransit/ScanReport-Prefabs.txt`)
 - **Open log folder** / **Open report folder**
 - Optional verbose logging (disable for normal gameplay)
 

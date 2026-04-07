@@ -6,7 +6,7 @@
 // - One-shot: runs after city load, and whenever Settings.Apply enables it.
 // - Toggle OFF restores the original policy values captured at first run (per session).
 
-namespace PublicWorksPlus
+namespace AdjustTransit
 {
     using Colossal.Mathematics;              // Bounds1 (min/max float range)
     using Colossal.Serialization.Entities;   // Purpose

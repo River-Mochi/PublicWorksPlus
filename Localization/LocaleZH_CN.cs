@@ -1,7 +1,7 @@
 // File: Localization/LocaleZH_CN.cs
 // Simplified Chinese (zh-HANS) strings for Options UI.
 
-namespace PublicWorksPlus
+namespace AdjustTransit
 {
     using Colossal;
     using System.Collections.Generic;
@@ -36,8 +36,6 @@ namespace PublicWorksPlus
 
                 // Tabs (match Setting.cs tab ids)
                 { m_Setting.GetOptionTabLocaleID(Setting.PublicTransitTab), "公共交通" },
-                { m_Setting.GetOptionTabLocaleID(Setting.IndustryTab),      "工业" },
-                { m_Setting.GetOptionTabLocaleID(Setting.ParksRoadsTab),    "公园-道路" },
                 { m_Setting.GetOptionTabLocaleID(Setting.AboutTab),         "关于" },
 
                 // --------------------
@@ -162,123 +160,6 @@ namespace PublicWorksPlus
                     "将所有乘客滑块恢复到 **100%**\n" +
                     "（游戏默认值 / 原版）。" },
 
-                // ----------------
-                // INDUSTRY tab
-                // ----------------
-
-                { m_Setting.GetOptionGroupLocaleID(Setting.DeliveryGroup), "配送车辆（货物容量）" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "半挂卡车" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
-                    "**半挂卡车**容量。\n" +
-                    "包括：\n" +
-                    "* 专业工业半挂（农场、渔业、林业等）。\n" +
-                    "* 往返货运站运输邮件的半挂卡车（不同于本地邮件投递）。\n" +
-                    "**1× = 25t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "配送面包车" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
-                    "**配送面包车**\n" +
-                    "**1× = 4t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "原材料卡车" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
-                    "**原材料卡车**（石油、煤炭、矿石、石材，以及用于工业废弃物的自卸卡车 - 属于同一种共享卡车类型）\n" +
-                    "**1× = 20t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "配送摩托车" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
-                    "**摩托车配送**通常会把药品送到医院/诊所。\n" +
-                    "**1× = 0.1t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "重置配送默认值" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "将配送倍率恢复到 **1×**（游戏默认值 / 原版）。" },
-
-                { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "货运车队（港口、铁路、机场）" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "货运站最大车队" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "**货运运输站**最大活跃运输车辆数的倍率。\n" +
-                    "**1×** = 原版，**5×** = 5× 更多。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "采集设施车队" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "工业**采集设施最大卡车数**的倍率\n" +
-                    "（农场、渔业、林业、矿石、石油、煤炭、石材）。\n" +
-                    "**1×** = 原版，**5×** = 5× 更多。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "重置货运 + 采集设施车队" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
-                    "将货运站 + 采集设施倍率恢复到 **1×**（游戏默认值 / 原版）。" },
-
-                // -------------------
-                // Parks-Roads
-                // -------------------
-
-                { m_Setting.GetOptionGroupLocaleID(Setting.ParkMaintenanceGroup), "公园维护" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)), "工作班次容量" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)),
-                    "**工作班次容量**（车辆容量）的倍率。\n" +
-                    "卡车在返回建筑前可完成的总工作量。\n" +
-                    "可以理解为：补给更多 = 在外工作更久。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)), "车辆工作速率" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)),
-                    "**车辆工作速率**的倍率。\n" +
-                    "速率 = 车辆停下时每个模拟 tick 完成的工作量。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)), "车库车队规模" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)),
-                    "车库建筑**最大车辆数**的倍率。\n" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)), "重置公园维护" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)),
-                    "将所有数值重置回 **100%**（游戏默认值 / 原版）。" },
-
-                { m_Setting.GetOptionGroupLocaleID(Setting.RoadMaintenanceGroup), "道路维护" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)), "车库车队规模" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)),
-                    "每栋建筑**车库最大车辆数**的倍率。\n" +
-                    "越高 = 卡车越多。\n" +
-                    "<平衡说明：太少或太多都可能损害交通。>" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)), "工作班次容量" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
-                    "**工作班次容量**的倍率。\n" +
-                    "卡车在返回车库前可完成的总工作量。\n" +
-                    "**越高 = 返回主建筑次数越少。** 效率更高。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "修理速率" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
-                    "速率 = 车辆停下时每个模拟 tick 完成的工作量。\n" +
-                    "即使在最高速率下，卡车仍会短暂停车+再前进；只是每次停车完成更多工作。\n" +
-                    "原版中，一次停车不一定能把道路修到 100%，所以这个功能会随着时间推移变得更有帮助。\n"
-                },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "道路磨损" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<新的 Alpha 功能>\n" +
-                    "控制道路因**时间和交通**因素而劣化的速度。\n" +
-                    "**10%** = 磨损速度慢 10×（所需维修更少）\n" +
-                    "**100%** = 原版\n" +
-                    "**500%** = 损坏速度快 5×（需要更多维修/卡车）\n" +
-                    "游戏内工作方式：\n" +
-                    "如果 m_Wear <= 2.5，则无减速。\n" +
-                    "如果 m_Wear >= 17.5，则达到最大惩罚，车辆在道路上速度会降低 50%。\n" +
-                    "查看道路信息视图：严重损坏的道路会显示为红色，并减慢车辆速度。"
-                },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "重置道路维护" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)),
-                    "将所有数值恢复到 **100%**（游戏默认值 / 原版）。" },
-
                 // -------------------
                 // About tab
                 // -------------------
@@ -299,33 +180,16 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenDiscord)), "Discord" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenDiscord)), "在浏览器中打开社区 Discord。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RunPrefabScanButton)), "扫描报告（prefab）" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RunPrefabScanButton)),
-                    "创建用于调试的<一次性>报告。\n" +
-                    "正常游玩不需要。\n" +
-                    "文件位置：<ModsData/PublicWorksPlus/ScanReport-Prefabs.txt>\n" +
-                    "提示：点击<一次>；当状态显示为完成时，使用 <打开报告文件夹>。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab 扫描状态" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "显示扫描状态：空闲 / 排队中 / 运行中 / 完成 / 无数据。\n" +
-                    "排队中/运行中 显示已用时间；完成 显示耗时 + 完成时间。" },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "详细调试日志" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "将额外细节发送到 <PublicWorksPlus.log> 以便排查问题。\n" +
+                    "将额外细节发送到 <AdjustTransit.log> 以便排查问题。\n" +
                     "正常游玩请**禁用**。\n" +
                     "<这只会增加日志记录，不会改变游戏数值。>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "打开日志文件夹" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "打开日志文件夹。\n" +
-                    "下一步：用文本编辑器打开 <PublicWorksPlus.log>（推荐 Notepad++）。" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "打开报告文件夹" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenReportButton)),
-                    "打开报告文件夹。\n" +
-                    "下一步：用文本编辑器打开 <ScanReport-Prefabs.txt>（例如 Notepad++）。" },
+                    "下一步：用文本编辑器打开 <AdjustTransit.log>（推荐 Notepad++）。" },
 
                 // ---- Scan Report Status Text (format string templates) ----
                 { "PWP_SCAN_IDLE", "空闲" },

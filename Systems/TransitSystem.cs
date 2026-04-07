@@ -5,7 +5,7 @@
 // - Depots: Bus / Ferry / Taxi / Tram / Train / Subway.
 // - Passengers: Bus / Tram / Train / Subway / Ship / Ferry / Airplane.
 
-namespace PublicWorksPlus
+namespace AdjustTransit
 {
     using Colossal.Serialization.Entities;
     using Game;
@@ -26,6 +26,7 @@ namespace PublicWorksPlus
         private Dictionary<TransportType, SeatSummary> m_PassengerSeatSummary = null!;
 
         private const int kTramSections = 3;
+        private static bool s_PrefabNameWarnedOnce;
 
         private struct SeatSummary
         {
@@ -122,7 +123,7 @@ namespace PublicWorksPlus
             // DEPOTS — prefab-only
             foreach ((RefRW<TransportDepotData> depotRef, Entity entity) in SystemAPI
                          .Query<RefRW<TransportDepotData>>()
-                         .WithAll<PrefabData>()  
+                         .WithAll<PrefabData>()
                          .WithEntityAccess())
             {
                 ref TransportDepotData depotData = ref depotRef.ValueRW;
@@ -247,11 +248,13 @@ namespace PublicWorksPlus
                         }
                         else if (summary.MinBase == summary.MaxBase && summary.MinNew == summary.MaxNew)
                         {
-                            Mod.s_Log.Info($"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase} -> {summary.MinNew} (per vehicle prefab type)");
+                            Mod.s_Log.Info(
+                                $"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase} -> {summary.MinNew} (per vehicle prefab type)");
                         }
                         else
                         {
-                            Mod.s_Log.Info($"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase}-{summary.MaxBase} -> {summary.MinNew}-{summary.MaxNew} (per vehicle prefab types)");
+                            Mod.s_Log.Info(
+                                $"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase}-{summary.MaxBase} -> {summary.MinNew}-{summary.MaxNew} (per vehicle prefab types)");
                         }
                     }
                 }
@@ -295,15 +298,53 @@ namespace PublicWorksPlus
 
         private bool IsPrisonVan(Entity entity)
         {
-            string name = PrefabNameUtil.GetNameSafe(m_PrefabSystem, entity);
-            return !string.IsNullOrEmpty(name) && name.IndexOf("PrisonVan", StringComparison.OrdinalIgnoreCase) >= 0;
+            string name = GetPrefabNameSafe(entity);
+            return !string.IsNullOrEmpty(name) &&
+                   name.IndexOf("PrisonVan", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private string GetPrefabNameSafe(Entity prefabEntity)
+        {
+            if (prefabEntity == Entity.Null)
+            {
+                return "(null prefab)";
+            }
+
+            try
+            {
+                if (m_PrefabSystem != null &&
+                    m_PrefabSystem.TryGetPrefab(prefabEntity, out PrefabBase prefabBase))
+                {
+                    return prefabBase.name ?? "(unnamed)";
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!s_PrefabNameWarnedOnce)
+                {
+                    s_PrefabNameWarnedOnce = true;
+                    Mod.s_Log.Warn($"{Mod.ModTag} TransitSystem prefab name lookup failed once: {ex.GetType().Name}: {ex.Message}");
+                }
+            }
+
+            return $"PrefabEntity={prefabEntity.Index}:{prefabEntity.Version}";
         }
 
         private bool TryGetDepotBaseCapacity(Entity entity, out int baseCapacity)
         {
             baseCapacity = 0;
 
-            if (!PrefabComponentUtil.TryGetComponent(m_PrefabSystem, entity, out TransportDepot depotComponent))
+            if (entity == Entity.Null || m_PrefabSystem == null)
+            {
+                return false;
+            }
+
+            if (!m_PrefabSystem.TryGetPrefab(entity, out PrefabBase prefabBase))
+            {
+                return false;
+            }
+
+            if (!prefabBase.TryGet(out TransportDepot depotComponent))
             {
                 return false;
             }
@@ -316,7 +357,17 @@ namespace PublicWorksPlus
         {
             basePassengers = 0;
 
-            if (!PrefabComponentUtil.TryGetComponent(m_PrefabSystem, entity, out PublicTransport publicTransport))
+            if (entity == Entity.Null || m_PrefabSystem == null)
+            {
+                return false;
+            }
+
+            if (!m_PrefabSystem.TryGetPrefab(entity, out PrefabBase prefabBase))
+            {
+                return false;
+            }
+
+            if (!prefabBase.TryGet(out PublicTransport publicTransport))
             {
                 return false;
             }

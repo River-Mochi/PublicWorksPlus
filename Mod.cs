@@ -1,25 +1,25 @@
 // File: Mod.cs
 // Entrypoint: registers settings, locales, and the ECS systems.
 
-namespace PublicWorksPlus
+namespace AdjustTransit
 {
-    using Colossal;                       // IDictionarySource
-    using Colossal.IO.AssetDatabase;      // AssetDatabase.LoadSettings
-    using Colossal.Localization;          // LocalizationManager
-    using Colossal.Logging;               // ILog, defines shared s_Log
-    using Game;                           // UpdateSystem, GameManager, SystemUpdatePhase
-    using Game.Modding;                   // IMod
-    using Game.SceneFlow;                // GameManager
-    using System;                         // Exception
-    using System.Reflection;              // Assembly
+    using Colossal;                  // IDictionarySource
+    using Colossal.IO.AssetDatabase; // AssetDatabase.LoadSettings
+    using Colossal.Localization;     // LocalizationManager
+    using Colossal.Logging;          // ILog
+    using Game;                      // UpdateSystem, GameManager, SystemUpdatePhase
+    using Game.Modding;              // IMod
+    using Game.SceneFlow;            // GameManager
+    using System;                    // Exception
+    using System.Reflection;         // Assembly
 
     /// <summary>Mod entry point: registers settings, locales, and ECS systems.</summary>
     public sealed class Mod : IMod
     {
-        public const string ModName = "Public Works Plus";
-        public const string ShortName = "Public Works +";
-        public const string ModId = "PublicWorksPlus";
-        public const string ModTag = "[PWP]";
+        public const string ModName = "Adjust Transit Capacity";
+        public const string ShortName = "Adjust Transit";
+        public const string ModId = "AdjustTransit";
+        public const string ModTag = "[ATC]";
 
         public static readonly string ModVersion =
             Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
@@ -39,11 +39,9 @@ namespace PublicWorksPlus
                 s_Log.Info($"{ModName} v{ModVersion} OnLoad");
             }
 
-            // Settings first so locale labels can resolve.
             Setting setting = new(this);
             Settings = setting;
 
-            // Register ALL languages (keep these lines!)
             AddLocaleSource("en-US", new LocaleEN(setting));
             AddLocaleSource("fr-FR", new LocaleFR(setting));
             AddLocaleSource("es-ES", new LocaleES(setting));
@@ -53,39 +51,16 @@ namespace PublicWorksPlus
             AddLocaleSource("ko-KR", new LocaleKO(setting));
             AddLocaleSource("pl-PL", new LocalePL(setting));
             AddLocaleSource("pt-BR", new LocalePT_BR(setting));
-            AddLocaleSource("zh-HANS", new LocaleZH_CN(setting));    // Simplified Chinese
-            AddLocaleSource("zh-HANT", new LocaleZH_HANT(setting));  // Traditional Chinese
+            AddLocaleSource("zh-HANS", new LocaleZH_CN(setting));
+            AddLocaleSource("zh-HANT", new LocaleZH_HANT(setting));
 
-            // Load settings (.coc) into the instance.
-            // The default instance passed here provides defaults for missing fields.
             AssetDatabase.global.LoadSettings(ModId, setting, new Setting(this));
-
-            // Repair missing/out-of-range/invalid values in-memory (no auto-save).
             setting.SanitizeAfterLoad();
-
             setting.RegisterInOptionsUI();
 
-            // Systems
             updateSystem.UpdateAfter<TransitSystem>(SystemUpdatePhase.PrefabUpdate);
-            updateSystem.UpdateAfter<MaintenanceSystem>(SystemUpdatePhase.PrefabUpdate);
-            updateSystem.UpdateAfter<LaneWearSystem>(SystemUpdatePhase.PrefabUpdate);
-
-            // Industry (prefab editing window)
-            updateSystem.UpdateAfter<IndustrySystem>(SystemUpdatePhase.PrefabUpdate);
-            updateSystem.UpdateBefore<IndustrySystem>(SystemUpdatePhase.PrefabReferences);
-
-            // Allow transit lines range to be 1-and higher than vanilla
             updateSystem.UpdateAfter<VehicleCountPolicyTunerSystem>(SystemUpdatePhase.PrefabUpdate);
 
-            // Prefab scan: must work even while Options UI is open
-            updateSystem.UpdateAt<PrefabScanSystem>(SystemUpdatePhase.PrefabUpdate);
-
-#if DEBUG
-            // Debug probe: logs LaneCondition.m_Wear deltas (runtime)
-            updateSystem.UpdateAt<LaneWearProbeSystem>(SystemUpdatePhase.GameSimulation);
-            // Proof logger: checks live delivery vehicles carrying above vanilla caps.
-            updateSystem.UpdateAt<DeliveryCargoProbeSystem>(SystemUpdatePhase.GameSimulation);
-#endif
             s_Log.Info($"{ModId}.{nameof(OnLoad)} Completed.");
         }
 
@@ -99,10 +74,6 @@ namespace PublicWorksPlus
                 Settings = null;
             }
         }
-
-        //---------------
-        // HELPERS
-        //---------------
 
         private static void AddLocaleSource(string localeId, IDictionarySource source)
         {
@@ -149,4 +120,3 @@ namespace PublicWorksPlus
         }
     }
 }
-

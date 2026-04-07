@@ -1,7 +1,7 @@
 // File: Localization/LocaleFR.cs
 // French (fr-FR) strings for Options UI.
 
-namespace PublicWorksPlus
+namespace AdjustTransit
 {
     using Colossal;
     using System.Collections.Generic;
@@ -36,8 +36,6 @@ namespace PublicWorksPlus
 
                 // Tabs (match Setting.cs tab ids)
                 { m_Setting.GetOptionTabLocaleID(Setting.PublicTransitTab), "Transports publics" },
-                { m_Setting.GetOptionTabLocaleID(Setting.IndustryTab),      "Industrie" },
-                { m_Setting.GetOptionTabLocaleID(Setting.ParksRoadsTab),    "Parcs-Routes" },
                 { m_Setting.GetOptionTabLocaleID(Setting.AboutTab),         "À propos" },
 
                 // --------------------
@@ -162,123 +160,6 @@ namespace PublicWorksPlus
                     "Remet tous les curseurs passagers à **100%**\n" +
                     "(valeur par défaut du jeu / vanilla)." },
 
-                // ----------------
-                // INDUSTRY tab
-                // ----------------
-
-                { m_Setting.GetOptionGroupLocaleID(Setting.DeliveryGroup), "Véhicules de livraison (capacité de charge)" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "Semi-remorques" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
-                    "Capacité des **semi-remorques**.\n" +
-                    "Comprend :\n" +
-                    "* Semi-remorques d’industrie spécialisée (fermes, pêche, foresterie, etc.).\n" +
-                    "* Semi-remorques transportant du courrier vers/depuis les gares de fret (pas la même chose que la distribution locale du courrier).\n" +
-                    "**1× = 25t** (vanilla)\n" +
-                    "**10×** = 10× plus." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "Fourgonnettes de livraison" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
-                    "**Fourgonnettes de livraison**\n" +
-                    "**1× = 4t** (vanilla)\n" +
-                    "**10×** = 10× plus." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "Camions de matières premières" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
-                    "**Camions de matières premières** (pétrole, charbon, minerai, pierre, camions-bennes pour déchets industriels - même type de camion partagé)\n" +
-                    "**1× = 20t** (vanilla)\n" +
-                    "**10×** = 10× plus." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Moto de livraison" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
-                    "**La livraison à moto** transporte généralement des produits pharmaceutiques vers un hôpital/une clinique.\n" +
-                    "**1× = 0.1t** (vanilla)\n" +
-                    "**10×** = 10× plus." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Réinitialiser les livraisons" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "Remet les multiplicateurs de livraison à **1×** (valeur par défaut du jeu / vanilla)." },
-
-                { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "Flotte de fret (port, train, aéroport)" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "Flotte max des gares de fret" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "Multiplicateur pour le maximum de transporteurs actifs des **stations de transport de fret**.\n" +
-                    "**1×** = vanilla, **5×** = 5× plus." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "Flotte des extracteurs" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "Multiplicateur pour les **camions max des extracteurs** industriels\n" +
-                    "(fermes, pêche, foresterie, minerai, pétrole, charbon, pierre).\n" +
-                    "**1×** = vanilla, **5×** = 5× plus." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "Réinitialiser fret + extracteurs" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
-                    "Remet les multiplicateurs des gares de fret + extracteurs à **1×** (valeur par défaut du jeu / vanilla)." },
-
-                // -------------------
-                // Parks-Roads
-                // -------------------
-
-                { m_Setting.GetOptionGroupLocaleID(Setting.ParkMaintenanceGroup), "Entretien des parcs" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)), "Capacité du quart de travail" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)),
-                    "Multiplicateur pour la **capacité du quart de travail** (capacité du véhicule).\n" +
-                    "Travail total qu’un camion peut effectuer avant de retourner au bâtiment.\n" +
-                    "En clair : plus de fournitures = reste dehors plus longtemps." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)), "Cadence du véhicule" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)),
-                    "Multiplicateur pour la **cadence de travail du véhicule**.\n" +
-                    "Cadence = quantité de travail effectuée par tick de simulation à l’arrêt." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)), "Taille de flotte du dépôt" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)),
-                    "Multiplicateur pour les **véhicules maximum** du bâtiment dépôt.\n" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)), "Réinitialiser l’entretien des parcs" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)),
-                    "Remet toutes les valeurs à **100%** (valeur par défaut du jeu / vanilla)." },
-
-                { m_Setting.GetOptionGroupLocaleID(Setting.RoadMaintenanceGroup), "Entretien des routes" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)), "Taille de flotte du dépôt" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceDepotScalar)),
-                    "Multiplicateur pour les **véhicules maximum du dépôt** par bâtiment.\n" +
-                    "Plus élevé = plus de camions.\n" +
-                    "<Note d’équilibrage : trop peu ou trop peuvent nuire au trafic.>" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)), "Capacité du quart de travail" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
-                    "Multiplicateur pour la **capacité du quart de travail**.\n" +
-                    "Travail total qu’un camion peut effectuer avant de retourner au dépôt.\n" +
-                    "**Plus élevé = moins de retours** nécessaires vers le bâtiment principal. Plus efficace." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Cadence de réparation" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
-                    "Cadence = quantité de travail effectuée par tick de simulation à l’arrêt.\n" +
-                    "Les camions font quand même un arrêt+repart rapide même avec la cadence la plus élevée ; ils effectuent simplement plus de travail par arrêt.\n" +
-                    "En vanilla, un seul arrêt ne ramène pas forcément la route à 100% de réparation, donc cette fonctionnalité devient meilleure avec le temps.\n"
-                },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Usure des routes" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<NOUVELLE fonctionnalité Alpha>\n" +
-                    "Contrôle la vitesse de détérioration des routes selon des facteurs de **temps et de trafic**.\n" +
-                    "**10%** = usure 10× plus lente (moins de réparations nécessaires)\n" +
-                    "**100%** = vanilla\n" +
-                    "**500%** = dégâts 5× plus rapides (plus de réparations/camions nécessaires)\n" +
-                    "Comment cela fonctionne en jeu :\n" +
-                    "Si le facteur m_Wear <= 2.5, pas de ralentissement.\n" +
-                    "Si m_Wear >= 17.5, pénalité maximale, les véhicules sont 50% plus lents sur les routes.\n" +
-                    "Voir l’infovue Routes : les routes très endommagées apparaissent en rouge et ralentissent les véhicules."
-                },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)), "Réinitialiser l’entretien des routes" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetRoadMaintenanceToVanillaButton)),
-                    "Remet toutes les valeurs à **100%** (valeur par défaut du jeu / vanilla)." },
-
                 // -------------------
                 // About tab
                 // -------------------
@@ -299,33 +180,18 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenDiscord)), "Discord" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenDiscord)), "Ouvre le Discord de la communauté dans un navigateur." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RunPrefabScanButton)), "Rapport d’analyse (prefabs)" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RunPrefabScanButton)),
-                    "Crée un rapport <ponctuel> pour le débogage.\n" +
-                    "Inutile pour une partie normale.\n" +
-                    "Emplacement du fichier : <ModsData/PublicWorksPlus/ScanReport-Prefabs.txt>\n" +
-                    "Astuce : cliquer <une fois>, puis si l’état affiche Terminé, utiliser <Ouvrir le dossier du rapport>." },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "État de l’analyse des prefabs" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Affiche l’état de l’analyse : Inactif / En file / En cours / Terminé / Aucune donnée.\n" +
-                    "En file/En cours affiche le temps écoulé ; Terminé affiche la durée + l’heure de fin." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Journaux debug détaillés" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "Envoie des détails supplémentaires dans <PublicWorksPlus.log> pour le dépannage.\n" +
+                    "Envoie des détails supplémentaires dans <AdjustTransit.log> pour le dépannage.\n" +
                     "**Désactiver** pour une partie normale.\n" +
                     "<Cela augmente seulement la journalisation et ne change pas les valeurs de gameplay.>" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "Ouvrir le dossier des logs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
                     "Ouvre le dossier des logs.\n" +
-                    "Ensuite : ouvrir <PublicWorksPlus.log> avec un éditeur de texte (Notepad++ recommandé)." },
+                    "Ensuite : ouvrir <AdjustTransit.log> avec un éditeur de texte (Notepad++ recommandé)." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenReportButton)), "Ouvrir le dossier du rapport" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenReportButton)),
-                    "Ouvre le dossier du rapport.\n" +
-                    "Ensuite : ouvrir <ScanReport-Prefabs.txt> avec un éditeur de texte (par ex. Notepad++)." },
 
                 // ---- Scan Report Status Text (format string templates) ----
                 { "PWP_SCAN_IDLE", "Inactif" },

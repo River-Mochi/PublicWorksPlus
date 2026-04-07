@@ -4,7 +4,7 @@
 // - Rounds to int (AwayFromZero) so slider results feel stable.
 // - AllowZero scaling returns 0 only when base value is <= 0.
 
-namespace PublicWorksPlus
+namespace AdjustTransit
 {
     using System;
     using Unity.Mathematics;

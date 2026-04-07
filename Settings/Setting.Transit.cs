@@ -1,30 +1,33 @@
 // File: Settings/Setting.Transit.cs
 // Purpose: Public Transit settings (depots, passengers, line vehicle policy toggle).
 
-namespace PublicWorksPlus
+namespace AdjustTransit
 {
-    using Game;              // IsGame
-    using Game.SceneFlow;    // GameManager
-    using Game.Settings;     // Settings UI attributes
-    using Game.UI;           // Unit
+    using Game;           // IsGame
+    using Game.SceneFlow; // GameManager
+    using Game.Settings;  // Settings UI attributes
+    using Game.UI;        // Unit
 
     public sealed partial class Setting
     {
         private bool m_EnableLineVehicleCountTuner;
 
-        // Toggle vanilla transit line range tuner (global policy).
+        // Toggle extended transit line slider range.
         [SettingsUISection(PublicTransitTab, LineVehiclesGroup)]
         public bool EnableLineVehicleCountTuner
         {
             get => m_EnableLineVehicleCountTuner;
             set
             {
-                if (m_EnableLineVehicleCountTuner == value) return;
+                if (m_EnableLineVehicleCountTuner == value)
+                {
+                    return;
+                }
 
                 m_EnableLineVehicleCountTuner = value;
 
-                // No auto-save on toggles. Apply immediately when a city is loaded.
-                GameManager gm = GameManager.instance;
+                // Apply immediately when a city is loaded.
+                GameManager? gm = GameManager.instance;
                 if (gm != null && gm.gameMode.IsGame())
                 {
                     Apply();
@@ -33,7 +36,7 @@ namespace PublicWorksPlus
         }
 
         // ------------------------
-        // DEPOT Buildings (percent)
+        // DEPOT buildings (percent)
         // ------------------------
 
         [SettingsUISlider(min = DepotMinPercent, max = MaxPercent, step = StepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
@@ -67,7 +70,10 @@ namespace PublicWorksPlus
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                {
+                    return;
+                }
 
                 ResetDepotToVanilla();
                 ApplyAndSave();
@@ -113,7 +119,10 @@ namespace PublicWorksPlus
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                {
+                    return;
+                }
 
                 BusPassengerScalar = 200f;
                 TramPassengerScalar = 200f;
@@ -134,7 +143,10 @@ namespace PublicWorksPlus
         {
             set
             {
-                if (!value) return;
+                if (!value)
+                {
+                    return;
+                }
 
                 ResetPassengerToVanilla();
                 ApplyAndSave();
