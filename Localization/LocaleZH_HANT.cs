@@ -34,131 +34,149 @@ namespace AdjustTransit
 
                 { m_Setting.GetSettingsLocaleID(), title },
 
-                // Tabs (match Setting.cs tab ids)
-                { m_Setting.GetOptionTabLocaleID(Setting.PublicTransitTab), "大眾運輸" },
-                { m_Setting.GetOptionTabLocaleID(Setting.AboutTab),         "關於" },
+                // Tabs
+                { m_Setting.GetOptionTabLocaleID(Setting.PublicTransitTab), "公共交通" },
+                { m_Setting.GetOptionTabLocaleID(Setting.AboutTab), "關於" },
 
                 // --------------------
-                // Public-Transit tab
+                // Public Transit tab
                 // --------------------
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.LineVehiclesGroup), "交通路線（遊戲內滑桿範圍）" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "擴充交通路線最小/最大值" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "擴展交通路線" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
-                    "增加每條路線的遊戲內交通路線滑桿**範圍**。\n" +
-                    "在所有已測試路線上，**最低可到 (1)**。\n" +
-                    "**最大上限會變動**；但都比原版高 3× 或更多。\n" +
-                    "技術說明：遊戲使用路線時間（行駛時間 + 站點數量）；這會形成可變的最大值（本模組遵循遊戲邏輯，因此不會設定像 200 這樣的固定上限）。\n" +
-                    "適用於所有大眾運輸：公車、渡輪、電車、火車、地鐵、客船、飛機。\n\n" +
-                    "**---------------**\n" +
-                    "提示：如果想把滑桿上限再稍微提高一些，可以替路線增加幾個站點。\n" +
-                    "遊戲會依照新增站點 + 各種因素自動提高最大值；增加站點是玩家很容易做到的調整。\n" +
-                    "<避免衝突>：移除修改同一交通路線政策的模組。\n" +
-                    "如果不需要此功能，或需要關閉它以使用其他實作相同功能的模組，請停用。"
+                    "擴展每條路線在遊戲內交通路線滑桿的**範圍**。\n" +
+                    "在所有已測試路線上，最低可到 **(1)**。\n" +
+                    "**最大上限會變動**；所有已測試路線都至少達到原版的 3× 以上。\n" +
+                    "技術說明：遊戲使用路線時間（行駛時間 + 站點數量），因此最大值是可變的，而不是固定的。\n" +
+                    "適用於公車、渡輪、電車、火車、地鐵、客船與飛機。\n\n" +
+                    "<衝突警告>：如果 Public Works Plus 或其他模組修改相同的交通路線策略，請只在一個模組中啟用此功能。"
                 },
 
-                // Depot Capacity sliders
+                // Depot capacity sliders
                 { m_Setting.GetOptionGroupLocaleID(Setting.DepotGroup), "車庫容量（每個車庫最大車輛數）" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusDepotScalar)), "公車車庫" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.BusDepotScalar)),
-                    "修改每個**公車車庫**可維護/生成的公車數量。\n" +
+                    "更改每個**公車車庫**可維護或生成的公車數量。\n" +
                     "**100%** = 原版（遊戲預設值）。\n" +
-                    "**1000%** = 10× 更多。\n" +
-                    "適用於基礎建築。" },
+                    "**1000%** = 10倍。\n" +
+                    "適用於基礎建築。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryDepotScalar)), "渡輪車庫" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryDepotScalar)),
-                    "**渡輪車庫**每棟建築的最大車輛數。\n" +
+                    "更改每個**渡輪車庫**可維護或生成的渡輪數量。\n" +
                     "**100%** = 原版（遊戲預設值）。\n" +
+                    "**1000%** = 10倍。\n" +
                     "適用於基礎建築。"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayDepotScalar)), "地鐵車庫" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SubwayDepotScalar)),
-                    "修改每個**地鐵車庫**可維護的地鐵車輛數量。\n" +
+                    "更改每個**地鐵車庫**可維護的地鐵車輛數量。\n" +
+                    "**100%** = 原版（遊戲預設值）。\n" +
+                    "**1000%** = 10倍。\n" +
                     "適用於基礎建築。"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TaxiDepotScalar)), "計程車車庫" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TaxiDepotScalar)),
-                    "每個**計程車車庫**可維護的計程車數量。\n" +
-                    "若設到最大，可能會出現數量過多、甚至有點滑稽的計程車。"
+                    "更改每個**計程車車庫**可維護的計程車數量。\n" +
+                    "**100%** = 原版（遊戲預設值）。\n" +
+                    "**1000%** = 10倍。\n" +
+                    "數值過高可能導致過多的計程車交通。"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramDepotScalar)), "電車車庫" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TramDepotScalar)),
-                    "修改每個**電車車庫**可維護的電車數量。\n" +
-                    "適用於基礎建築。" },
+                    "更改每個**電車車庫**可維護的電車數量。\n" +
+                    "**100%** = 原版（遊戲預設值）。\n" +
+                    "**1000%** = 10倍。\n" +
+                    "適用於基礎建築。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TrainDepotScalar)), "火車車庫" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainDepotScalar)),
-                    "修改每個**火車車庫**可維護的火車數量。\n" +
-                    "適用於基礎建築。" },
+                    "更改每個**火車車庫**可維護的火車數量。\n" +
+                    "**100%** = 原版（遊戲預設值）。\n" +
+                    "**1000%** = 10倍。\n" +
+                    "適用於基礎建築。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDepotToVanillaButton)), "重設車庫預設值" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDepotToVanillaButton)),
-                    "將所有車庫滑桿恢復到 **100%**（遊戲預設值 / 原版）。" },
+                    "將所有車庫滑桿重設回 **100%**（遊戲預設值 / 原版）。" },
 
                 // Passenger capacity sliders
-                { m_Setting.GetOptionGroupLocaleID(Setting.PassengerGroup), "載客量（每輛車最大人數）" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.PassengerGroup), "乘客容量（每輛車最大人數）" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.BusPassengerScalar)), "公車" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.BusPassengerScalar)),
-                    "修改**公車乘客**容量。\n" +
+                    "更改**公車乘客**容量。\n" +
                     "**10%** = 原版座位數的 10%。\n" +
                     "**100%** = 原版座位數（遊戲預設值）。\n" +
-                    "**1000%** = 10× 更多座位。" },
+                    "**1000%** = 座位數 10倍。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TramPassengerScalar)), "電車" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TramPassengerScalar)),
-                    "修改**電車乘客**容量。\n" +
+                    "更改**電車乘客**容量。\n" +
                     "**10%** = 原版座位數的 10%。\n" +
                     "**100%** = 原版座位數（遊戲預設值）。\n" +
-                    "**1000%** = 10× 更多座位。" },
+                    "**1000%** = 座位數 10倍。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.TrainPassengerScalar)), "火車" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.TrainPassengerScalar)),
-                    "修改**火車乘客**容量。\n" +
-                    "適用於車頭與車廂段。\n" +
+                    "更改**火車乘客**容量。\n" +
+                    "適用於機車與車廂段。\n" +
                     "**10%** = 原版座位數的 10%。\n" +
                     "**100%** = 原版座位數（遊戲預設值）。\n" +
-                    "**1000%** = 10× 更多座位。" },
+                    "**1000%** = 座位數 10倍。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SubwayPassengerScalar)), "地鐵" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SubwayPassengerScalar)),
-                    "修改**地鐵乘客**容量。\n" +
+                    "更改**地鐵乘客**容量。\n" +
                     "**10%** = 原版座位數的 10%。\n" +
                     "**100%** = 原版座位數（遊戲預設值）。\n" +
-                    "**1000%** = 10× 更多座位。" },
+                    "**1000%** = 座位數 10倍。"
+                },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ShipPassengerScalar)), "船" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ShipPassengerScalar)), "客船" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ShipPassengerScalar)),
-                    "修改**客船**容量（不包含貨船）。\n" +
-                    "**100%** = 原版座位數（遊戲預設值）。" },
+                    "更改**客船**容量（不包含貨船）。\n" +
+                    "**10%** = 原版座位數的 10%。\n" +
+                    "**100%** = 原版座位數（遊戲預設值）。\n" +
+                    "**1000%** = 座位數 10倍。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FerryPassengerScalar)), "渡輪" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FerryPassengerScalar)),
-                    "修改**渡輪乘客**容量。\n" +
+                    "更改**渡輪乘客**容量。\n" +
                     "**10%** = 原版座位數的 10%。\n" +
                     "**100%** = 原版座位數（遊戲預設值）。\n" +
-                    "**1000%** = 10× 更多座位。" },
+                    "**1000%** = 座位數 10倍。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AirplanePassengerScalar)), "飛機" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AirplanePassengerScalar)),
-                    "修改**飛機乘客**容量。\n" +
+                    "更改**飛機乘客**容量。\n" +
                     "**10%** = 原版座位數的 10%。\n" +
                     "**100%** = 原版座位數（遊戲預設值）。\n" +
-                    "**1000%** = 10× 更多座位。" },
+                    "**1000%** = 座位數 10倍。"
+                },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DoublePassengersButton)), "雙倍" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DoublePassengersButton)), "全部加倍" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DoublePassengersButton)),
-                    "將所有乘客滑桿設為 **200%**。" },
+                    "將所有乘客滑桿設為 **200%**。"
+                },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetPassengerToVanillaButton)), "重設所有乘客設定" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetPassengerToVanillaButton)), "重設所有乘客" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetPassengerToVanillaButton)),
-                    "將所有乘客滑桿恢復到 **100%**\n" +
-                    "（遊戲預設值 / 原版）。" },
+                    "將所有乘客滑桿重設回 **100%**（遊戲預設值 / 原版）。" },
 
                 // -------------------
                 // About tab
@@ -175,27 +193,26 @@ namespace AdjustTransit
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersionDisplay)), "目前模組版本。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenParadoxMods)), "Paradox" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenParadoxMods)), "開啟作者模組的 Paradox Mods 網站。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenParadoxMods)), "開啟作者的 Paradox Mods 頁面。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenDiscord)), "Discord" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenDiscord)), "在瀏覽器中開啟社群 Discord。" },
 
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "詳細除錯日誌" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "將額外細節寫入 <AdjustTransit.log> 以便排查問題。\n" +
-                    "正常遊玩請**停用**。\n" +
-                    "<這只會增加日誌記錄，不會改變遊戲數值。>" },
+                    "將額外細節寫入此模組的日誌檔案以便排除問題。\n" +
+                    "**正常遊玩時請停用**。\n" +
+                    "<這只會增加日誌記錄，不會改變遊戲玩法數值。>"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenLogButton)), "開啟日誌資料夾" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenLogButton)),
-                    "開啟日誌資料夾。\n" +
-                    "下一步：用文字編輯器開啟 <AdjustTransit.log>（推薦 Notepad++）。" },
-
+                    "開啟此模組的日誌資料夾。"
+                },
             };
         }
 
-        public void Unload( )
+        public void Unload()
         {
         }
     }
