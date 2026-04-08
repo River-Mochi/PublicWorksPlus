@@ -28,8 +28,8 @@ Everything is OPTIONAL!
 
 
 ### Important note
-- ATC still works fine for players who only want transit features.
-- Public Works Plus includes ATC plus 5 new major features combined.
+- ATC still works fine for players who only want Transit features.
+- New mod Public Works Plus includes all ATC plus 5 new major features combined.
 - If installing PwP, then remove ATC (since ATC is included in PwP).
 - ATC will get minor updates, but major new features will be in PwP.
 
@@ -81,11 +81,11 @@ tags: city dispatch, transit line increase, control municipal, public transit sy
 	<Dependency Id="" />
 	<!-- Change log for new version. Single line or multi line. Supports minimal markdown subset -->
 <ChangeLog>
-    - Added ferry support to depot and passenger controls.
-    - uses a new settings file ModsSettings/AdjustTransit; older saved settings do not carry over, just set your sliders again.
-    - optional Extended Transit Lines toggle.
-    - Added conflict prevention for Extended Transit Lines in case BOTH ATC and Public Works Plus mod is accidentally installed.
-    - ATC remains available for players who only need transit-only; Public Works Plus mod includes ATC plus newer features.
+- Added ferry support to depot and passenger controls.
+- uses a new settings file ModsSettings/AdjustTransit; older saved settings do not carry over, just set your sliders again.
+- optional Extended Transit Lines toggle.
+- Added conflict prevention for Extended Transit Lines in case BOTH ATC and Public Works Plus mod is accidentally installed.
+- ATC remains available for players who only need transit-only; Public Works Plus mod includes ATC plus newer features.
 
 </ChangeLog>
 

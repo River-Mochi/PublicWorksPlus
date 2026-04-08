@@ -198,10 +198,9 @@ namespace AdjustTransit
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OpenDiscord)), "Discord" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OpenDiscord)), "Ouvre le Discord de la communauté dans un navigateur." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Journaux debug détaillés" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "Envoie des détails supplémentaires dans le fichier journal de ce mod pour le dépannage.\n" +
-                    "**Désactiver** pour une partie normale.\n" +
+                    "Envoie des détails supplémentaires dans le fichier journal de ce mod pour le débogage.\n" +
+                    "**Désactiver** pour une partie normale, car une journalisation excessive peut réduire les performances.\n" +
                     "<Cela augmente seulement la journalisation et ne change pas les valeurs de gameplay.>"
                 },
 

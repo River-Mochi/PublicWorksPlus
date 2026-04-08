@@ -47,11 +47,10 @@ namespace AdjustTransit
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableLineVehicleCountTuner)), "Extended transit lines" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableLineVehicleCountTuner)),
                     "Expands the **range** of the in-game Transit Line Slider per route.\n" +
-                    "**As low as (1)** on all routes tested.\n" +
-                    "**Maximum limit varies**; all tested routes reached at least 3× higher than vanilla.\n" +
+                    "**As low as (1)** bus or other type on routes.\n" +
+                    "**Maximum limit varies**; all tested routes reached ~3× or higher than vanilla.\n" +
                     "Tech note: game uses route time (driving time + stop count), so the maximum is variable rather than static.\n" +
-                    "Works for bus, ferry, tram, train, subway, ship, and airplane.\n\n" +
-                    "<Conflict warning>: if Public Works Plus or another mod edits the same Transit Line policy, keep this feature enabled in only one mod."
+                    "<Conflict warning>: if Public Works Plus or another mod edits the same Transit Line policy, disable the other mod or this checkbox [ ]"
                 },
 
                 // Depot capacity sliders
@@ -202,7 +201,7 @@ namespace AdjustTransit
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Verbose debug logs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
                     "Sends extra details to this mod's log file for debugging.\n" +
-                    "**Disable** for normal gameplay as excessive logs decreases performance.\n" +
+                    "**Disable** for normal gameplay, as excessive logs can reduce performance.\n" +
                     "<This only increases logging and does not change gameplay values.>"
                 },
 
