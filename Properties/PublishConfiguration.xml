@@ -81,10 +81,20 @@ tags: city dispatch, transit line increase, control municipal, public transit sy
 	<Dependency Id="" />
 	<!-- Change log for new version. Single line or multi line. Supports minimal markdown subset -->
 <ChangeLog>
-- This branch uses a new settings file AdjustTransit, so older saved settings do not carry over, just set your sliders again.
-- Added ferry support to depot and passenger controls.
-- Kept the optional Extended Transit Lines toggle.
+    - Added ferry support to depot and passenger controls.
+    - uses a new settings file ModsSettings/AdjustTransit; older saved settings do not carry over, just set your sliders again.
+    - optional Extended Transit Lines toggle.
+    - Added conflict prevention for Extended Transit Lines in case BOTH ATC and Public Works Plus mod is accidentally installed.
+    - ATC remains available for players who only need transit-only; Public Works Plus mod includes ATC plus newer features.
+
 </ChangeLog>
+
+
+
+
+
+
+
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
 <ExternalLink Type="discord" Url="https://discord.gg/HTav7ARPs2" />
 <ExternalLink Type="github" Url="https://github.com/River-Mochi/PublicWorksPlus/tree/atc-mod" />

@@ -90,7 +90,11 @@ namespace AdjustTransit
                 {
                     s_LoggedSkipDueToPwP = true;
                     Mod.s_Log.Info(
-                        $"{Mod.ModTag} VehicleCountPolicyTuner: skipped because Public Works Plus is loaded and its transit-line tuner is enabled.");
+                        $"{Mod.ModTag} Transit Line Expansion: ATC SKIPPED. Public Works Plus mod is already loaded and its Transit Line Expansion is enabled. " +
+                        "Conflict prevention: PwP keeps control of the in-game transit line slider. " +
+                        "If PwP is later turned OFF while this same city remains loaded, reload the city or simply toggle ATC Transit Line Expansion [x] once so ATC can take over.\n" +
+                        "Recommend uninstall ATC mod and just use Public Works Plus mod.");
+
                 }
 
                 return;
