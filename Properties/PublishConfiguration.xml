@@ -1,6 +1,6 @@
 <Publish>
 	<!--Id must be set in order to update existing mod. it is not required for publishing mod for the first time-->
-	<ModId Value="138390" />
+	<ModId Value="123738" />
 	<!--Name of the mod to display to players-->
 	<DisplayName Value="Adjust Transit Capacity" />
 	<!--Short description of the mod-->
@@ -86,14 +86,7 @@ tags: city dispatch, transit line increase, control municipal, public transit sy
 - optional Extended Transit Lines toggle.
 - Added conflict prevention for Extended Transit Lines in case BOTH ATC and Public Works Plus mod is accidentally installed.
 - ATC remains available for players who only need transit-only; Public Works Plus mod includes ATC plus newer features.
-
 </ChangeLog>
-
-
-
-
-
-
 
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
 <ExternalLink Type="discord" Url="https://discord.gg/HTav7ARPs2" />
