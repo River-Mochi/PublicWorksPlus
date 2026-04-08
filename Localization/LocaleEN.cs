@@ -201,8 +201,8 @@ namespace AdjustTransit
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Verbose debug logs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
-                    "Sends extra details to this mod's log file for troubleshooting.\n" +
-                    "**Disable** for normal gameplay.\n" +
+                    "Sends extra details to this mod's log file for debugging.\n" +
+                    "**Disable** for normal gameplay as excessive logs decreases performance.\n" +
                     "<This only increases logging and does not change gameplay values.>"
                 },
 
