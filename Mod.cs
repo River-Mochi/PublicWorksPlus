@@ -9,7 +9,7 @@ namespace PublicWorksPlus
     using Colossal.Logging;               // ILog, defines shared s_Log
     using Game;                           // UpdateSystem, GameManager, SystemUpdatePhase
     using Game.Modding;                   // IMod
-    using Game.SceneFlow;                // GameManager
+    using Game.SceneFlow;                 // GameManager
     using System;                         // Exception
     using System.Reflection;              // Assembly
 
@@ -80,12 +80,15 @@ namespace PublicWorksPlus
             // Prefab scan: must work even while Options UI is open
             updateSystem.UpdateAt<PrefabScanSystem>(SystemUpdatePhase.PrefabUpdate);
 
+            // Live delivery cargo proof logger.
+            // Safe for Release because runtime work is gated by EnableDebugLogging inside the system.
+            updateSystem.UpdateAt<DeliveryCargoProbeSystem>(SystemUpdatePhase.GameSimulation);
+
 #if DEBUG
             // Debug probe: logs LaneCondition.m_Wear deltas (runtime)
             updateSystem.UpdateAt<LaneWearProbeSystem>(SystemUpdatePhase.GameSimulation);
-            // Proof logger: checks live delivery vehicles carrying above vanilla caps.
-            updateSystem.UpdateAt<DeliveryCargoProbeSystem>(SystemUpdatePhase.GameSimulation);
 #endif
+
             s_Log.Info($"{ModId}.{nameof(OnLoad)} Completed.");
         }
 
@@ -149,4 +152,3 @@ namespace PublicWorksPlus
         }
     }
 }
-

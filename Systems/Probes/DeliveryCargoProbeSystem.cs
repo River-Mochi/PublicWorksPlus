@@ -68,7 +68,9 @@ namespace PublicWorksPlus
                 (purpose == Purpose.NewGame || purpose == Purpose.LoadGame);
 
             if (!isRealGame)
+            {
                 return;
+            }
 
             m_VanillaCapByPrefab.Clear();
             ClearStats();
@@ -77,7 +79,9 @@ namespace PublicWorksPlus
         protected override void OnUpdate()
         {
             if (Mod.Settings == null || !Mod.Settings.EnableDebugLogging)
+            {
                 return;
+            }
 
             ClearStats();
 
@@ -99,7 +103,9 @@ namespace PublicWorksPlus
 
                 int vanillaCap = GetVanillaCap(prefab);
                 if (vanillaCap <= 0)
+                {
                     continue;
+                }
 
                 Resource transported = Resource.NoResource;
                 if (dtdLookup.TryGetComponent(prefab, out DeliveryTruckData dtd))
@@ -129,7 +135,9 @@ namespace PublicWorksPlus
 
                 int bi = (int)bucket;
                 if (bi < 0 || bi >= kBucketCount)
+                {
                     bi = (int)VehicleHelpers.DeliveryBucket.Other;
+                }
 
                 ref BucketStats s = ref m_Stats[bi];
                 s.Seen++;
@@ -139,7 +147,9 @@ namespace PublicWorksPlus
                     s.Carrying++;
 
                     if (amount > vanillaCap)
+                    {
                         s.OverVanilla++;
+                    }
 
                     if (amount > s.MaxAmount)
                     {
@@ -149,7 +159,48 @@ namespace PublicWorksPlus
                 }
             }
 
-            Mod.s_Log.Info($"{Mod.ModTag} DeliveryCargoProbe: scanned={scanned} frame={m_Sim.frameIndex}");
+            int totalSeen = 0;
+            int totalCarrying = 0;
+            int totalOverVanilla = 0;
+            int globalMaxAmount = 0;
+            string globalMaxPrefabName = string.Empty;
+
+            for (int i = 0; i < m_Stats.Length; i++)
+            {
+                totalSeen += m_Stats[i].Seen;
+                totalCarrying += m_Stats[i].Carrying;
+                totalOverVanilla += m_Stats[i].OverVanilla;
+
+                if (m_Stats[i].MaxAmount > globalMaxAmount)
+                {
+                    globalMaxAmount = m_Stats[i].MaxAmount;
+                    globalMaxPrefabName = m_Stats[i].MaxPrefabName;
+                }
+            }
+
+            Mod.s_Log.Info(
+                $"{Mod.ModTag} Delivery cargo live sample: scanned={scanned} " +
+                $"seen={totalSeen} carrying={totalCarrying} overVanilla={totalOverVanilla} " +
+                $"frame={m_Sim.frameIndex}");
+
+            if (totalCarrying == 0)
+            {
+                Mod.s_Log.Info(
+                    $"{Mod.ModTag} Delivery cargo proof: no carrying delivery trucks found in this sample.");
+            }
+            else if (totalOverVanilla > 0)
+            {
+                Mod.s_Log.Info(
+                    $"{Mod.ModTag} Delivery cargo proof: FOUND live trucks above vanilla capacity. " +
+                    $"overVanilla={totalOverVanilla}/{totalCarrying} maxAmount={FmtTons(globalMaxAmount)} " +
+                    $"prefab='{globalMaxPrefabName}'");
+            }
+            else
+            {
+                Mod.s_Log.Info(
+                    $"{Mod.ModTag} Delivery cargo proof: no live trucks above vanilla capacity found in this sample. " +
+                    $"Highest observed load={FmtTons(globalMaxAmount)} prefab='{globalMaxPrefabName}'");
+            }
 
             LogBucket("Semi", m_Stats[(int)VehicleHelpers.DeliveryBucket.Semi]);
             LogBucket("Van", m_Stats[(int)VehicleHelpers.DeliveryBucket.Van]);
@@ -163,14 +214,16 @@ namespace PublicWorksPlus
             for (int i = 0; i < m_Stats.Length; i++)
             {
                 m_Stats[i] = default;
-                m_Stats[i].MaxPrefabName = string.Empty; // never allow null
+                m_Stats[i].MaxPrefabName = string.Empty;
             }
         }
 
         private int GetVanillaCap(Entity prefab)
         {
             if (m_VanillaCapByPrefab.TryGetValue(prefab, out int cap))
+            {
                 return cap;
+            }
 
             cap = 0;
 
