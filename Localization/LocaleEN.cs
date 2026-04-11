@@ -52,12 +52,12 @@ namespace PublicWorksPlus
                     "**As low as (1)** on all routes tested.\n" +
                     "**Maximum limit varies**; but all are 3x or more higher than vanilla.\n" +
                     "Tech note: game uses route time (driving time + stop count); this creates a variable max (this mod follows game logic so does not set a static max limit like 200).\n" +
-                    "Works for all transit: bus, ferry, tram, train, subway, ship, airplane.\n\n" +
+                    "Works for all public transit.\n\n" +
                     "**---------------**\n" +
                     "Tip: if you want to increase maximum end of the slider a little more, add some stops to the route.\n" +
                     "Game auto-increases the max based on added stops + factors; adding stops is an easy player tweak.\n" +
                     "<Avoid Conflicts>: remove mods that edit the same Transit Line policy.\n" +
-                    "Disable if you don't need the feature or you need it off to use a different mod for the same thing."
+                    "Disable if you don't need it or you need it off to use a different mod for the same thing."
                 },
 
                 // Depot Capacity sliders
@@ -226,18 +226,18 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)), "Work shift capacity" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleCapacityScalar)),
-                    "Multiplier for **work shift capacity** (vehicle capacity).\n" +
+                    "Scales **work shift capacity** (vehicle capacity).\n" +
                     "Total work a truck can do before it returns to the building.\n" +
                     "Think: extra supplies = stays out longer." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)), "Vehicle rate" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceVehicleRateScalar)),
-                    "Multiplier for **vehicle work rate**.\n" +
-                    "Rate = how much work it does per simulation tick while stopped." },
+                    "Scales **vehicle work rate**.\n" +
+                    "**Rate** = how much work it does per simulation tick while stopped." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)), "Depot fleet size" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ParkMaintenanceDepotScalar)),
-                    "Multiplier for the depot building **maximum vehicles**.\n" },
+                    "Depot building **maximum vehicles** allowed.\n" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)), "Reset park maintenance" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetParkMaintenanceToVanillaButton)),
@@ -253,20 +253,20 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)), "Work shift capacity" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
-                    "Multiplier for **work shift capacity**.\n" +
+                    "Scales **work shift capacity**.\n" +
                     "Total work a truck can do before it returns to the depot.\n" +
-                    "**Higher = fewer returns** needed back to the main building. More efficient." },
+                    "**Higher = fewer returns** back to the main building, more efficient." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "Repair rate" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
-                    "Rate = how much work it does per simulation tick while stopped.\n" +
+                    "**Rate** = how much work it does per simulation tick while stopped.\n" +
                     "Trucks still do a quick stop+go even with highest rate; they just do more work per stop.\n" +
-                    "In vanilla, one stop does not necessarily bring the road to 100% repaired, so this is where this feature gets better over time.\n"
+                    "In vanilla, one stop does not necessarily bring the road to 100% repaired; that is why this feature gets better over time.\n"
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Road wear" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<NEW Alpha feature>\n" +
+                    "<Beta feature>\n" +
                     "Controls how fast roads deteriorate from **time and traffic** factors.\n" +
                     "**10%** = 10× slower wear (fewer repairs needed)\n" +
                     "**100%** = vanilla\n" +

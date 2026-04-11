@@ -36,11 +36,10 @@ Everything is OPTIONAL - you choose!
 - Avoid other depot/passenger capacity mods to avoid conflicts (they override each other).
 - No Harmony or Reflection used; more compatible - less likely to break on patch days.
 - Safe to remove any time (use Reset buttons to return to vanilla game default values).
-- ✅ New Toggle, Transit Line: it's your choice if you want to use the PwP version.
-Pick one - Don't use other mods that also adjust the in-game slider (e.g. Transport Policy Adjuster).
+- ✅ Transit Line checkbox: Pick only one mod to adjust this - Don't use other mods that also adjust the in-game slider. There may be conflicts if you also have Transit Policy Adjuster or Smart transportation.
 If both are enabled, it's not going to explode, it may be inconsistent like two people changing the radio station.
-- PwP Transit lines: follows the game’s method (travel time + stops); you can have just 1 bus per line or ~30-60+ buses (see before/after screenshot).
-PwP is made differently than older mods; no Harmony patch used and maximum is not static (will not be 250 buses on one line). You still get many more buses per each route line than game vanilla gives.
+- How PwP Transit lines is different: follows the game’s method (travel time + stops); you can have just 1 bus per line or ~30-60+ buses (see before/after screenshot).
+PwP is made differently; no Harmony patch used and maximum is not static (will not be 250 buses on one line). You still get many more buses per each route line than game vanilla gives.
 
 
 ### Support and feedback
@@ -86,14 +85,14 @@ delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extrac
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/public-works-plus.1910233/" />
 	<!--Version of the mod-->
-	<ModVersion Value="2.0.5" />
+	<ModVersion Value="2.0.6" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.5.*" />
 	<!--Dependency for the mod, can be set multiple times-->
 	<Dependency Id="" />
 	<!-- Change log for new version. Single line or multi line. Supports minimal markdown subset -->
 <ChangeLog>
-- minor, accidentally uploaded wrong mod ID.
+- Improve logging and scan report to identify delivery trucks capacity.
 </ChangeLog>
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
 <ExternalLink Type="discord" Url="https://discord.gg/HTav7ARPs2" />
