@@ -65,6 +65,8 @@ namespace PublicWorksPlus
             BufferLookup<Game.Companies.StorageTransferRequest> requestLookup =
                 SystemAPI.GetBufferLookup<Game.Companies.StorageTransferRequest>(isReadOnly: false);
 
+            bool verbose = Mod.Settings != null && Mod.Settings.EnableDebugLogging;
+
             using NativeArray<Entity> entities = m_RequestQuery.ToEntityArray(Allocator.Temp);
 
             int changed = 0;
@@ -103,6 +105,8 @@ namespace PublicWorksPlus
                         continue;
                     }
 
+                    int oldAmount = request.m_Amount;
+
                     if (!StationTransferAmountUtil.TryPromoteToAtLeastOneFullTruck(
                             truckSelectData,
                             request.m_Resource,
@@ -116,20 +120,34 @@ namespace PublicWorksPlus
                     requests[i] = request;
                     changed++;
 
-                    if (TryPromoteMatchingIncomingRequest(
-                            requestLookup,
-                            entity,
-                            request.m_Target,
-                            request.m_Resource,
-                            request.m_Flags,
-                            adjustedAmount))
+                    bool mirroredThisOne = TryPromoteMatchingIncomingRequest(
+                        requestLookup,
+                        entity,
+                        request.m_Target,
+                        request.m_Resource,
+                        request.m_Flags,
+                        adjustedAmount);
+
+                    if (mirroredThisOne)
                     {
                         mirrored++;
+                    }
+
+                    if (verbose)
+                    {
+                        string kind = isOC ? "OutsideConnection" : "StorageCompany";
+
+                        Mod.s_Log.Info(
+                            $"{Mod.ModTag} StationTransferCapacity: " +
+                            $"sourceIndex={entity.Index} sourceVersion={entity.Version} " +
+                            $"targetIndex={request.m_Target.Index} targetVersion={request.m_Target.Version} " +
+                            $"kind={kind} Resource={request.m_Resource} Flags={request.m_Flags} " +
+                            $"OldAmount={oldAmount} NewAmount={adjustedAmount} Mirrored={mirroredThisOne}");
                     }
                 }
             }
 
-            if (changed > 0 && Mod.Settings != null && Mod.Settings.EnableDebugLogging)
+            if (changed > 0 && verbose)
             {
                 Mod.s_Log.Info(
                     $"{Mod.ModTag} StationTransferCapacity: promoted {changed} storage-company/OC outbound car request(s) to full truck size; mirrored {mirrored} matching incoming request(s).");

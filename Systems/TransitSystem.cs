@@ -4,6 +4,7 @@
 // - PrefabSystem + PrefabBase used for vanilla base values so results never stack.
 // - Depots: Bus / Ferry / Taxi / Tram / Train / Subway.
 // - Passengers: Bus / Tram / Train / Subway / Ship / Ferry / Airplane.
+// - Verbose transit logging is DEBUG-build only to keep Release research logs clean.
 
 namespace PublicWorksPlus
 {
@@ -117,12 +118,17 @@ namespace PublicWorksPlus
             }
 
             Setting settings = Mod.Settings;
+
+#if DEBUG
             bool debug = settings.EnableDebugLogging;
+#else
+            bool debug = false;
+#endif
 
             // DEPOTS — prefab-only
             foreach ((RefRW<TransportDepotData> depotRef, Entity entity) in SystemAPI
                          .Query<RefRW<TransportDepotData>>()
-                         .WithAll<PrefabData>()  
+                         .WithAll<PrefabData>()
                          .WithEntityAccess())
             {
                 ref TransportDepotData depotData = ref depotRef.ValueRW;
@@ -145,13 +151,15 @@ namespace PublicWorksPlus
 
                 if (newCapacity != depotData.m_VehicleCapacity)
                 {
+#if DEBUG
                     if (debug)
                     {
                         Mod.s_Log.Info(
-                            $"{Mod.ModTag} Depot apply: entity={entity.Index}:{entity.Version} " +
+                            $"{Mod.ModTag} Depot apply: entityIndex={entity.Index} entityVersion={entity.Version} " +
                             $"type={depotData.m_TransportType} BaseDepot={baseCapacity} scalar={scalar:F2} " +
                             $"OldDepot={depotData.m_VehicleCapacity} NewDepot={newCapacity}");
                     }
+#endif
 
                     depotData.m_VehicleCapacity = newCapacity;
                 }
@@ -189,17 +197,20 @@ namespace PublicWorksPlus
 
                 if (newPassengers != vehicleData.m_PassengerCapacity)
                 {
+#if DEBUG
                     if (debug)
                     {
                         Mod.s_Log.Info(
-                            $"{Mod.ModTag} Passengers apply: entity={entity.Index}:{entity.Version} " +
+                            $"{Mod.ModTag} Passengers apply: entityIndex={entity.Index} entityVersion={entity.Version} " +
                             $"type={vehicleData.m_TransportType} BaseSeats={basePassengers} scalar={scalar:F2} " +
                             $"OldSeats={vehicleData.m_PassengerCapacity} NewSeats={newPassengers}");
                     }
+#endif
 
                     vehicleData.m_PassengerCapacity = newPassengers;
                 }
 
+#if DEBUG
                 if (debug)
                 {
                     if (!m_PassengerSeatSummary.TryGetValue(vehicleData.m_TransportType, out SeatSummary summary))
@@ -210,8 +221,10 @@ namespace PublicWorksPlus
                     summary.AddSample(basePassengers, newPassengers);
                     m_PassengerSeatSummary[vehicleData.m_TransportType] = summary;
                 }
+#endif
             }
 
+#if DEBUG
             if (debug && !m_LoggedTypesOnce)
             {
                 m_LoggedTypesOnce = true;
@@ -247,15 +260,18 @@ namespace PublicWorksPlus
                         }
                         else if (summary.MinBase == summary.MaxBase && summary.MinNew == summary.MaxNew)
                         {
-                            Mod.s_Log.Info($"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase} -> {summary.MinNew} (per vehicle prefab type)");
+                            Mod.s_Log.Info(
+                                $"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase} -> {summary.MinNew} (per vehicle prefab type)");
                         }
                         else
                         {
-                            Mod.s_Log.Info($"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase}-{summary.MaxBase} -> {summary.MinNew}-{summary.MaxNew} (per vehicle prefab types)");
+                            Mod.s_Log.Info(
+                                $"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase}-{summary.MaxBase} -> {summary.MinNew}-{summary.MaxNew} (per vehicle prefab types)");
                         }
                     }
                 }
             }
+#endif
 
             Enabled = false;
         }
