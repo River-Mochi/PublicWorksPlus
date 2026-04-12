@@ -5,8 +5,8 @@
 // - Runs before ResourceBuyerSystem turns ResourceBuyer into TripNeeded.
 // - Targets company buyers only (entities with BuyingCompany).
 // - Uses current truck capacities from VehicleCapacitySystem.
-// - Respects total known storage headroom, but is more aggressive than vanilla
-//   about requesting a full truck load for weighted resources.
+// - Optional buffers (OwnedVehicle / TripNeeded / Resources) are read through lookups
+//   instead of being required by the query, so more buyers are eligible.
 
 namespace PublicWorksPlus
 {
@@ -43,7 +43,7 @@ namespace PublicWorksPlus
             m_VehicleCapacitySystem = World.GetOrCreateSystemManaged<VehicleCapacitySystem>();
 
             m_BuyerQuery = SystemAPI.QueryBuilder()
-                .WithAll<ResourceBuyer, BuyingCompany, PrefabRef, Resources, OwnedVehicle, TripNeeded>()
+                .WithAll<ResourceBuyer, BuyingCompany, PrefabRef>()
                 .WithNone<Deleted, Temp>()
                 .Build();
 

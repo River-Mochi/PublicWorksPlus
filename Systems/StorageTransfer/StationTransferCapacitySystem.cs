@@ -1,8 +1,8 @@
 // File: Systems/StorageTransfer/StationTransferCapacitySystem.cs
-// Purpose: Promote cargo-station / OC outbound car storage-transfer requests
+// Purpose: Promote storage-company / OC outbound car storage-transfer requests
 //          up to at least one full currently selectable truck.
 // Notes:
-// - Targets actual cargo-station entities and outside-connection entities.
+// - Targets runtime StorageCompany entities and outside-connection entities.
 // - Targets outbound CAR requests only.
 // - Mirrors the same promoted amount into the matching incoming request
 //   when the counterpart buffer exists.
@@ -50,8 +50,8 @@ namespace PublicWorksPlus
         {
             DeliveryTruckSelectData truckSelectData = m_VehicleCapacitySystem.GetDeliveryTruckSelectData();
 
-            ComponentLookup<Game.Buildings.CargoTransportStation> cargoStationLookup =
-                SystemAPI.GetComponentLookup<Game.Buildings.CargoTransportStation>(isReadOnly: true);
+            ComponentLookup<Game.Companies.StorageCompany> storageCompanyLookup =
+                SystemAPI.GetComponentLookup<Game.Companies.StorageCompany>(isReadOnly: true);
 
             ComponentLookup<Game.Objects.OutsideConnection> ocLookup =
                 SystemAPI.GetComponentLookup<Game.Objects.OutsideConnection>(isReadOnly: true);
@@ -79,10 +79,10 @@ namespace PublicWorksPlus
                     continue;
                 }
 
-                bool isCargoStation = cargoStationLookup.HasComponent(entity);
+                bool isStorageCompany = storageCompanyLookup.HasComponent(entity);
                 bool isOC = ocLookup.HasComponent(entity);
 
-                if (!isCargoStation && !isOC)
+                if (!isStorageCompany && !isOC)
                 {
                     continue;
                 }
@@ -132,7 +132,7 @@ namespace PublicWorksPlus
             if (changed > 0 && Mod.Settings != null && Mod.Settings.EnableDebugLogging)
             {
                 Mod.s_Log.Info(
-                    $"{Mod.ModTag} StationTransferCapacity: promoted {changed} cargo-station/OC outbound car request(s) to full truck size; mirrored {mirrored} matching incoming request(s).");
+                    $"{Mod.ModTag} StationTransferCapacity: promoted {changed} storage-company/OC outbound car request(s) to full truck size; mirrored {mirrored} matching incoming request(s).");
             }
         }
 
