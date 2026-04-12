@@ -30,7 +30,7 @@ indent_size = 4
 # Roslyn
 
 # ReSharper
-resharper_check_namespace_highlighting = none
+# resharper_check_namespace_highlighting = none
 
 # ---- General style ----
 dotnet_style_qualification_for_field = false:suggestion
@@ -54,7 +54,7 @@ csharp_style_var_elsewhere = false:suggestion
 # If the repo is legacy and ReSharper naming noise is still annoying,
 # uncomment the next line to stop ReSharper's own naming inspection
 # while still keeping the naming rules for code generation/refactorings.
-resharper_inconsistent_naming_highlighting = none
+# resharper_inconsistent_naming_highlighting = none
 
 
 # =========================
