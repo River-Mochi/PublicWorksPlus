@@ -1,9 +1,12 @@
-﻿// File: Systems/StorageTransfer/StationTransferCapacitySystem.cs
-// Purpose: First-pass non-Harmony fix for station / OC storage transfer chunk sizing.
+// File: Systems/StorageTransfer/StationTransferCapacitySystem.cs
+// Purpose: Promote station / OC outbound car storage-transfer requests
+//          up to at least one full currently selectable truck.
 // Notes:
-// - Targets only station and outside-connection storage-transfer entities.
-// - Promotes transfer amount to at least one full selectable truck for that resource.
-// - Narrow scope by design: no ships/trains, no station preference UI, no route scoring changes.
+// - Targets station and outside-connection entities only.
+// - Targets outbound CAR requests only.
+// - Mirrors the same promoted amount into the matching incoming request
+//   when the counterpart buffer exists.
+// - Narrow scope by design: no ships, trains, or station preference logic.
 
 namespace PublicWorksPlus
 {
@@ -17,7 +20,7 @@ namespace PublicWorksPlus
     public sealed partial class StationTransferCapacitySystem : GameSystemBase
     {
         private VehicleCapacitySystem m_VehicleCapacitySystem = null!;
-        private EntityQuery m_TransferQuery;
+        private EntityQuery m_RequestQuery;
 
         public override int GetUpdateInterval(SystemUpdatePhase phase)
         {
@@ -35,12 +38,12 @@ namespace PublicWorksPlus
 
             m_VehicleCapacitySystem = World.GetOrCreateSystemManaged<VehicleCapacitySystem>();
 
-            m_TransferQuery = SystemAPI.QueryBuilder()
-                .WithAll<Game.Companies.StorageTransfer>()
+            m_RequestQuery = SystemAPI.QueryBuilder()
+                .WithAll<Game.Companies.StorageTransferRequest>()
                 .WithNone<Deleted, Temp>()
                 .Build();
 
-            RequireForUpdate(m_TransferQuery);
+            RequireForUpdate(m_RequestQuery);
         }
 
         protected override void OnUpdate()
@@ -59,11 +62,17 @@ namespace PublicWorksPlus
             ComponentLookup<Temp> tempLookup =
                 SystemAPI.GetComponentLookup<Temp>(isReadOnly: true);
 
-            int changed = 0;
+            BufferLookup<Game.Companies.StorageTransferRequest> requestLookup =
+                SystemAPI.GetBufferLookup<Game.Companies.StorageTransferRequest>(isReadOnly: false);
 
-            foreach ((RefRW<Game.Companies.StorageTransfer> transferRef, Entity entity) in SystemAPI
-                         .Query<RefRW<Game.Companies.StorageTransfer>>()
-                         .WithEntityAccess())
+            int changed = 0;
+            int mirrored = 0;
+
+            foreach (Entity entity in SystemAPI.QueryBuilder()
+                         .WithAll<Game.Companies.StorageTransferRequest>()
+                         .WithNone<Deleted, Temp>()
+                         .Build()
+                         .ToEntityArray(Unity.Collections.Allocator.Temp))
             {
                 if (deletedLookup.HasComponent(entity) || tempLookup.HasComponent(entity))
                 {
@@ -78,27 +87,97 @@ namespace PublicWorksPlus
                     continue;
                 }
 
-                Game.Companies.StorageTransfer transfer = transferRef.ValueRO;
+                DynamicBuffer<Game.Companies.StorageTransferRequest> requests = requestLookup[entity];
 
-                if (!StationTransferAmountUtil.TryPromoteToAtLeastOneFullTruck(
-                        truckSelectData,
-                        transfer.m_Resource,
-                        transfer.m_Amount,
-                        out int adjustedAmount))
+                for (int i = 0; i < requests.Length; i++)
                 {
-                    continue;
-                }
+                    Game.Companies.StorageTransferRequest request = requests[i];
 
-                transfer.m_Amount = adjustedAmount;
-                transferRef.ValueRW = transfer;
-                changed++;
+                    if (!StationTransferAmountUtil.IsEligibleOutgoingCarRequest(request.m_Flags))
+                    {
+                        continue;
+                    }
+
+                    if (!StationTransferAmountUtil.TryPromoteToAtLeastOneFullTruck(
+                            truckSelectData,
+                            request.m_Resource,
+                            request.m_Amount,
+                            out int adjustedAmount))
+                    {
+                        continue;
+                    }
+
+                    request.m_Amount = adjustedAmount;
+                    requests[i] = request;
+                    changed++;
+
+                    if (TryPromoteMatchingIncomingRequest(
+                            requestLookup,
+                            entity,
+                            request.m_Target,
+                            request.m_Resource,
+                            request.m_Flags,
+                            adjustedAmount))
+                    {
+                        mirrored++;
+                    }
+                }
             }
 
             if (changed > 0 && Mod.Settings != null && Mod.Settings.EnableDebugLogging)
             {
                 Mod.s_Log.Info(
-                    $"{Mod.ModTag} StationTransferCapacity: promoted {changed} station/OC storage-transfer amount(s) to at least one full truck.");
+                    $"{Mod.ModTag} StationTransferCapacity: promoted {changed} station/OC outbound car request(s) to full truck size; mirrored {mirrored} matching incoming request(s).");
             }
+        }
+
+        private static bool TryPromoteMatchingIncomingRequest(
+            BufferLookup<Game.Companies.StorageTransferRequest> requestLookup,
+            Entity sourceEntity,
+            Entity targetEntity,
+            Game.Economy.Resource resource,
+            Game.Companies.StorageTransferFlags outgoingFlags,
+            int adjustedAmount)
+        {
+            if (!requestLookup.HasBuffer(targetEntity))
+            {
+                return false;
+            }
+
+            DynamicBuffer<Game.Companies.StorageTransferRequest> targetRequests = requestLookup[targetEntity];
+            Game.Companies.StorageTransferFlags expectedIncomingFlags =
+                outgoingFlags | Game.Companies.StorageTransferFlags.Incoming;
+
+            for (int i = 0; i < targetRequests.Length; i++)
+            {
+                Game.Companies.StorageTransferRequest incoming = targetRequests[i];
+
+                if (incoming.m_Target != sourceEntity)
+                {
+                    continue;
+                }
+
+                if (incoming.m_Resource != resource)
+                {
+                    continue;
+                }
+
+                if (incoming.m_Flags != expectedIncomingFlags)
+                {
+                    continue;
+                }
+
+                if (incoming.m_Amount >= adjustedAmount)
+                {
+                    return false;
+                }
+
+                incoming.m_Amount = adjustedAmount;
+                targetRequests[i] = incoming;
+                return true;
+            }
+
+            return false;
         }
     }
 }

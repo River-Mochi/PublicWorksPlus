@@ -1,5 +1,6 @@
-﻿// File: Systems/StorageTransfer/StationTransferAmountUtil.cs
-// Purpose: Helpers for capacity-aware station / OC storage-transfer amounts.
+// File: Systems/StorageTransfer/StationTransferAmountUtil.cs
+// Purpose: Helpers for promoting station / OC car storage-transfer requests
+//          up to a full currently selectable truck.
 
 namespace PublicWorksPlus
 {
@@ -9,6 +10,12 @@ namespace PublicWorksPlus
 
     internal static class StationTransferAmountUtil
     {
+        internal static bool IsEligibleOutgoingCarRequest(Game.Companies.StorageTransferFlags flags)
+        {
+            return (flags & Game.Companies.StorageTransferFlags.Incoming) == 0 &&
+                   (flags & Game.Companies.StorageTransferFlags.Car) != 0;
+        }
+
         internal static bool TryGetMaxTruckCapacity(
             DeliveryTruckSelectData truckSelectData,
             Resource resource,
@@ -33,7 +40,7 @@ namespace PublicWorksPlus
         {
             adjustedAmount = originalAmount;
 
-            if (originalAmount == 0 || resource == Resource.NoResource)
+            if (originalAmount <= 0 || resource == Resource.NoResource)
             {
                 return false;
             }
@@ -43,14 +50,14 @@ namespace PublicWorksPlus
                 return false;
             }
 
-            int absAmount = math.abs(originalAmount);
-            if (absAmount >= maxCapacity)
+            if (originalAmount >= maxCapacity)
             {
                 return false;
             }
 
-            adjustedAmount = originalAmount < 0 ? -maxCapacity : maxCapacity;
+            adjustedAmount = maxCapacity;
             return adjustedAmount != originalAmount;
         }
     }
 }
+

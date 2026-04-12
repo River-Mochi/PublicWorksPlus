@@ -24,3 +24,10 @@ Quick reference for how PWP works under the hood.
 | **Options UI layout** | Tabs: Public-Transit / Industry / Parks-Roads / About. | `Setting` uses CO `SettingsUI*` attributes + Locale-backed labels/descs. |
 | **Log/report folder opener** | Opens Logs or ModsData folder. | `ShellOpen.OpenFolderSafe(...)` uses `file:///` + shell fallback. |
 | **Minimal runtime work** | No background polling in Release build. | No work unless gameplay mode + system enabled by apply or button.; DEBUG builds includes probes for verbose debug.  |
+
+
+
+StorageCompanySystem = where transfer amount is born
+StorageTransferSystem = where transfer amount is checked / normalized / queued
+DeliveryTruckSelectData = proves bigger truck capacities can be used
+ResourcePathfindSetup = where source/target desirability is scored
