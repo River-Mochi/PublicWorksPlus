@@ -5,8 +5,8 @@
 // - Runs before ResourceBuyerSystem turns ResourceBuyer into TripNeeded.
 // - Targets company buyers only (entities with BuyingCompany).
 // - Uses current truck capacities from VehicleCapacitySystem.
-// - Optional buffers (OwnedVehicle / TripNeeded / Resources) are read through lookups
-//   instead of being required by the query, so more buyers are eligible.
+// - Caps promoted request size to a safe selected truck capacity so live buying trucks
+//   do not exceed the actual prefab cap after loading.
 
 namespace PublicWorksPlus
 {
@@ -228,8 +228,8 @@ namespace PublicWorksPlus
                     continue;
                 }
 
-                truckSelectData.GetCapacityRange(resource, out _, out int maxTruckCapacity);
-                if (maxTruckCapacity <= 0 || maxTruckCapacity <= buyer.m_AmountNeeded)
+                truckSelectData.GetCapacityRange(resource, out _, out int rangeMaxCapacity);
+                if (rangeMaxCapacity <= 0 || rangeMaxCapacity <= buyer.m_AmountNeeded)
                 {
                     continue;
                 }
@@ -252,12 +252,27 @@ namespace PublicWorksPlus
 
                 int knownForTargetResource = GetKnownInputAmount(entity, resource);
 
-                int desiredLevel = storageLeft == int.MaxValue
-                    ? maxTruckCapacity
-                    : math.min(maxTruckCapacity, knownForTargetResource + storageLeft);
+                int rawDesiredLevel = storageLeft == int.MaxValue
+                    ? rangeMaxCapacity
+                    : math.min(rangeMaxCapacity, knownForTargetResource + storageLeft);
 
-                int desiredRequest = desiredLevel - knownForTargetResource;
+                int rawDesiredRequest = rawDesiredLevel - knownForTargetResource;
 
+                if (rawDesiredRequest <= buyer.m_AmountNeeded)
+                {
+                    continue;
+                }
+
+                if (!StationTransferAmountUtil.TryGetSafeSelectedTruckCapacity(
+                        truckSelectData,
+                        resource,
+                        rawDesiredRequest,
+                        out int safeSelectedCapacity))
+                {
+                    continue;
+                }
+
+                int desiredRequest = math.min(rawDesiredRequest, safeSelectedCapacity);
                 if (desiredRequest <= buyer.m_AmountNeeded)
                 {
                     continue;
@@ -279,7 +294,7 @@ namespace PublicWorksPlus
                         $"Resource={resource} OldRequest={oldAmount} NewRequest={desiredRequest} " +
                         $"Known={knownForTargetResource} " +
                         $"StorageLeft={(storageLeft == int.MaxValue ? "INF" : storageLeft.ToString())} " +
-                        $"MaxTruck={maxTruckCapacity}");
+                        $"RangeMax={rangeMaxCapacity} SafeTruckCap={safeSelectedCapacity}");
                 }
             }
 
