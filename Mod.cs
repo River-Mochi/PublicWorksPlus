@@ -9,7 +9,9 @@ namespace PublicWorksPlus
     using Colossal.Logging;               // ILog, defines shared s_Log
     using Game;                           // UpdateSystem, GameManager, SystemUpdatePhase
     using Game.Modding;                   // IMod
+    using Game.Prefabs;                    // VehicleCapacitySystem, DeliveryTruckSelectData
     using Game.SceneFlow;                 // GameManager
+    using Game.Simulation;                // game ECS systems for ordering hooks
     using System;                         // Exception
     using System.Reflection;              // Assembly
 
@@ -69,11 +71,29 @@ namespace PublicWorksPlus
             updateSystem.UpdateAfter<TransitSystem>(SystemUpdatePhase.PrefabUpdate);
             updateSystem.UpdateAfter<MaintenanceSystem>(SystemUpdatePhase.PrefabUpdate);
             updateSystem.UpdateAfter<LaneWearSystem>(SystemUpdatePhase.PrefabUpdate);
+
+            // Storage transfer car-request promotion:
+            // run after station/storage transfer requests are created,
+            // before the car-request system turns them into TripNeeded.
             updateSystem.UpdateAt<StationTransferCapacitySystem>(SystemUpdatePhase.GameSimulation);
+            updateSystem.UpdateAfter<StationTransferCapacitySystem, StorageTransferSystem>(SystemUpdatePhase.GameSimulation);
+            updateSystem.UpdateBefore<StationTransferCapacitySystem, CarStorageTransferRequestSystem>(SystemUpdatePhase.GameSimulation);
+
+            // Company shopping promotion:
+            // run after BuyingCompanySystem creates ResourceBuyer,
+            // before ResourceBuyerSystem turns it into TripNeeded.
+            updateSystem.UpdateAt<CompanyShoppingCapacitySystem>(SystemUpdatePhase.GameSimulation);
+            updateSystem.UpdateAfter<CompanyShoppingCapacitySystem, BuyingCompanySystem>(SystemUpdatePhase.GameSimulation);
+            updateSystem.UpdateBefore<CompanyShoppingCapacitySystem, ResourceBuyerSystem>(SystemUpdatePhase.GameSimulation);
+
 
             // Industry (prefab editing window)
+            // Critical: run IndustrySystem BEFORE VehicleCapacitySystem so the game's
+            // DeliveryTruckSelectData table is rebuilt from the updated truck capacities.
             updateSystem.UpdateAfter<IndustrySystem>(SystemUpdatePhase.PrefabUpdate);
+            updateSystem.UpdateBefore<IndustrySystem, VehicleCapacitySystem>(SystemUpdatePhase.PrefabUpdate);
             updateSystem.UpdateBefore<IndustrySystem>(SystemUpdatePhase.PrefabReferences);
+
 
             // Allow transit lines range to be 1-and higher than vanilla
             updateSystem.UpdateAfter<VehicleCountPolicyTunerSystem>(SystemUpdatePhase.PrefabUpdate);

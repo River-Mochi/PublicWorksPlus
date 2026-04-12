@@ -7,6 +7,7 @@
 // - Classifies into the same buckets as IndustrySystem for readable summaries.
 // - Work is gated by EnableDebugLogging in OnUpdate.
 // - GetUpdateInterval is throttling only; it must always return a power-of-2 (or 1).
+// - Logs entity IDs for the highest observed and highest over-vanilla vehicles.
 
 namespace PublicWorksPlus
 {
@@ -91,8 +92,9 @@ namespace PublicWorksPlus
 
             int scanned = 0;
 
-            foreach ((RefRO<Game.Vehicles.DeliveryTruck> truckRef, RefRO<PrefabRef> prRef) in SystemAPI
-                         .Query<RefRO<Game.Vehicles.DeliveryTruck>, RefRO<PrefabRef>>())
+            foreach ((RefRO<Game.Vehicles.DeliveryTruck> truckRef, RefRO<PrefabRef> prRef, Entity entity) in SystemAPI
+                         .Query<RefRO<Game.Vehicles.DeliveryTruck>, RefRO<PrefabRef>>()
+                         .WithEntityAccess())
             {
                 scanned++;
 
@@ -146,15 +148,27 @@ namespace PublicWorksPlus
                 {
                     s.Carrying++;
 
-                    if (amount > vanillaCap)
-                    {
-                        s.OverVanilla++;
-                    }
-
                     if (amount > s.MaxAmount)
                     {
                         s.MaxAmount = amount;
                         s.MaxPrefabName = prefabName;
+                        s.MaxEntity = entity;
+                        s.MaxVanillaCap = vanillaCap;
+                        s.MaxResource = transported;
+                    }
+
+                    if (amount > vanillaCap)
+                    {
+                        s.OverVanilla++;
+
+                        if (amount > s.MaxOverAmount)
+                        {
+                            s.MaxOverAmount = amount;
+                            s.MaxOverPrefabName = prefabName;
+                            s.MaxOverEntity = entity;
+                            s.MaxOverVanillaCap = vanillaCap;
+                            s.MaxOverResource = transported;
+                        }
                     }
                 }
             }
@@ -164,6 +178,15 @@ namespace PublicWorksPlus
             int totalOverVanilla = 0;
             int globalMaxAmount = 0;
             string globalMaxPrefabName = string.Empty;
+            Entity globalMaxEntity = Entity.Null;
+            int globalMaxVanillaCap = 0;
+            Resource globalMaxResource = Resource.NoResource;
+
+            int globalMaxOverAmount = 0;
+            string globalMaxOverPrefabName = string.Empty;
+            Entity globalMaxOverEntity = Entity.Null;
+            int globalMaxOverVanillaCap = 0;
+            Resource globalMaxOverResource = Resource.NoResource;
 
             for (int i = 0; i < m_Stats.Length; i++)
             {
@@ -175,6 +198,18 @@ namespace PublicWorksPlus
                 {
                     globalMaxAmount = m_Stats[i].MaxAmount;
                     globalMaxPrefabName = m_Stats[i].MaxPrefabName;
+                    globalMaxEntity = m_Stats[i].MaxEntity;
+                    globalMaxVanillaCap = m_Stats[i].MaxVanillaCap;
+                    globalMaxResource = m_Stats[i].MaxResource;
+                }
+
+                if (m_Stats[i].MaxOverAmount > globalMaxOverAmount)
+                {
+                    globalMaxOverAmount = m_Stats[i].MaxOverAmount;
+                    globalMaxOverPrefabName = m_Stats[i].MaxOverPrefabName;
+                    globalMaxOverEntity = m_Stats[i].MaxOverEntity;
+                    globalMaxOverVanillaCap = m_Stats[i].MaxOverVanillaCap;
+                    globalMaxOverResource = m_Stats[i].MaxOverResource;
                 }
             }
 
@@ -192,14 +227,18 @@ namespace PublicWorksPlus
             {
                 Mod.s_Log.Info(
                     $"{Mod.ModTag} Delivery cargo proof: FOUND live trucks above vanilla capacity. " +
-                    $"overVanilla={totalOverVanilla}/{totalCarrying} maxAmount={FmtTons(globalMaxAmount)} " +
-                    $"prefab='{globalMaxPrefabName}'");
+                    $"overVanilla={totalOverVanilla}/{totalCarrying} " +
+                    $"topOver={FmtTons(globalMaxOverAmount)} prefab='{globalMaxOverPrefabName}' " +
+                    $"entity={FmtEntity(globalMaxOverEntity)} resource={globalMaxOverResource} " +
+                    $"vanillaCap={FmtTons(globalMaxOverVanillaCap)}");
             }
             else
             {
                 Mod.s_Log.Info(
                     $"{Mod.ModTag} Delivery cargo proof: no live trucks above vanilla capacity found in this sample. " +
-                    $"Highest observed load={FmtTons(globalMaxAmount)} prefab='{globalMaxPrefabName}'");
+                    $"Highest observed load={FmtTons(globalMaxAmount)} prefab='{globalMaxPrefabName}' " +
+                    $"entity={FmtEntity(globalMaxEntity)} resource={globalMaxResource} " +
+                    $"vanillaCap={FmtTons(globalMaxVanillaCap)}");
             }
 
             LogBucket("Semi", m_Stats[(int)VehicleHelpers.DeliveryBucket.Semi]);
@@ -215,6 +254,9 @@ namespace PublicWorksPlus
             {
                 m_Stats[i] = default;
                 m_Stats[i].MaxPrefabName = string.Empty;
+                m_Stats[i].MaxOverPrefabName = string.Empty;
+                m_Stats[i].MaxEntity = Entity.Null;
+                m_Stats[i].MaxOverEntity = Entity.Null;
             }
         }
 
@@ -246,10 +288,33 @@ namespace PublicWorksPlus
 
             float pct = s.Carrying > 0 ? (100f * s.OverVanilla / s.Carrying) : 0f;
 
+            if (s.OverVanilla > 0)
+            {
+                Mod.s_Log.Info(
+                    $"{Mod.ModTag} DeliveryCargoProbe {name}: seen={s.Seen} carrying={s.Carrying} " +
+                    $"overVanilla={s.OverVanilla} ({pct:0.#}% of carrying) " +
+                    $"maxAmount={FmtTons(s.MaxAmount)} prefab='{s.MaxPrefabName}' entity={FmtEntity(s.MaxEntity)} " +
+                    $"topOver={FmtTons(s.MaxOverAmount)} overPrefab='{s.MaxOverPrefabName}' " +
+                    $"overEntity={FmtEntity(s.MaxOverEntity)} resource={s.MaxOverResource} " +
+                    $"vanillaCap={FmtTons(s.MaxOverVanillaCap)}");
+                return;
+            }
+
             Mod.s_Log.Info(
                 $"{Mod.ModTag} DeliveryCargoProbe {name}: seen={s.Seen} carrying={s.Carrying} " +
                 $"overVanilla={s.OverVanilla} ({pct:0.#}% of carrying) " +
-                $"maxAmount={FmtTons(s.MaxAmount)} prefab='{s.MaxPrefabName}'");
+                $"maxAmount={FmtTons(s.MaxAmount)} prefab='{s.MaxPrefabName}' entity={FmtEntity(s.MaxEntity)} " +
+                $"resource={s.MaxResource} vanillaCap={FmtTons(s.MaxVanillaCap)}");
+        }
+
+        private static string FmtEntity(Entity entity)
+        {
+            if (entity == Entity.Null)
+            {
+                return "(null)";
+            }
+
+            return $"{entity.Index}:{entity.Version}";
         }
 
         private static string FmtTons(int amount)
@@ -263,8 +328,18 @@ namespace PublicWorksPlus
             public int Seen;
             public int Carrying;
             public int OverVanilla;
+
             public int MaxAmount;
             public string MaxPrefabName;
+            public Entity MaxEntity;
+            public int MaxVanillaCap;
+            public Resource MaxResource;
+
+            public int MaxOverAmount;
+            public string MaxOverPrefabName;
+            public Entity MaxOverEntity;
+            public int MaxOverVanillaCap;
+            public Resource MaxOverResource;
         }
     }
 }

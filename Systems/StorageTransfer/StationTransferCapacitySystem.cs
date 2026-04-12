@@ -1,8 +1,8 @@
 // File: Systems/StorageTransfer/StationTransferCapacitySystem.cs
-// Purpose: Promote station / OC outbound car storage-transfer requests
+// Purpose: Promote cargo-station / OC outbound car storage-transfer requests
 //          up to at least one full currently selectable truck.
 // Notes:
-// - Targets station and outside-connection entities only.
+// - Targets actual cargo-station entities and outside-connection entities.
 // - Targets outbound CAR requests only.
 // - Mirrors the same promoted amount into the matching incoming request
 //   when the counterpart buffer exists.
@@ -11,10 +11,10 @@
 namespace PublicWorksPlus
 {
     using Game;
-    using Game.City;
     using Game.Common;
     using Game.Prefabs;
     using Game.Tools;
+    using Unity.Collections;
     using Unity.Entities;
 
     public sealed partial class StationTransferCapacitySystem : GameSystemBase
@@ -50,8 +50,8 @@ namespace PublicWorksPlus
         {
             DeliveryTruckSelectData truckSelectData = m_VehicleCapacitySystem.GetDeliveryTruckSelectData();
 
-            ComponentLookup<CityServiceUpkeep> stationLookup =
-                SystemAPI.GetComponentLookup<CityServiceUpkeep>(isReadOnly: true);
+            ComponentLookup<Game.Buildings.CargoTransportStation> cargoStationLookup =
+                SystemAPI.GetComponentLookup<Game.Buildings.CargoTransportStation>(isReadOnly: true);
 
             ComponentLookup<Game.Objects.OutsideConnection> ocLookup =
                 SystemAPI.GetComponentLookup<Game.Objects.OutsideConnection>(isReadOnly: true);
@@ -65,24 +65,29 @@ namespace PublicWorksPlus
             BufferLookup<Game.Companies.StorageTransferRequest> requestLookup =
                 SystemAPI.GetBufferLookup<Game.Companies.StorageTransferRequest>(isReadOnly: false);
 
+            using NativeArray<Entity> entities = m_RequestQuery.ToEntityArray(Allocator.Temp);
+
             int changed = 0;
             int mirrored = 0;
 
-            foreach (Entity entity in SystemAPI.QueryBuilder()
-                         .WithAll<Game.Companies.StorageTransferRequest>()
-                         .WithNone<Deleted, Temp>()
-                         .Build()
-                         .ToEntityArray(Unity.Collections.Allocator.Temp))
+            for (int e = 0; e < entities.Length; e++)
             {
+                Entity entity = entities[e];
+
                 if (deletedLookup.HasComponent(entity) || tempLookup.HasComponent(entity))
                 {
                     continue;
                 }
 
-                bool isStation = stationLookup.HasComponent(entity);
+                bool isCargoStation = cargoStationLookup.HasComponent(entity);
                 bool isOC = ocLookup.HasComponent(entity);
 
-                if (!isStation && !isOC)
+                if (!isCargoStation && !isOC)
+                {
+                    continue;
+                }
+
+                if (!requestLookup.HasBuffer(entity))
                 {
                     continue;
                 }
@@ -127,7 +132,7 @@ namespace PublicWorksPlus
             if (changed > 0 && Mod.Settings != null && Mod.Settings.EnableDebugLogging)
             {
                 Mod.s_Log.Info(
-                    $"{Mod.ModTag} StationTransferCapacity: promoted {changed} station/OC outbound car request(s) to full truck size; mirrored {mirrored} matching incoming request(s).");
+                    $"{Mod.ModTag} StationTransferCapacity: promoted {changed} cargo-station/OC outbound car request(s) to full truck size; mirrored {mirrored} matching incoming request(s).");
             }
         }
 
