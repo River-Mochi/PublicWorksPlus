@@ -232,6 +232,9 @@ namespace PublicWorksPlus
                 }
             }
 
+            Mod.s_Log.Info("============================================================");
+            Mod.s_Log.Info($"{Mod.ModTag} DELIVERY CARGO PROBE");
+            Mod.s_Log.Info("============================================================");
             Mod.s_Log.Info(
                 $"{Mod.ModTag} Delivery cargo live sample: scanned={scanned} " +
                 $"seen={totalSeen} carrying={totalCarrying} overVanilla={totalOverVanilla} " +
@@ -266,6 +269,7 @@ namespace PublicWorksPlus
             LogBucket("Raw", m_Stats[(int)VehicleHelpers.DeliveryBucket.RawMaterials], m_TopOver[(int)VehicleHelpers.DeliveryBucket.RawMaterials]);
             LogBucket("Motorbike", m_Stats[(int)VehicleHelpers.DeliveryBucket.Motorbike], m_TopOver[(int)VehicleHelpers.DeliveryBucket.Motorbike]);
             LogBucket("Other", m_Stats[(int)VehicleHelpers.DeliveryBucket.Other], m_TopOver[(int)VehicleHelpers.DeliveryBucket.Other]);
+            Mod.s_Log.Info("============================================================");
         }
 
         private void ClearStats()

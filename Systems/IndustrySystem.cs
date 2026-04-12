@@ -95,7 +95,11 @@ namespace PublicWorksPlus
             }
 
             Setting settings = Mod.Settings;
+#if DEBUG
             bool verbose = settings.EnableDebugLogging;
+#else
+            bool verbose = false;
+#endif
 
             ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
             ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
@@ -268,7 +272,7 @@ namespace PublicWorksPlus
                     }
                 }
 
-                if (verbose || changed > 0)
+                if (verbose)
                 {
                     Mod.s_Log.Info($"{Mod.ModTag} Extractor trucks: scalar={scalar:0.##} matched={matched} changed={changed} skippedZero={skippedZero}");
                 }

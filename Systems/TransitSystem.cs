@@ -22,7 +22,6 @@ namespace PublicWorksPlus
 
         private HashSet<TransportType> m_SeenDepotTypes = null!;
         private HashSet<TransportType> m_SeenPassengerTypes = null!;
-        private bool m_LoggedTypesOnce;
 
         private Dictionary<TransportType, SeatSummary> m_PassengerSeatSummary = null!;
 
@@ -63,7 +62,6 @@ namespace PublicWorksPlus
 
             m_SeenDepotTypes = new HashSet<TransportType>();
             m_SeenPassengerTypes = new HashSet<TransportType>();
-            m_LoggedTypesOnce = false;
             m_PassengerSeatSummary = new Dictionary<TransportType, SeatSummary>();
 
             EntityQuery depotQuery = SystemAPI.QueryBuilder()
@@ -95,7 +93,6 @@ namespace PublicWorksPlus
 
             m_SeenDepotTypes.Clear();
             m_SeenPassengerTypes.Clear();
-            m_LoggedTypesOnce = false;
             m_PassengerSeatSummary.Clear();
 
             Mod.s_Log.Info($"{Mod.ModTag} City Loading Complete -> applying transit settings");
@@ -118,12 +115,6 @@ namespace PublicWorksPlus
             }
 
             Setting settings = Mod.Settings;
-
-#if DEBUG
-            bool debug = settings.EnableDebugLogging;
-#else
-            bool debug = false;
-#endif
 
             // DEPOTS — prefab-only
             foreach ((RefRW<TransportDepotData> depotRef, Entity entity) in SystemAPI

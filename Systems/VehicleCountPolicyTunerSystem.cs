@@ -71,8 +71,13 @@ namespace PublicWorksPlus
                 return;
             }
 
-
+#if DEBUG
             bool verbose = settings.EnableDebugLogging;
+#else
+            bool verbose = false;
+#endif
+
+
             bool enable = settings.EnableLineVehicleCountTuner;
 
             // UITransportConfigurationPrefab holds references to various UI policy prefabs.
@@ -115,9 +120,12 @@ namespace PublicWorksPlus
                     s_OriginalVehicleIntervalRange = item.m_Range;
                     s_OriginalVehicleIntervalMode = item.m_Mode;
 
-                    Mod.s_Log.Info(
-                        $"{Mod.ModTag} VehicleCountPolicyTuner: captured original VehicleInterval " +
-                        $"mode={item.m_Mode} range={item.m_Range.min:F3}..{item.m_Range.max:F3} (input space)");
+                    if (verbose)
+                    {
+                        Mod.s_Log.Info(
+                            $"{Mod.ModTag} VehicleCountPolicyTuner: captured original VehicleInterval " +
+                            $"mode={item.m_Mode} range={item.m_Range.min:F3}..{item.m_Range.max:F3} (input space)");
+                    }
                 }
 
                 // Toggle OFF -> restore original values.
@@ -139,10 +147,13 @@ namespace PublicWorksPlus
                         buf[i] = item;
                         changed = true;
 
-                        Mod.s_Log.Info(
-                            $"{Mod.ModTag} VehicleCountPolicyTuner: DISABLED -> restore VehicleInterval " +
-                            $"mode {oldMode} -> {item.m_Mode}, " +
-                            $"range {oldRange.min:F3}..{oldRange.max:F3} -> {item.m_Range.min:F3}..{item.m_Range.max:F3} (input space)");
+                        if (verbose)
+                        {
+                            Mod.s_Log.Info(
+                                $"{Mod.ModTag} VehicleCountPolicyTuner: DISABLED -> restore VehicleInterval " +
+                                $"mode {oldMode} -> {item.m_Mode}, " +
+                                $"range {oldRange.min:F3}..{oldRange.max:F3} -> {item.m_Range.min:F3}..{item.m_Range.max:F3} (input space)");
+                        }
                     }
                     else if (verbose)
                     {
@@ -169,11 +180,14 @@ namespace PublicWorksPlus
                         float appliedAtMinInput = InverseRelativeAppliedFromInput(desired.min);
                         float appliedAtMaxInput = InverseRelativeAppliedFromInput(desired.max);
 
-                        Mod.s_Log.Info(
-                            $"{Mod.ModTag} VehicleCountPolicyTuner: ENABLED -> VehicleInterval input range " +
-                            $"{oldRange.min:F3}..{oldRange.max:F3} -> {desired.min:F3}..{desired.max:F3} (InverseRelative). " +
-                            $"Applied endpoints: inputMin→{appliedAtMinInput:F3}, inputMax→{appliedAtMaxInput:F3}. " +
-                            $"Targets: fewer={kFewerVehiclesApplied:F1}, more={kMoreVehiclesApplied:F2}");
+                        if (verbose)
+                        {
+                            Mod.s_Log.Info(
+                                $"{Mod.ModTag} VehicleCountPolicyTuner: ENABLED -> VehicleInterval input range " +
+                                $"{oldRange.min:F3}..{oldRange.max:F3} -> {desired.min:F3}..{desired.max:F3} (InverseRelative). " +
+                                $"Applied endpoints: inputMin→{appliedAtMinInput:F3}, inputMax→{appliedAtMaxInput:F3}. " +
+                                $"Targets: fewer={kFewerVehiclesApplied:F1}, more={kMoreVehiclesApplied:F2}");
+                        }
                     }
                     else if (verbose)
                     {

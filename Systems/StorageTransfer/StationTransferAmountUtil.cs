@@ -42,7 +42,7 @@ namespace PublicWorksPlus
 
             for (int i = 0; i < SelectionProbeCount; i++)
             {
-                Random random = CreateProbeRandom(resource, requestedAmount, i);
+                Unity.Mathematics.Random random = CreateProbeRandom(resource, requestedAmount, i);
 
                 if (truckSelectData.TrySelectItem(ref random, resource, requestedAmount, out DeliveryTruckSelectItem item) &&
                     item.m_Capacity > 0)
@@ -89,7 +89,7 @@ namespace PublicWorksPlus
             return adjustedAmount != originalAmount;
         }
 
-        private static Random CreateProbeRandom(Resource resource, int requestedAmount, int salt)
+        private static Unity.Mathematics.Random CreateProbeRandom(Resource resource, int requestedAmount, int salt)
         {
             ulong raw = Convert.ToUInt64(resource);
             uint low = (uint)(raw & 0xFFFFFFFFu);
@@ -105,7 +105,7 @@ namespace PublicWorksPlus
                 seed = 1;
             }
 
-            return new Random(seed);
+            return new Unity.Mathematics.Random(seed);
         }
     }
 }
