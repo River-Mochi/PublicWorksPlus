@@ -288,7 +288,7 @@ namespace PublicWorksPlus
                     string prefabName = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefab);
 
                     Mod.s_Log.Info(
-                        $"{Mod.ModTag} CompanyShoppingCapacity: " +
+                        $"{Mod.ModTag} [DISPATCH] [CompanyShopping] " +
                         $"ENTITY ID {entity.Index}:{entity.Version} " +
                         $"PREFAB ENTITY {prefab.Index}:{prefab.Version} prefab='{prefabName}' " +
                         $"Resource={resource} OldRequest={oldAmount} NewRequest={desiredRequest} " +

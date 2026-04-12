@@ -135,10 +135,10 @@ namespace PublicWorksPlus
 
                     if (verbose)
                     {
-                        string kind = isOC ? "OutsideConnection" : "StorageCompany";
+                        string kind = isOC ? "OC-Transfer" : "StorageTransfer";
 
                         Mod.s_Log.Info(
-                            $"{Mod.ModTag} StationTransferCapacity: " +
+                            $"{Mod.ModTag} [DISPATCH] [StorageTransfer] " +
                             $"SOURCE ENTITY ID {entity.Index}:{entity.Version} " +
                             $"TARGET ENTITY ID {request.m_Target.Index}:{request.m_Target.Version} " +
                             $"kind={kind} Resource={request.m_Resource} Flags={request.m_Flags} " +

@@ -567,6 +567,7 @@ namespace PublicWorksPlus
                 Append($"Industrial extractor summary: Unique={extractorCompanies}");
                 Append("");
 
+#if DEBUG
                 // -----------------------------
                 // Keyword scan
                 // -----------------------------
@@ -609,6 +610,7 @@ namespace PublicWorksPlus
 
                 Append($"Keyword match summary: UniqueMatches={keywordMatches} Cap={kMaxKeywordMatches}");
                 Append("");
+#endif
 
                 // -----------------------------
                 // Write report
