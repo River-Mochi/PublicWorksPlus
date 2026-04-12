@@ -1,13 +1,13 @@
 // File: Systems/Probes/DeliveryCargoProbeSystem.cs
 // Purpose: Runtime proof logger for delivery cargo loads vs vanilla caps.
 // Notes:
-// - Reads Game.Vehicles.DeliveryTruck (m_Amount) on live vehicles.
+// - Reads Game.Vehicles.DeliveryTruck (m_Amount, m_Resource) on live vehicles.
 // - Uses PrefabRef to look up the vehicle prefab.
 // - Reads vanilla cap from managed prefab component (Game.Prefabs.DeliveryTruck) via PrefabSystem.
 // - Classifies into the same buckets as IndustrySystem for readable summaries.
 // - Work is gated by EnableDebugLogging in OnUpdate.
 // - GetUpdateInterval is throttling only; it must always return a power-of-2 (or 1).
-// - Logs entity IDs for the highest observed and highest over-vanilla vehicles.
+// - Logs TOP 5 over-vanilla vehicles per bucket with exact ENTITY ID and carried resource.
 
 namespace PublicWorksPlus
 {
@@ -16,23 +16,23 @@ namespace PublicWorksPlus
     using Game.Economy;
     using Game.Prefabs;
     using Game.Simulation;
+    using System;
     using System.Collections.Generic;
     using Unity.Entities;
 
     public sealed partial class DeliveryCargoProbeSystem : GameSystemBase
     {
-        // 262144 sim frames/day. UpdatesPerDay must be power-of-2 so interval stays power-of-2.
         public static readonly int UpdatesPerDay = 64; // interval = 4096 sim frames
 
-        // VehicleHelpers.DeliveryBucket enum:
-        // Other=0, Semi=1, Van=2, RawMaterials=3, Motorbike=4
         private const int kBucketCount = 5;
+        private const int kTopN = 5;
 
         private PrefabSystem m_PrefabSystem = null!;
         private SimulationSystem m_Sim = null!;
 
         private readonly Dictionary<Entity, int> m_VanillaCapByPrefab = new Dictionary<Entity, int>();
         private readonly BucketStats[] m_Stats = new BucketStats[kBucketCount];
+        private readonly List<BucketHit>[] m_TopOver = new List<BucketHit>[kBucketCount];
 
         public override int GetUpdateInterval(SystemUpdatePhase phase)
         {
@@ -56,6 +56,11 @@ namespace PublicWorksPlus
                 .Build();
 
             RequireForUpdate(q);
+
+            for (int i = 0; i < m_TopOver.Length; i++)
+            {
+                m_TopOver[i] = new List<BucketHit>(kTopN);
+            }
 
             ClearStats();
         }
@@ -100,6 +105,7 @@ namespace PublicWorksPlus
 
                 Game.Vehicles.DeliveryTruck truck = truckRef.ValueRO;
                 int amount = truck.m_Amount;
+                Resource carriedResource = truck.m_Resource;
 
                 Entity prefab = prRef.ValueRO.m_Prefab;
 
@@ -109,10 +115,10 @@ namespace PublicWorksPlus
                     continue;
                 }
 
-                Resource transported = Resource.NoResource;
+                Resource transportedFlags = Resource.NoResource;
                 if (dtdLookup.TryGetComponent(prefab, out DeliveryTruckData dtd))
                 {
-                    transported = dtd.m_TransportedResources;
+                    transportedFlags = dtd.m_TransportedResources;
                 }
 
                 VehicleHelpers.GetTrailerTypeInfo(
@@ -129,7 +135,7 @@ namespace PublicWorksPlus
                 VehicleHelpers.DeliveryBucket bucket = VehicleHelpers.ClassifyDeliveryTruckPrefab(
                     prefabName,
                     vanillaCap,
-                    transported,
+                    transportedFlags,
                     hasTractor,
                     tractorType,
                     hasTrailer,
@@ -144,32 +150,45 @@ namespace PublicWorksPlus
                 ref BucketStats s = ref m_Stats[bi];
                 s.Seen++;
 
-                if (amount > 0)
+                if (amount <= 0)
                 {
-                    s.Carrying++;
+                    continue;
+                }
 
-                    if (amount > s.MaxAmount)
+                s.Carrying++;
+
+                if (amount > s.MaxAmount)
+                {
+                    s.MaxAmount = amount;
+                    s.MaxPrefabName = prefabName;
+                    s.MaxEntity = entity;
+                    s.MaxVanillaCap = vanillaCap;
+                    s.MaxResource = carriedResource;
+                }
+
+                if (amount > vanillaCap)
+                {
+                    s.OverVanilla++;
+
+                    if (amount > s.MaxOverAmount)
                     {
-                        s.MaxAmount = amount;
-                        s.MaxPrefabName = prefabName;
-                        s.MaxEntity = entity;
-                        s.MaxVanillaCap = vanillaCap;
-                        s.MaxResource = transported;
+                        s.MaxOverAmount = amount;
+                        s.MaxOverPrefabName = prefabName;
+                        s.MaxOverEntity = entity;
+                        s.MaxOverVanillaCap = vanillaCap;
+                        s.MaxOverResource = carriedResource;
                     }
 
-                    if (amount > vanillaCap)
-                    {
-                        s.OverVanilla++;
-
-                        if (amount > s.MaxOverAmount)
+                    AddTopHit(
+                        m_TopOver[bi],
+                        new BucketHit
                         {
-                            s.MaxOverAmount = amount;
-                            s.MaxOverPrefabName = prefabName;
-                            s.MaxOverEntity = entity;
-                            s.MaxOverVanillaCap = vanillaCap;
-                            s.MaxOverResource = transported;
-                        }
-                    }
+                            Entity = entity,
+                            Amount = amount,
+                            VanillaCap = vanillaCap,
+                            CarriedResource = carriedResource,
+                            PrefabName = prefabName,
+                        });
                 }
             }
 
@@ -220,8 +239,7 @@ namespace PublicWorksPlus
 
             if (totalCarrying == 0)
             {
-                Mod.s_Log.Info(
-                    $"{Mod.ModTag} Delivery cargo proof: no carrying delivery trucks found in this sample.");
+                Mod.s_Log.Info($"{Mod.ModTag} Delivery cargo proof: no carrying delivery trucks found in this sample.");
             }
             else if (totalOverVanilla > 0)
             {
@@ -229,23 +247,25 @@ namespace PublicWorksPlus
                     $"{Mod.ModTag} Delivery cargo proof: FOUND live trucks above vanilla capacity. " +
                     $"overVanilla={totalOverVanilla}/{totalCarrying} " +
                     $"topOver={FmtTons(globalMaxOverAmount)} prefab='{globalMaxOverPrefabName}' " +
-                    $"entity={FmtEntity(globalMaxOverEntity)} resource={globalMaxOverResource} " +
-                    $"vanillaCap={FmtTons(globalMaxOverVanillaCap)}");
+                    $"ENTITY ID {FmtEntity(globalMaxOverEntity)} " +
+                    $"Carrying={FormatResource(globalMaxOverResource)} " +
+                    $"VanillaCap={FmtTons(globalMaxOverVanillaCap)}");
             }
             else
             {
                 Mod.s_Log.Info(
                     $"{Mod.ModTag} Delivery cargo proof: no live trucks above vanilla capacity found in this sample. " +
-                    $"Highest observed load={FmtTons(globalMaxAmount)} prefab='{globalMaxPrefabName}' " +
-                    $"entity={FmtEntity(globalMaxEntity)} resource={globalMaxResource} " +
-                    $"vanillaCap={FmtTons(globalMaxVanillaCap)}");
+                    $"HighestObserved={FmtTons(globalMaxAmount)} prefab='{globalMaxPrefabName}' " +
+                    $"ENTITY ID {FmtEntity(globalMaxEntity)} " +
+                    $"Carrying={FormatResource(globalMaxResource)} " +
+                    $"VanillaCap={FmtTons(globalMaxVanillaCap)}");
             }
 
-            LogBucket("Semi", m_Stats[(int)VehicleHelpers.DeliveryBucket.Semi]);
-            LogBucket("Van", m_Stats[(int)VehicleHelpers.DeliveryBucket.Van]);
-            LogBucket("Raw", m_Stats[(int)VehicleHelpers.DeliveryBucket.RawMaterials]);
-            LogBucket("Motorbike", m_Stats[(int)VehicleHelpers.DeliveryBucket.Motorbike]);
-            LogBucket("Other", m_Stats[(int)VehicleHelpers.DeliveryBucket.Other]);
+            LogBucket("Semi", m_Stats[(int)VehicleHelpers.DeliveryBucket.Semi], m_TopOver[(int)VehicleHelpers.DeliveryBucket.Semi]);
+            LogBucket("Van", m_Stats[(int)VehicleHelpers.DeliveryBucket.Van], m_TopOver[(int)VehicleHelpers.DeliveryBucket.Van]);
+            LogBucket("Raw", m_Stats[(int)VehicleHelpers.DeliveryBucket.RawMaterials], m_TopOver[(int)VehicleHelpers.DeliveryBucket.RawMaterials]);
+            LogBucket("Motorbike", m_Stats[(int)VehicleHelpers.DeliveryBucket.Motorbike], m_TopOver[(int)VehicleHelpers.DeliveryBucket.Motorbike]);
+            LogBucket("Other", m_Stats[(int)VehicleHelpers.DeliveryBucket.Other], m_TopOver[(int)VehicleHelpers.DeliveryBucket.Other]);
         }
 
         private void ClearStats()
@@ -257,6 +277,7 @@ namespace PublicWorksPlus
                 m_Stats[i].MaxOverPrefabName = string.Empty;
                 m_Stats[i].MaxEntity = Entity.Null;
                 m_Stats[i].MaxOverEntity = Entity.Null;
+                m_TopOver[i].Clear();
             }
         }
 
@@ -278,7 +299,33 @@ namespace PublicWorksPlus
             return cap;
         }
 
-        private static void LogBucket(string name, BucketStats s)
+        private static void AddTopHit(List<BucketHit> list, BucketHit hit)
+        {
+            int insertAt = list.Count;
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (hit.Amount > list[i].Amount)
+                {
+                    insertAt = i;
+                    break;
+                }
+            }
+
+            if (insertAt >= kTopN && list.Count >= kTopN)
+            {
+                return;
+            }
+
+            list.Insert(insertAt, hit);
+
+            if (list.Count > kTopN)
+            {
+                list.RemoveAt(list.Count - 1);
+            }
+        }
+
+        private static void LogBucket(string name, BucketStats s, List<BucketHit> topOver)
         {
             if (s.Seen == 0)
             {
@@ -288,23 +335,25 @@ namespace PublicWorksPlus
 
             float pct = s.Carrying > 0 ? (100f * s.OverVanilla / s.Carrying) : 0f;
 
-            if (s.OverVanilla > 0)
-            {
-                Mod.s_Log.Info(
-                    $"{Mod.ModTag} DeliveryCargoProbe {name}: seen={s.Seen} carrying={s.Carrying} " +
-                    $"overVanilla={s.OverVanilla} ({pct:0.#}% of carrying) " +
-                    $"maxAmount={FmtTons(s.MaxAmount)} prefab='{s.MaxPrefabName}' entity={FmtEntity(s.MaxEntity)} " +
-                    $"topOver={FmtTons(s.MaxOverAmount)} overPrefab='{s.MaxOverPrefabName}' " +
-                    $"overEntity={FmtEntity(s.MaxOverEntity)} resource={s.MaxOverResource} " +
-                    $"vanillaCap={FmtTons(s.MaxOverVanillaCap)}");
-                return;
-            }
-
             Mod.s_Log.Info(
                 $"{Mod.ModTag} DeliveryCargoProbe {name}: seen={s.Seen} carrying={s.Carrying} " +
                 $"overVanilla={s.OverVanilla} ({pct:0.#}% of carrying) " +
-                $"maxAmount={FmtTons(s.MaxAmount)} prefab='{s.MaxPrefabName}' entity={FmtEntity(s.MaxEntity)} " +
-                $"resource={s.MaxResource} vanillaCap={FmtTons(s.MaxVanillaCap)}");
+                $"HighestObserved={FmtTons(s.MaxAmount)} prefab='{s.MaxPrefabName}' " +
+                $"ENTITY ID {FmtEntity(s.MaxEntity)} " +
+                $"Carrying={FormatResource(s.MaxResource)}");
+
+            for (int i = 0; i < topOver.Count; i++)
+            {
+                BucketHit hit = topOver[i];
+
+                Mod.s_Log.Info(
+                    $"{Mod.ModTag} DeliveryCargoProbe {name} TOP {i + 1}: " +
+                    $"ENTITY ID {FmtEntity(hit.Entity)} " +
+                    $"Amount={FmtTons(hit.Amount)} " +
+                    $"VanillaCap={FmtTons(hit.VanillaCap)} " +
+                    $"Carrying={FormatResource(hit.CarriedResource)} " +
+                    $"Prefab='{hit.PrefabName}'");
+            }
         }
 
         private static string FmtEntity(Entity entity)
@@ -321,6 +370,49 @@ namespace PublicWorksPlus
         {
             float tons = amount / 1000f;
             return $"{amount} (~{tons:0.##}t)";
+        }
+
+        private static string FormatResource(Resource resource)
+        {
+            if (resource == Resource.NoResource)
+            {
+                return "NoResource";
+            }
+
+            string text = resource.ToString();
+            if (!ulong.TryParse(text, out _))
+            {
+                return text;
+            }
+
+            ulong raw = Convert.ToUInt64(resource);
+            List<string> names = new List<string>();
+
+            foreach (Resource value in Enum.GetValues(typeof(Resource)))
+            {
+                ulong bits = Convert.ToUInt64(value);
+                if (bits == 0 || !IsSingleBit(bits))
+                {
+                    continue;
+                }
+
+                if ((raw & bits) == bits)
+                {
+                    names.Add(value.ToString());
+                }
+            }
+
+            if (names.Count > 0)
+            {
+                return string.Join("|", names);
+            }
+
+            return text;
+        }
+
+        private static bool IsSingleBit(ulong value)
+        {
+            return (value & (value - 1)) == 0;
         }
 
         private struct BucketStats
@@ -340,6 +432,15 @@ namespace PublicWorksPlus
             public Entity MaxOverEntity;
             public int MaxOverVanillaCap;
             public Resource MaxOverResource;
+        }
+
+        private struct BucketHit
+        {
+            public Entity Entity;
+            public int Amount;
+            public int VanillaCap;
+            public Resource CarriedResource;
+            public string PrefabName;
         }
     }
 }

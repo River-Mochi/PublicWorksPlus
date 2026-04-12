@@ -79,7 +79,13 @@ namespace PublicWorksPlus
             }
 
             Setting settings = Mod.Settings;
-            bool verbose = settings.EnableDebugLogging;
+
+#if DEBUG
+bool verbose = settings.EnableDebugLogging;
+#else
+            bool verbose = false;
+#endif
+
 
             // Scalars computed once.
             float roadDepotScalar = ScalarMath.PercentToScalarClamped(

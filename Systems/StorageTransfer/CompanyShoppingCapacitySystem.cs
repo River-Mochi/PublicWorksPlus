@@ -274,8 +274,8 @@ namespace PublicWorksPlus
 
                     Mod.s_Log.Info(
                         $"{Mod.ModTag} CompanyShoppingCapacity: " +
-                        $"entityIndex={entity.Index} entityVersion={entity.Version} " +
-                        $"prefabIndex={prefab.Index} prefabVersion={prefab.Version} prefab='{prefabName}' " +
+                        $"ENTITY ID {entity.Index}:{entity.Version} " +
+                        $"PREFAB ENTITY {prefab.Index}:{prefab.Version} prefab='{prefabName}' " +
                         $"Resource={resource} OldRequest={oldAmount} NewRequest={desiredRequest} " +
                         $"Known={knownForTargetResource} " +
                         $"StorageLeft={(storageLeft == int.MaxValue ? "INF" : storageLeft.ToString())} " +

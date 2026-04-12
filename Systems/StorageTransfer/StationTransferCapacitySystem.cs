@@ -139,8 +139,8 @@ namespace PublicWorksPlus
 
                         Mod.s_Log.Info(
                             $"{Mod.ModTag} StationTransferCapacity: " +
-                            $"sourceIndex={entity.Index} sourceVersion={entity.Version} " +
-                            $"targetIndex={request.m_Target.Index} targetVersion={request.m_Target.Version} " +
+                            $"SOURCE ENTITY ID {entity.Index}:{entity.Version} " +
+                            $"TARGET ENTITY ID {request.m_Target.Index}:{request.m_Target.Version} " +
                             $"kind={kind} Resource={request.m_Resource} Flags={request.m_Flags} " +
                             $"OldAmount={oldAmount} NewAmount={adjustedAmount} Mirrored={mirroredThisOne}");
                     }
