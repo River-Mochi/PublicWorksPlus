@@ -227,16 +227,16 @@ namespace PublicWorksPlus
             Mod.s_Log.Info($"{Mod.ModTag} DELIVERY CARGO PROBE");
             Mod.s_Log.Info("============================================================");
             Mod.s_Log.Info(
-                $"{Mod.ModTag} Live sample: scanned={scanned} seen={totalSeen} carrying={totalCarrying} " +
+                $"{Mod.ModTag} Live sample: scanned={scanned} relevant={totalSeen} carrying={totalCarrying} " +
                 $"overVanilla={totalOverVanilla} overCurrentCap={totalOverCurrentCap} frame={m_Sim.frameIndex}");
 
             if (totalOverCurrentCap > 0)
             {
-                Mod.s_Log.Info($"{Mod.ModTag} WARNING: found live trucks above CURRENT prefab cap.");
+                Mod.s_Log.Info($"{Mod.ModTag} BAD: found live trucks above  slider max.");
             }
             else if (totalOverVanilla > 0)
             {
-                Mod.s_Log.Info($"{Mod.ModTag} OK: above-vanilla trucks found, but none above CURRENT prefab cap.");
+                Mod.s_Log.Info($"{Mod.ModTag} GOOD: {totalOverVanilla} trucks > vanilla capacity. GOOD: none above slider max.");
             }
             else
             {
@@ -336,8 +336,8 @@ namespace PublicWorksPlus
 
                     Mod.s_Log.Info(
                         $"{Mod.ModTag} {name} OverCap {i + 1}: ENTITY ID {FmtEntity(hit.Entity)} " +
-                        $"Amount={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
-                        $"Carrying={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{hit.PrefabName}'");
+                        $"Amt={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
+                        $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{hit.PrefabName}'");
                 }
 
                 return;
