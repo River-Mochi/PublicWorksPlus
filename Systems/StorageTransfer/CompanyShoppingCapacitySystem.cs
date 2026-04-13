@@ -288,13 +288,8 @@ namespace PublicWorksPlus
                     string prefabName = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefab);
 
                     Mod.s_Log.Info(
-                        $"{Mod.ModTag} [DISPATCH] [CompanyShopping] " +
-                        $"ENTITY ID {entity.Index}:{entity.Version} " +
-                        $"PREFAB ENTITY {prefab.Index}:{prefab.Version} prefab='{prefabName}' " +
-                        $"Resource={resource} OldRequest={oldAmount} NewRequest={desiredRequest} " +
-                        $"Known={knownForTargetResource} " +
-                        $"StorageLeft={(storageLeft == int.MaxValue ? "INF" : storageLeft.ToString())} " +
-                        $"RangeMax={rangeMaxCapacity} SafeTruckCap={safeSelectedCapacity}");
+                        $"{Mod.ModTag} [DISPATCH][CompanyShopping] ENTITY ID {entity.Index}:{entity.Version} " +
+                        $"prefab='{prefabName}' Resource={resource} Request={desiredRequest} SafeTruckCap={safeSelectedCapacity}");
                 }
             }
 
