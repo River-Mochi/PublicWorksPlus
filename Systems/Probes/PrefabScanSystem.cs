@@ -367,6 +367,10 @@ namespace PublicWorksPlus
                 ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
                 ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
 
+                EntityQuery cargoStationWatchQuery = SystemAPI.QueryBuilder()
+                    .WithAll<Game.Buildings.CargoTransportStation, PrefabRef>()
+                    .Build();
+
                 Append("== DeliveryTruckData Prefabs ==");
 
                 foreach ((RefRO<DeliveryTruckData> truckRef, Entity e) in SystemAPI
@@ -562,10 +566,11 @@ namespace PublicWorksPlus
                 Append($"Industrial extractor summary: Unique={extractorCompanies}");
                 Append("");
 
-                // Cargo station
+                // Cargo Station
                 CargoStationResourceWatch.Append(
                     this,
                     m_PrefabSystem,
+                    cargoStationWatchQuery,
                     sb,
                     ref lines,
                     ref truncated);

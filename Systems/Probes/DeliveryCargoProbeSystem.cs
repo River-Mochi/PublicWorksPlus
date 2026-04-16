@@ -338,7 +338,7 @@ namespace PublicWorksPlus
                     Mod.s_Log.Info(
                         $"{Mod.ModTag} {name} OverCap {i + 1}: ENTITY ID {FmtEntity(hit.Entity)} " +
                         $"Amt={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
-                        $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{hit.PrefabName}'");
+                        $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{FormatPrefabDisplayName(hit.PrefabName)}'");
                 }
 
                 return;
@@ -350,8 +350,8 @@ namespace PublicWorksPlus
 
                 Mod.s_Log.Info(
                     $"{Mod.ModTag} {name} Top{i + 1}: ENTITY ID {FmtEntity(hit.Entity)} " +
-                    $"Amount={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
-                    $"Carrying={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{FormatPrefabDisplayName(hit.PrefabName)}'");
+                    $"Amt={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
+                    $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{FormatPrefabDisplayName(hit.PrefabName)}'");
             }
         }
 
