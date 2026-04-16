@@ -326,7 +326,8 @@ namespace PublicWorksPlus
                 $"Highest={FmtTons(s.MaxAmount)} ENTITY ID {FmtEntity(s.MaxEntity)} " +
                 $"Carrying={FormatResource(s.MaxResource)} State={s.MaxStateText} " +
                 $"CurrentCap={FmtTons(s.MaxCurrentCap)} VanillaCap={FmtTons(s.MaxVanillaCap)} " +
-                $"Prefab='{s.MaxPrefabName}'");
+                $"Prefab='{FormatPrefabDisplayName(s.MaxPrefabName)}'");
+
 
             if (topOverCurrent.Count > 0)
             {
@@ -350,7 +351,7 @@ namespace PublicWorksPlus
                 Mod.s_Log.Info(
                     $"{Mod.ModTag} {name} Top{i + 1}: ENTITY ID {FmtEntity(hit.Entity)} " +
                     $"Amount={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
-                    $"Carrying={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{hit.PrefabName}'");
+                    $"Carrying={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{FormatPrefabDisplayName(hit.PrefabName)}'");
             }
         }
 
@@ -439,6 +440,22 @@ namespace PublicWorksPlus
             public string PrefabName;
             public string StateText;
         }
+
+        private static string FormatPrefabDisplayName(string prefabName)
+        {
+            if (string.Equals(prefabName, "CoalTruck01", StringComparison.OrdinalIgnoreCase))
+            {
+                return "DumpTruck (CoalTruck01)";
+            }
+
+            if (string.Equals(prefabName, "OilTruck01", StringComparison.OrdinalIgnoreCase))
+            {
+                return "RawTruck (OilTruck01)";
+            }
+
+            return prefabName;
+        }
+
     }
 }
 

@@ -6,6 +6,7 @@ namespace PublicWorksPlus
     using Game;              // IsGame
     using Game.SceneFlow;    // GameManager
     using Game.Settings;     // Settings UI attributes
+    using Game.UI;           // Unit
     using Unity.Entities;    // World
 
     public sealed partial class Setting
@@ -21,9 +22,11 @@ namespace PublicWorksPlus
         private float m_ExtractorMaxTrucksScalar = kVanillaScalar;
         private float m_CargoStationMaxTrucksScalar = kVanillaScalar;
 
-        // Delivery vehicles (scalar 1..10)
+        // Delivery vehicles.
+        // Stored values remain 1x..5x.
+        // UI displays 100%..500% for easier reading.
 
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
+        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar, scalarMultiplier = 100, unit = Unit.kPercentage)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
         public float SemiTruckCargoScalar
         {
@@ -38,7 +41,7 @@ namespace PublicWorksPlus
             }
         }
 
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
+        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar, scalarMultiplier = 100, unit = Unit.kPercentage)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
         public float DeliveryVanCargoScalar
         {
@@ -53,7 +56,7 @@ namespace PublicWorksPlus
             }
         }
 
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
+        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar, scalarMultiplier = 100, unit = Unit.kPercentage)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
         public float CoalTruckScalar
         {
@@ -68,7 +71,7 @@ namespace PublicWorksPlus
             }
         }
 
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar)]
+        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar, scalarMultiplier = 100, unit = Unit.kPercentage)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
         public float MotorbikeDeliveryCargoScalar
         {
@@ -83,7 +86,7 @@ namespace PublicWorksPlus
             }
         }
 
-        // Extractor + Cargo Stations (scalar 1..5)
+        // Extractor + Cargo Stations (scalar 1x..5x)
 
         [SettingsUISlider(min = CargoStationMinScalar, max = CargoStationMaxScalar, step = CargoStationStepScalar)]
         [SettingsUISection(IndustryTab, CargoStationsGroup)]

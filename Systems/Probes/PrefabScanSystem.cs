@@ -441,13 +441,8 @@ namespace PublicWorksPlus
                 Append($"Delivery summary: Total={deliveryTotal} Semi={semi} Van={van} Raw={raw} Motorbike={bike} Other={other}");
                 Append("");
 
-                AppendLiveDeliveryCargoSnapshot(
-                    sb,
-                    ref lines,
-                    ref truncated,
-                    deliveryLookup,
-                    tractorLookup,
-                    trailerLookup);
+
+
 
                 // -----------------------------
                 // Maintenance vehicles
@@ -566,6 +561,23 @@ namespace PublicWorksPlus
 
                 Append($"Industrial extractor summary: Unique={extractorCompanies}");
                 Append("");
+
+                // Cargo station
+                CargoStationResourceWatch.Append(
+                    this,
+                    m_PrefabSystem,
+                    sb,
+                    ref lines,
+                    ref truncated);
+
+                AppendLiveDeliveryCargoSnapshot(
+                    sb,
+                    ref lines,
+                    ref truncated,
+                    deliveryLookup,
+                    tractorLookup,
+                    trailerLookup);
+
 
 #if DEBUG
                 // -----------------------------

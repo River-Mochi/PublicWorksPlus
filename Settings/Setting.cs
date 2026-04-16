@@ -63,7 +63,7 @@ namespace PublicWorksPlus
 
         // Industry sliders (scalar 1x..10x).
         public const float ServiceMinScalar = 1f;
-        public const float ServiceMaxScalar = 10f;
+        public const float ServiceMaxScalar = 5f;
         public const float ServiceStepScalar = 1f;
 
         // Cargo station / extractors (scalar 1x..5x).
