@@ -25,6 +25,11 @@ namespace PublicWorksPlus
 
         private Dictionary<TransportType, SeatSummary> m_PassengerSeatSummary = null!;
 
+#if DEBUG
+        // One-shot debug summary after a city load / apply pass.
+        private bool m_LoggedTypesOnce;
+#endif
+
         private const int kTramSections = 3;
 
         private struct SeatSummary
@@ -64,6 +69,10 @@ namespace PublicWorksPlus
             m_SeenPassengerTypes = new HashSet<TransportType>();
             m_PassengerSeatSummary = new Dictionary<TransportType, SeatSummary>();
 
+#if DEBUG
+            m_LoggedTypesOnce = false;
+#endif
+
             EntityQuery depotQuery = SystemAPI.QueryBuilder()
                 .WithAll<PrefabData, TransportDepotData>()
                 .Build();
@@ -95,6 +104,10 @@ namespace PublicWorksPlus
             m_SeenPassengerTypes.Clear();
             m_PassengerSeatSummary.Clear();
 
+#if DEBUG
+            m_LoggedTypesOnce = false;
+#endif
+
             Mod.s_Log.Info($"{Mod.ModTag} City Loading Complete -> applying transit settings");
             Enabled = true;
         }
@@ -115,6 +128,10 @@ namespace PublicWorksPlus
             }
 
             Setting settings = Mod.Settings;
+
+#if DEBUG
+            bool debug = settings.EnableDebugLogging;
+#endif
 
             // DEPOTS — prefab-only
             foreach ((RefRW<TransportDepotData> depotRef, Entity entity) in SystemAPI
@@ -216,6 +233,7 @@ namespace PublicWorksPlus
             }
 
 #if DEBUG
+            // One-shot summary so debug logs do not repeat every apply pass.
             if (debug && !m_LoggedTypesOnce)
             {
                 m_LoggedTypesOnce = true;
