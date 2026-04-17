@@ -6,8 +6,8 @@
 // - Reads vanilla cap from managed prefab component (Game.Prefabs.DeliveryTruck) via PrefabSystem.
 // - Reads current cap from live prefab-entity DeliveryTruckData.
 // - Classifies into the same buckets as IndustrySystem for readable summaries.
-// - Work is gated by EnableDebugLogging in OnUpdate.
-// - GetUpdateInterval is throttling only; it must always return a power-of-2 (or 1).
+// - Runs only when Verbose debug logs is enabled.
+// - Section title reduces repeated text on each line.
 
 namespace PublicWorksPlus
 {
@@ -120,6 +120,7 @@ namespace PublicWorksPlus
 
                 int currentCap = vanillaCap;
                 Resource transportedFlags = Resource.NoResource;
+
                 if (dtdLookup.TryGetComponent(prefab, out DeliveryTruckData dtd))
                 {
                     currentCap = dtd.m_CargoCapacity;
@@ -210,14 +211,14 @@ namespace PublicWorksPlus
                 }
             }
 
-            int totalSeen = 0;
+            int totalRelevant = 0;
             int totalCarrying = 0;
             int totalOverVanilla = 0;
             int totalOverCurrentCap = 0;
 
             for (int i = 0; i < kBucketCount; i++)
             {
-                totalSeen += m_Stats[i].Seen;
+                totalRelevant += m_Stats[i].Seen;
                 totalCarrying += m_Stats[i].Carrying;
                 totalOverVanilla += m_Stats[i].OverVanilla;
                 totalOverCurrentCap += m_Stats[i].OverCurrentCap;
@@ -227,12 +228,12 @@ namespace PublicWorksPlus
             Mod.s_Log.Info($"{Mod.ModTag} DELIVERY CARGO PROBE");
             Mod.s_Log.Info("============================================================");
             Mod.s_Log.Info(
-                $"{Mod.ModTag} Live sample: scanned={scanned} relevant={totalSeen} carrying={totalCarrying} " +
-                $"overVanilla={totalOverVanilla} overCurrentCap={totalOverCurrentCap} frame={m_Sim.frameIndex}");
+                $"{Mod.ModTag} Live sample: scanned={scanned} relevant={totalRelevant} carrying={totalCarrying} " +
+                $"overVanilla={totalOverVanilla} overCurrentCap={totalOverCurrentCap} simFrame={m_Sim.frameIndex}");
 
             if (totalOverCurrentCap > 0)
             {
-                Mod.s_Log.Info($"{Mod.ModTag} BAD: found live trucks above  slider max.");
+                Mod.s_Log.Info($"{Mod.ModTag} BAD: found live trucks above slider max.");
             }
             else if (totalOverVanilla > 0)
             {
@@ -248,6 +249,13 @@ namespace PublicWorksPlus
             LogBucket("Raw", m_Stats[(int)VehicleHelpers.DeliveryBucket.RawMaterials], m_TopOverVanilla[(int)VehicleHelpers.DeliveryBucket.RawMaterials], m_TopOverCurrent[(int)VehicleHelpers.DeliveryBucket.RawMaterials]);
             LogBucket("Motorbike", m_Stats[(int)VehicleHelpers.DeliveryBucket.Motorbike], m_TopOverVanilla[(int)VehicleHelpers.DeliveryBucket.Motorbike], m_TopOverCurrent[(int)VehicleHelpers.DeliveryBucket.Motorbike]);
             LogBucket("Other", m_Stats[(int)VehicleHelpers.DeliveryBucket.Other], m_TopOverVanilla[(int)VehicleHelpers.DeliveryBucket.Other], m_TopOverCurrent[(int)VehicleHelpers.DeliveryBucket.Other]);
+
+            Mod.s_Log.Info(
+                $"{Mod.ModTag} SUMMARY " +
+                $"Semi={FmtBucketSummary(m_Stats[(int)VehicleHelpers.DeliveryBucket.Semi])} " +
+                $"Van={FmtBucketSummary(m_Stats[(int)VehicleHelpers.DeliveryBucket.Van])} " +
+                $"Raw={FmtBucketSummary(m_Stats[(int)VehicleHelpers.DeliveryBucket.RawMaterials])} " +
+                $"OverCap={totalOverCurrentCap}");
 
             Mod.s_Log.Info("============================================================");
         }
@@ -324,10 +332,9 @@ namespace PublicWorksPlus
                 $"{Mod.ModTag} {name}: seen={s.Seen} carrying={s.Carrying} " +
                 $"overVanilla={s.OverVanilla} ({pctVanilla:0.#}%) overCurrentCap={s.OverCurrentCap} ({pctCurrent:0.#}%) " +
                 $"Highest={FmtTons(s.MaxAmount)} ENTITY ID {FmtEntity(s.MaxEntity)} " +
-                $"Carrying={FormatResource(s.MaxResource)} State={s.MaxStateText} " +
+                $"has={FormatResource(s.MaxResource)} State={s.MaxStateText} " +
                 $"CurrentCap={FmtTons(s.MaxCurrentCap)} VanillaCap={FmtTons(s.MaxVanillaCap)} " +
                 $"Prefab='{FormatPrefabDisplayName(s.MaxPrefabName)}'");
-
 
             if (topOverCurrent.Count > 0)
             {
@@ -338,7 +345,8 @@ namespace PublicWorksPlus
                     Mod.s_Log.Info(
                         $"{Mod.ModTag} {name} OverCap {i + 1}: ENTITY ID {FmtEntity(hit.Entity)} " +
                         $"Amt={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
-                        $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{FormatPrefabDisplayName(hit.PrefabName)}'");
+                        $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} " +
+                        $"Prefab='{FormatPrefabDisplayName(hit.PrefabName)}'");
                 }
 
                 return;
@@ -351,8 +359,20 @@ namespace PublicWorksPlus
                 Mod.s_Log.Info(
                     $"{Mod.ModTag} {name} Top{i + 1}: ENTITY ID {FmtEntity(hit.Entity)} " +
                     $"Amt={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
-                    $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} Prefab='{FormatPrefabDisplayName(hit.PrefabName)}'");
+                    $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} " +
+                    $"Prefab='{FormatPrefabDisplayName(hit.PrefabName)}'");
             }
+        }
+
+        private static string FmtBucketSummary(BucketStats s)
+        {
+            if (s.Carrying <= 0)
+            {
+                return "0/0 (0%)";
+            }
+
+            float pct = 100f * s.OverVanilla / s.Carrying;
+            return $"{s.OverVanilla}/{s.Carrying} ({pct:0.#}%)";
         }
 
         private static string FmtEntity(Entity entity)
@@ -414,6 +434,21 @@ namespace PublicWorksPlus
             return (value & (value - 1)) == 0;
         }
 
+        private static string FormatPrefabDisplayName(string prefabName)
+        {
+            if (string.Equals(prefabName, "CoalTruck01", StringComparison.OrdinalIgnoreCase))
+            {
+                return "DumpTruck (CoalTruck01)";
+            }
+
+            if (string.Equals(prefabName, "OilTruck01", StringComparison.OrdinalIgnoreCase))
+            {
+                return "RawTruck (OilTruck01)";
+            }
+
+            return prefabName;
+        }
+
         private struct BucketStats
         {
             public int Seen;
@@ -440,22 +475,5 @@ namespace PublicWorksPlus
             public string PrefabName;
             public string StateText;
         }
-
-        private static string FormatPrefabDisplayName(string prefabName)
-        {
-            if (string.Equals(prefabName, "CoalTruck01", StringComparison.OrdinalIgnoreCase))
-            {
-                return "DumpTruck (CoalTruck01)";
-            }
-
-            if (string.Equals(prefabName, "OilTruck01", StringComparison.OrdinalIgnoreCase))
-            {
-                return "RawTruck (OilTruck01)";
-            }
-
-            return prefabName;
-        }
-
     }
 }
-

@@ -1,28 +1,24 @@
 // File: Systems/Probes/PrefabScanSystem.cs
-// Purpose: One-shot prefab scan triggered by OptionsUI button.
+// Purpose: One-shot prefab scan triggered by Options UI button.
 // Output: Writes report to {EnvPath.kUserDataPath}/ModsData/PublicWorksPlus/ScanReport-Prefabs.txt
 // Notes:
-// - Runs only when requested (PrefabScanState.RequestScan()).
-// - Uses SystemAPI.Query + SystemAPI.QueryBuilder.
-// - Deduped + capped to prevent giant outputs and logger issues.
-// - Logs only a summary line to the mod log (no spam).
+// - Runs only when requested.
+// - Main scan flow stays here.
+// - Helper/report methods live in PrefabScanSystem.ReportSections.cs to keep this file shorter.
 
 namespace PublicWorksPlus
 {
-    using Colossal.PSI.Environment; // EnvPath
     using Game;
-    using Game.Companies;           // TransportCompanyData
-    using Game.Economy;             // Resource
-    using Game.Net;                 // LaneCondition (LIVE lanes)
-    using Game.Prefabs;             // PrefabSystem, PrefabBase, *Data, CarTrailerType, PrefabRef
-    using Game.Routes;              // RouteModifierData, RouteModifierType, TransportType
-    using Game.SceneFlow;           // GameManager
+    using Game.Companies;
+    using Game.Net;
+    using Game.Prefabs;
+    using Game.Routes;
+    using Game.SceneFlow;
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;       // Stopwatch
-    using System.IO;
+    using System.Diagnostics;
     using System.Text;
-    using Unity.Collections;        // Allocator, NativeArray
+    using Unity.Collections;
     using Unity.Entities;
 
     public sealed partial class PrefabScanSystem : GameSystemBase
@@ -32,10 +28,9 @@ namespace PublicWorksPlus
 
         private const int kMaxLines = 10000;
         private const int kMaxChars = 1 * 1024 * 1024; // ~1MB
-        private const int kMaxKeywordMatches = 600;    // keywords are hints only
+        private const int kMaxKeywordMatches = 600;
         private const int kDeliveryBucketCount = 5;
 
-        // Keep keywords narrow; broad terms explode output.
         private static readonly string[] s_Keywords = new string[]
         {
             "deliveryvan",
@@ -47,7 +42,6 @@ namespace PublicWorksPlus
             "aquaculture",
         };
 
-        // Exclude common prop/LOD/name noise to keep keyword results useful.
         private static readonly string[] s_ExcludeTokens = new string[]
         {
             "Crane", "Tomestone", "StandingStone", "Crapfish", "PileStone", "Pilecoal", "Billboard", "Sign", "Poster", "NetBasket", "NetBox",
@@ -101,12 +95,10 @@ namespace PublicWorksPlus
 
             m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
 
-            // Needed for VehicleCountPolicy section; do not delete.
             m_ConfigQuery = SystemAPI.QueryBuilder()
                 .WithAll<UITransportConfigurationData>()
                 .Build();
 
-            // Ensure this system only exists when prefab world exists.
             RequireForUpdate(SystemAPI.QueryBuilder().WithAll<PrefabData>().Build());
 
             Enabled = false;
@@ -154,16 +146,12 @@ namespace PublicWorksPlus
 
                 string NameOf(Entity e) => PrefabNameUtil.GetNameSafe(m_PrefabSystem, e);
 
-                // -----------------------------
                 // Header
-                // -----------------------------
                 Append($"Prefab Scan Report for: {Mod.ModName} {Mod.ModVersion}");
                 Append($"Timestamp (local): {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 Append("");
 
-                // -----------------------------
                 // Lane wear prefabs
-                // -----------------------------
                 const float kUpdatesPerDay = 16f;
                 const int kMaxLaneDetails = 250;
 
@@ -174,7 +162,6 @@ namespace PublicWorksPlus
                 Append("");
 
                 int laneListed = 0;
-
                 float minTf = float.MaxValue;
                 float maxTf = float.MinValue;
                 float minTraf = float.MaxValue;
@@ -195,7 +182,6 @@ namespace PublicWorksPlus
 
                     if (tf < minTf) minTf = tf;
                     if (tf > maxTf) maxTf = tf;
-
                     if (traf < minTraf) minTraf = traf;
                     if (traf > maxTraf) maxTraf = traf;
 
@@ -213,7 +199,6 @@ namespace PublicWorksPlus
 
                         float xTime = (!float.IsNaN(vanTf) && vanTf > 0f) ? (tf / vanTf) : float.NaN;
                         float xTraf2 = (!float.IsNaN(vanTraf) && vanTraf > 0f) ? (traf / vanTraf) : float.NaN;
-
                         float expPerTick = tf / kUpdatesPerDay;
 
                         Append(
@@ -240,9 +225,7 @@ namespace PublicWorksPlus
                 AppendLiveLaneUsage(sb, ref lines, ref truncated);
                 Append("");
 
-                // -----------------------------
                 // Transit line defaults
-                // -----------------------------
                 Append("== Transit lines (vanilla timing inputs) ==");
                 Append("Vehicle targets are based on route time estimate (segment durations + stop count).");
                 Append("");
@@ -295,9 +278,7 @@ namespace PublicWorksPlus
 
                 Append("");
 
-                // -----------------------------
                 // VehicleCountPolicy
-                // -----------------------------
                 Append("-- Transit Line Slider Limits Policy (RouteModifierType.VehicleInterval) --");
                 if (m_ConfigQuery.IsEmptyIgnoreFilter)
                 {
@@ -351,9 +332,7 @@ namespace PublicWorksPlus
 
                 Append("");
 
-                // -----------------------------
                 // Delivery truck prefabs
-                // -----------------------------
                 int semi = 0;
                 int van = 0;
                 int raw = 0;
@@ -445,12 +424,7 @@ namespace PublicWorksPlus
                 Append($"Delivery summary: Total={deliveryTotal} Semi={semi} Van={van} Raw={raw} Motorbike={bike} Other={other}");
                 Append("");
 
-
-
-
-                // -----------------------------
                 // Maintenance vehicles
-                // -----------------------------
                 Append("== MaintenanceVehicleData Prefabs ==");
                 foreach ((RefRO<MaintenanceVehicleData> mvRef, Entity e) in SystemAPI
                              .Query<RefRO<MaintenanceVehicleData>>()
@@ -477,9 +451,7 @@ namespace PublicWorksPlus
                 Append($"MaintenanceVehicle summary: Total={mvTotal}");
                 Append("");
 
-                // -----------------------------
                 // Maintenance depots
-                // -----------------------------
                 Append("== MaintenanceDepotData Prefabs ==");
                 foreach ((RefRO<MaintenanceDepotData> depotRef, Entity e) in SystemAPI
                              .Query<RefRO<MaintenanceDepotData>>()
@@ -503,9 +475,7 @@ namespace PublicWorksPlus
                 Append($"MaintenanceDepot summary: Total={depotTotal}");
                 Append("");
 
-                // -----------------------------
-                // Cargo stations (company fleet)
-                // -----------------------------
+                // Cargo stations
                 Append("== Cargo Transport Stations (CargoTransportStationData + TransportCompanyData) ==");
                 foreach ((RefRO<TransportCompanyData> tcRef, Entity e) in SystemAPI
                              .Query<RefRO<TransportCompanyData>>()
@@ -529,9 +499,7 @@ namespace PublicWorksPlus
                 Append($"Cargo station summary: Total={cargoTotal}");
                 Append("");
 
-                // -----------------------------
-                // Industrial extractor companies (fleet slider targets)
-                // -----------------------------
+                // Industrial extractor companies
                 Append("== Industrial Extractor TransportCompanies (for Extractor trucks slider) ==");
                 Append("Filter: name starts with Industrial_ AND contains Extractor/Coal/Stone/Mine/Quarry. Skips CurMaxTransports=0. Deduped by name.");
 
@@ -566,7 +534,7 @@ namespace PublicWorksPlus
                 Append($"Industrial extractor summary: Unique={extractorCompanies}");
                 Append("");
 
-                // Cargo Station
+                // Cargo station watch comes first, then the live delivery snapshot last.
                 CargoStationResourceWatch.Append(
                     this,
                     m_PrefabSystem,
@@ -583,11 +551,7 @@ namespace PublicWorksPlus
                     tractorLookup,
                     trailerLookup);
 
-
 #if DEBUG
-                // -----------------------------
-                // Keyword scan
-                // -----------------------------
                 Append("== Keyword Matches (deduped, capped) ==");
                 Append("Hints for discovering relevant prefabs. Keep narrow ('truck' returns too much)");
 
@@ -629,17 +593,14 @@ namespace PublicWorksPlus
                 Append("");
 #endif
 
-                // -----------------------------
-                // Write report
-                // -----------------------------
                 string reportPath = GetReportPath();
-                string dir = Path.GetDirectoryName(reportPath) ?? string.Empty;
+                string dir = System.IO.Path.GetDirectoryName(reportPath) ?? string.Empty;
                 if (dir.Length > 0)
                 {
-                    Directory.CreateDirectory(dir);
+                    System.IO.Directory.CreateDirectory(dir);
                 }
 
-                File.WriteAllText(reportPath, sb.ToString(), Encoding.UTF8);
+                System.IO.File.WriteAllText(reportPath, sb.ToString(), Encoding.UTF8);
 
                 sw.Stop();
 
@@ -660,340 +621,6 @@ namespace PublicWorksPlus
             }
 
             Enabled = false;
-        }
-
-        private void AppendLiveLaneUsage(StringBuilder sb, ref int lines, ref bool truncated)
-        {
-            if (truncated)
-                return;
-
-            AppendCapped(sb, ref lines, ref truncated, "== Live lane usage (LaneCondition + PrefabRef) ==");
-            AppendCapped(sb, ref lines, ref truncated, "Counts live lane entities grouped by PrefabRef.m_Prefab (lane prefab).");
-            AppendCapped(sb, ref lines, ref truncated, "Proof: small set of lane prefabs power many road types.");
-            AppendCapped(sb, ref lines, ref truncated, "");
-
-            HashSet<Entity> wearPrefabs = new HashSet<Entity>();
-
-            foreach ((RefRO<LaneDeteriorationData> _, Entity prefabEntity) in SystemAPI
-                         .Query<RefRO<LaneDeteriorationData>>()
-                         .WithAll<PrefabData>()
-                         .WithEntityAccess())
-            {
-                wearPrefabs.Add(prefabEntity);
-            }
-
-            Dictionary<Entity, int> counts = new Dictionary<Entity, int>(64);
-            long liveLaneTotal = 0;
-
-            foreach (RefRO<PrefabRef> prefabRefRO in SystemAPI
-                         .Query<RefRO<PrefabRef>>()
-                         .WithAll<LaneCondition>()
-                         .WithNone<PrefabData>())
-            {
-                Entity prefab = prefabRefRO.ValueRO.m_Prefab;
-                liveLaneTotal++;
-
-                if (counts.TryGetValue(prefab, out int c))
-                    counts[prefab] = c + 1;
-                else
-                    counts[prefab] = 1;
-            }
-
-            if (liveLaneTotal == 0 || counts.Count == 0)
-            {
-                AppendCapped(sb, ref lines, ref truncated, "No live lanes found (unexpected).");
-                return;
-            }
-
-            long covered = 0;
-            foreach (KeyValuePair<Entity, int> kvp in counts)
-            {
-                if (wearPrefabs.Contains(kvp.Key))
-                    covered += kvp.Value;
-            }
-
-            float pct = (float)covered * 100f / (float)liveLaneTotal;
-
-            AppendCapped(sb, ref lines, ref truncated, "------------------------------------------");
-            AppendCapped(sb, ref lines, ref truncated, $"Live lanes summary: LiveLanes={liveLaneTotal:n0} UniqueLanePrefabs={counts.Count:n0}");
-            AppendCapped(sb, ref lines, ref truncated, $"Mod Coverage of LaneDeteriorationData prefabs: {covered:n0}/{liveLaneTotal:n0} ({pct:0.0}%)");
-            AppendCapped(sb, ref lines, ref truncated, "");
-
-            const int kTop = 30;
-
-            List<KeyValuePair<Entity, int>> top = new List<KeyValuePair<Entity, int>>(counts);
-            top.Sort((a, b) => b.Value.CompareTo(a.Value));
-
-            int printed = 0;
-            for (int i = 0; i < top.Count && printed < kTop; i++)
-            {
-                KeyValuePair<Entity, int> kvp = top[i];
-                string name = PrefabNameUtil.GetNameSafe(m_PrefabSystem, kvp.Key);
-                bool isWear = wearPrefabs.Contains(kvp.Key);
-
-                AppendCapped(sb, ref lines, ref truncated, $"- {name} ({kvp.Key.Index}:{kvp.Key.Version}) UsedByLanes={kvp.Value:n0} WearPrefab={isWear}");
-                printed++;
-            }
-        }
-
-        private void AppendLiveDeliveryCargoSnapshot(
-            StringBuilder sb,
-            ref int lines,
-            ref bool truncated,
-            ComponentLookup<DeliveryTruckData> deliveryLookup,
-            ComponentLookup<CarTractorData> tractorLookup,
-            ComponentLookup<CarTrailerData> trailerLookup)
-        {
-            if (truncated)
-                return;
-
-            AppendCapped(sb, ref lines, ref truncated, "== Live delivery cargo snapshot (current city) ==");
-            AppendCapped(sb, ref lines, ref truncated, "Reads live DeliveryTruck.m_Amount and compares it to the vanilla prefab cargo cap.");
-            AppendCapped(sb, ref lines, ref truncated, "This is a one-time snapshot of currently spawned vehicles, not a long-running average.");
-            AppendCapped(sb, ref lines, ref truncated, "");
-
-            EntityQuery q = GetEntityQuery(
-                ComponentType.ReadOnly<Game.Vehicles.DeliveryTruck>(),
-                ComponentType.ReadOnly<PrefabRef>());
-
-            if (q.IsEmptyIgnoreFilter)
-            {
-                AppendCapped(sb, ref lines, ref truncated, "No live delivery trucks found in this snapshot.");
-                AppendCapped(sb, ref lines, ref truncated, "");
-                return;
-            }
-
-            LiveDeliveryBucketStats[] bucketStats = new LiveDeliveryBucketStats[kDeliveryBucketCount];
-            for (int i = 0; i < bucketStats.Length; i++)
-            {
-                bucketStats[i].MaxPrefabName = string.Empty;
-            }
-
-            int scanned = 0;
-            int relevant = 0;
-            int carrying = 0;
-            int overVanilla = 0;
-            int globalMaxAmount = 0;
-            string globalMaxPrefabName = string.Empty;
-
-            using (NativeArray<Entity> entities = q.ToEntityArray(Allocator.Temp))
-            {
-                for (int i = 0; i < entities.Length; i++)
-                {
-                    if (truncated)
-                        break;
-
-                    Entity liveEntity = entities[i];
-                    scanned++;
-
-                    Game.Vehicles.DeliveryTruck truck = EntityManager.GetComponentData<Game.Vehicles.DeliveryTruck>(liveEntity);
-                    int amount = truck.m_Amount;
-
-                    PrefabRef prefabRef = EntityManager.GetComponentData<PrefabRef>(liveEntity);
-                    Entity prefab = prefabRef.m_Prefab;
-
-                    int vanillaCap = GetVanillaDeliveryVanillaCap(prefab);
-                    if (vanillaCap <= 0)
-                        continue;
-
-                    relevant++;
-
-                    Resource transported = Resource.NoResource;
-                    if (deliveryLookup.TryGetComponent(prefab, out DeliveryTruckData deliveryData))
-                    {
-                        transported = deliveryData.m_TransportedResources;
-                    }
-
-                    VehicleHelpers.GetTrailerTypeInfo(
-                        tractorLookup,
-                        trailerLookup,
-                        prefab,
-                        out bool hasTractor,
-                        out CarTrailerType tractorType,
-                        out bool hasTrailer,
-                        out CarTrailerType trailerType);
-
-                    string prefabName = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefab);
-
-                    VehicleHelpers.DeliveryBucket bucket = VehicleHelpers.ClassifyDeliveryTruckPrefab(
-                        prefabName,
-                        vanillaCap,
-                        transported,
-                        hasTractor,
-                        tractorType,
-                        hasTrailer,
-                        trailerType);
-
-                    int bucketIndex = (int)bucket;
-                    if (bucketIndex < 0 || bucketIndex >= kDeliveryBucketCount)
-                    {
-                        bucketIndex = (int)VehicleHelpers.DeliveryBucket.Other;
-                    }
-
-                    LiveDeliveryBucketStats stats = bucketStats[bucketIndex];
-                    stats.Seen++;
-
-                    if (amount > 0)
-                    {
-                        carrying++;
-                        stats.Carrying++;
-
-                        if (amount > vanillaCap)
-                        {
-                            overVanilla++;
-                            stats.OverVanilla++;
-                        }
-
-                        if (amount > stats.MaxAmount)
-                        {
-                            stats.MaxAmount = amount;
-                            stats.MaxPrefabName = prefabName;
-                        }
-
-                        if (amount > globalMaxAmount)
-                        {
-                            globalMaxAmount = amount;
-                            globalMaxPrefabName = prefabName;
-                        }
-                    }
-
-                    bucketStats[bucketIndex] = stats;
-                }
-            }
-
-            AppendCapped(sb, ref lines, ref truncated, $"Live delivery summary: Scanned={scanned} Relevant={relevant} Carrying={carrying} OverVanilla={overVanilla}");
-
-            if (carrying == 0)
-            {
-                AppendCapped(sb, ref lines, ref truncated, "Result: no carrying delivery trucks found in this snapshot.");
-            }
-            else if (overVanilla > 0)
-            {
-                AppendCapped(sb, ref lines, ref truncated, $"Result: FOUND live trucks above vanilla capacity. HighestObserved={FmtTons(globalMaxAmount)} Prefab='{globalMaxPrefabName}'");
-            }
-            else
-            {
-                AppendCapped(sb, ref lines, ref truncated, $"Result: no live trucks above vanilla capacity found in this snapshot. HighestObserved={FmtTons(globalMaxAmount)} Prefab='{globalMaxPrefabName}'");
-            }
-
-            AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Semi", bucketStats[(int)VehicleHelpers.DeliveryBucket.Semi]);
-            AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Van", bucketStats[(int)VehicleHelpers.DeliveryBucket.Van]);
-            AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Raw", bucketStats[(int)VehicleHelpers.DeliveryBucket.RawMaterials]);
-            AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Motorbike", bucketStats[(int)VehicleHelpers.DeliveryBucket.Motorbike]);
-            AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Other", bucketStats[(int)VehicleHelpers.DeliveryBucket.Other]);
-            AppendCapped(sb, ref lines, ref truncated, "");
-        }
-
-        private int GetVanillaDeliveryVanillaCap(Entity prefab)
-        {
-            if (PrefabComponentUtil.TryGetComponent(m_PrefabSystem, prefab, out Game.Prefabs.DeliveryTruck truck))
-            {
-                return truck.m_CargoCapacity;
-            }
-
-            return 0;
-        }
-
-        private static void AppendLiveDeliveryBucket(
-            StringBuilder sb,
-            ref int lines,
-            ref bool truncated,
-            string bucketName,
-            LiveDeliveryBucketStats stats)
-        {
-            if (stats.Seen == 0)
-            {
-                AppendCapped(sb, ref lines, ref truncated, $"- {bucketName}: none");
-                return;
-            }
-
-            float pct = stats.Carrying > 0
-                ? (100f * stats.OverVanilla / stats.Carrying)
-                : 0f;
-
-            AppendCapped(
-                sb,
-                ref lines,
-                ref truncated,
-                $"- {bucketName}: seen={stats.Seen} carrying={stats.Carrying} " +
-                $"overVanilla={stats.OverVanilla} ({pct:0.#}% of carrying) " +
-                $"maxAmount={FmtTons(stats.MaxAmount)} prefab='{stats.MaxPrefabName}'");
-        }
-
-        private static void AppendCapped(StringBuilder sb, ref int lines, ref bool truncated, string line)
-        {
-            if (truncated)
-                return;
-
-            if (lines >= kMaxLines || sb.Length >= kMaxChars)
-            {
-                truncated = true;
-                sb.AppendLine("!! TRUNCATED: Output hit cap (lines or size). Reduce scope (keywords/detail).");
-                lines++;
-                return;
-            }
-
-            sb.AppendLine(line);
-            lines++;
-        }
-
-        private static float InverseRelativeAppliedFromInput(float input)
-        {
-            return (-input) / (1f + input);
-        }
-
-        private static string Fmt(float v)
-        {
-            return float.IsNaN(v) ? "n/a" : v.ToString("0.###");
-        }
-
-        private static string FmtTons(int amount)
-        {
-            float tons = amount / 1000f;
-            return $"{amount} (~{tons:0.##}t)";
-        }
-
-        private static bool IsTargetIndustrialExtractorCompany(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                return false;
-
-            if (!name.StartsWith("Industrial_", StringComparison.OrdinalIgnoreCase))
-                return false;
-
-            if (name.IndexOf("Extractor", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Coal", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Stone", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Mine", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Quarry", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-
-            return false;
-        }
-
-        private static bool IsExcludedName(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                return false;
-
-            // High-noise buckets (models/people/LODs).
-            if (name.StartsWith("Male_", StringComparison.OrdinalIgnoreCase)) return true;
-            if (name.StartsWith("Female_", StringComparison.OrdinalIgnoreCase)) return true;
-            if (name.IndexOf("_LOD", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-            if (name.IndexOf("Mesh", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-
-            for (int i = 0; i < s_ExcludeTokens.Length; i++)
-            {
-                if (name.IndexOf(s_ExcludeTokens[i], StringComparison.OrdinalIgnoreCase) >= 0)
-                    return true;
-            }
-
-            return false;
-        }
-
-        private static string GetReportPath()
-        {
-            string root = EnvPath.kUserDataPath;
-            return Path.Combine(root, "ModsData", Mod.ModId, "ScanReport-Prefabs.txt");
         }
     }
 }

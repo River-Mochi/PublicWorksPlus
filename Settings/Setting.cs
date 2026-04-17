@@ -297,20 +297,30 @@ namespace PublicWorksPlus
             return value;
         }
 
+
         private static float ClampScalarOrDefault(float value, float min, float max, float def)
         {
+            // Missing/corrupt values still fall back to default.
             if (!IsFinite(value) || value == 0f)
             {
                 return def;
             }
 
-            if (value < min || value > max)
+            // Legacy saved values above the new max clamp down to max instead of resetting to vanilla (6-10x becomes 5x).
+            if (value < min)
             {
-                return def;
+                return min;
+            }
+
+            if (value > max)
+            {
+                return max;
             }
 
             return value;
         }
+
+
 
         private static bool IsFinite(float v)
         {

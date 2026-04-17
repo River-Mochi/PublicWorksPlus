@@ -119,6 +119,7 @@ namespace PublicWorksPlus
                     }
                 }
 
+                // Only print stations that currently store garbage or currently queue garbage transfer work.
                 if (garbageStored > 0 ||
                     garbageReqOutgoingCar != 0 || garbageReqIncomingCar != 0 ||
                     garbageReqOutgoingTrack != 0 || garbageReqIncomingTrack != 0 ||
