@@ -400,7 +400,7 @@ namespace PublicWorksPlus
 
                     Append(
                         $"- {name} ({e.Index}:{e.Version}) Bucket={bucket} " +
-                        $"VanillaCap={vanillaCap} CurCap={dt.m_CargoCapacity} " +
+                        $"VanillaCap={FmtCapacityForReport(vanillaCap)} CurCap={FmtCapacityForReport(dt.m_CargoCapacity)} " +
                         $"Resources={dt.m_TransportedResources} " +
                         $"Tractor={hasTractor}:{tractorType} Trailer={hasTrailer}:{trailerType}");
 
@@ -551,47 +551,24 @@ namespace PublicWorksPlus
                     tractorLookup,
                     trailerLookup);
 
+
 #if DEBUG
-                Append("== Keyword Matches (deduped, capped) ==");
-                Append("Hints for discovering relevant prefabs. Keep narrow ('truck' returns too much)");
+                AppendSectionHeader(sb, ref lines, ref truncated, "Debug appendix");
+                Append("Keyword matches are debug-only prefab discovery hints.");
+                Append("Keep searches narrow ('truck' returns too much).");
+                Append("");
+
+                Append("Keyword Matches (deduped, capped)");
 
                 HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                foreach ((RefRO<PrefabData> _, Entity e) in SystemAPI
-                             .Query<RefRO<PrefabData>>()
-                             .WithEntityAccess())
-                {
-                    if (truncated) break;
-                    if (keywordMatches >= kMaxKeywordMatches) break;
-
-                    string n = NameOf(e);
-                    if (string.IsNullOrEmpty(n)) continue;
-
-                    if (IsExcludedName(n))
-                        continue;
-
-                    string lower = n.ToLowerInvariant();
-
-                    int hitIndex = -1;
-                    for (int i = 0; i < s_Keywords.Length; i++)
-                    {
-                        if (lower.Contains(s_Keywords[i]))
-                        {
-                            hitIndex = i;
-                            break;
-                        }
-                    }
-
-                    if (hitIndex < 0) continue;
-                    if (!seen.Add(n)) continue;
-
-                    keywordMatches++;
-                    Append($"- {n} ({e.Index}:{e.Version}) hit='{s_Keywords[hitIndex]}'");
-                }
-
+                // ...
                 Append($"Keyword match summary: UniqueMatches={keywordMatches} Cap={kMaxKeywordMatches}");
                 Append("");
 #endif
+
+
+
 
                 string reportPath = GetReportPath();
                 string dir = System.IO.Path.GetDirectoryName(reportPath) ?? string.Empty;

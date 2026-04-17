@@ -3,6 +3,8 @@
 // Notes:
 // - Keeps the main scan flow file shorter.
 // - Holds shared formatting, filtering, and live-snapshot sections.
+// - Delivery research section is intentionally styled more like MagicGarbage:
+//   compact summary first, then detailed bucket lines.
 
 namespace PublicWorksPlus
 {
@@ -19,12 +21,18 @@ namespace PublicWorksPlus
 
     public sealed partial class PrefabScanSystem
     {
+        private struct LiveDispatchCategoryStats
+        {
+            public int Carrying;
+            public int OverVanilla;
+        }
+
         private void AppendLiveLaneUsage(StringBuilder sb, ref int lines, ref bool truncated)
         {
             if (truncated)
                 return;
 
-            AppendCapped(sb, ref lines, ref truncated, "== Live lane usage (LaneCondition + PrefabRef) ==");
+            AppendSectionHeader(sb, ref lines, ref truncated, "Live lane usage");
             AppendCapped(sb, ref lines, ref truncated, "Counts live lane entities grouped by PrefabRef.m_Prefab (lane prefab).");
             AppendCapped(sb, ref lines, ref truncated, "Proof: small set of lane prefabs power many road types.");
             AppendCapped(sb, ref lines, ref truncated, "");
@@ -71,7 +79,6 @@ namespace PublicWorksPlus
 
             float pct = (float)covered * 100f / (float)liveLaneTotal;
 
-            AppendCapped(sb, ref lines, ref truncated, "------------------------------------------");
             AppendCapped(sb, ref lines, ref truncated, $"Live lanes summary: LiveLanes={liveLaneTotal:n0} UniqueLanePrefabs={counts.Count:n0}");
             AppendCapped(sb, ref lines, ref truncated, $"Mod Coverage of LaneDeteriorationData prefabs: {covered:n0}/{liveLaneTotal:n0} ({pct:0.0}%)");
             AppendCapped(sb, ref lines, ref truncated, "");
@@ -91,6 +98,8 @@ namespace PublicWorksPlus
                 AppendCapped(sb, ref lines, ref truncated, $"- {name} ({kvp.Key.Index}:{kvp.Key.Version}) UsedByLanes={kvp.Value:n0} WearPrefab={isWear}");
                 printed++;
             }
+
+            AppendCapped(sb, ref lines, ref truncated, "");
         }
 
         private void AppendLiveDeliveryCargoSnapshot(
@@ -104,7 +113,7 @@ namespace PublicWorksPlus
             if (truncated)
                 return;
 
-            AppendCapped(sb, ref lines, ref truncated, "== Live delivery cargo snapshot (current city) ==");
+            AppendSectionHeader(sb, ref lines, ref truncated, "Live delivery cargo snapshot (current city)");
             AppendCapped(sb, ref lines, ref truncated, "Reads live DeliveryTruck.m_Amount and compares it to the vanilla prefab cargo cap.");
             AppendCapped(sb, ref lines, ref truncated, "This is a one-time snapshot of currently spawned vehicles, not a long-running average.");
             AppendCapped(sb, ref lines, ref truncated, "");
@@ -126,6 +135,10 @@ namespace PublicWorksPlus
                 bucketStats[i].MaxPrefabName = string.Empty;
             }
 
+            LiveDispatchCategoryStats companyShopping = default;
+            LiveDispatchCategoryStats storageTransfer = default;
+            LiveDispatchCategoryStats facilityOwnedDispatch = default;
+
             int scanned = 0;
             int relevant = 0;
             int carrying = 0;
@@ -145,6 +158,7 @@ namespace PublicWorksPlus
 
                     Game.Vehicles.DeliveryTruck truck = EntityManager.GetComponentData<Game.Vehicles.DeliveryTruck>(liveEntity);
                     int amount = truck.m_Amount;
+                    Game.Vehicles.DeliveryTruckFlags flags = truck.m_State;
 
                     PrefabRef prefabRef = EntityManager.GetComponentData<PrefabRef>(liveEntity);
                     Entity prefab = prefabRef.m_Prefab;
@@ -195,7 +209,8 @@ namespace PublicWorksPlus
                         carrying++;
                         stats.Carrying++;
 
-                        if (amount > vanillaCap)
+                        bool isOverVanilla = amount > vanillaCap;
+                        if (isOverVanilla)
                         {
                             overVanilla++;
                             stats.OverVanilla++;
@@ -212,12 +227,35 @@ namespace PublicWorksPlus
                             globalMaxAmount = amount;
                             globalMaxPrefabName = prefabName;
                         }
+
+                        // Category hints from live truck flags.
+                        // These are useful but not perfect:
+                        // - CompanyShopping = Buying and not StorageTransfer / UpkeepDelivery
+                        // - StorageTransfer = StorageTransfer
+                        // - FacilityOwnedDispatch = UpkeepDelivery
+                        // - OC-Transfer cannot be isolated cleanly from one snapshot without extra source/target tracing.
+                        if ((flags & Game.Vehicles.DeliveryTruckFlags.StorageTransfer) != 0)
+                        {
+                            storageTransfer.Carrying++;
+                            if (isOverVanilla) storageTransfer.OverVanilla++;
+                        }
+                        else if ((flags & Game.Vehicles.DeliveryTruckFlags.UpkeepDelivery) != 0)
+                        {
+                            facilityOwnedDispatch.Carrying++;
+                            if (isOverVanilla) facilityOwnedDispatch.OverVanilla++;
+                        }
+                        else if ((flags & Game.Vehicles.DeliveryTruckFlags.Buying) != 0)
+                        {
+                            companyShopping.Carrying++;
+                            if (isOverVanilla) companyShopping.OverVanilla++;
+                        }
                     }
 
                     bucketStats[bucketIndex] = stats;
                 }
             }
 
+            // Compact summary block first.
             AppendCapped(sb, ref lines, ref truncated, $"Live delivery summary: Scanned={scanned} Relevant={relevant} Carrying={carrying} OverVanilla={overVanilla}");
 
             if (carrying == 0)
@@ -233,11 +271,21 @@ namespace PublicWorksPlus
                 AppendCapped(sb, ref lines, ref truncated, $"Result: no live trucks above vanilla capacity found in this snapshot. HighestObserved={FmtTons(globalMaxAmount)} Prefab='{globalMaxPrefabName}'");
             }
 
+            AppendCapped(sb, ref lines, ref truncated, "");
+
+            AppendCapped(sb, ref lines, ref truncated, "Truck buckets above vanilla:");
             AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Semi", bucketStats[(int)VehicleHelpers.DeliveryBucket.Semi]);
             AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Van", bucketStats[(int)VehicleHelpers.DeliveryBucket.Van]);
             AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Raw", bucketStats[(int)VehicleHelpers.DeliveryBucket.RawMaterials]);
             AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Motorbike", bucketStats[(int)VehicleHelpers.DeliveryBucket.Motorbike]);
             AppendLiveDeliveryBucket(sb, ref lines, ref truncated, "Other", bucketStats[(int)VehicleHelpers.DeliveryBucket.Other]);
+
+            AppendCapped(sb, ref lines, ref truncated, "");
+            AppendCapped(sb, ref lines, ref truncated, "Dispatch category hints (one-shot live snapshot):");
+            AppendLiveDispatchCategory(sb, ref lines, ref truncated, "1. CompanyShopping", companyShopping);
+            AppendLiveDispatchCategory(sb, ref lines, ref truncated, "2. StorageTransfer", storageTransfer);
+            AppendCapped(sb, ref lines, ref truncated, "3. OC-Transfer: not isolated in one-shot live snapshot");
+            AppendLiveDispatchCategory(sb, ref lines, ref truncated, "4. FacilityOwnedDispatch", facilityOwnedDispatch);
             AppendCapped(sb, ref lines, ref truncated, "");
         }
 
@@ -272,9 +320,31 @@ namespace PublicWorksPlus
                 sb,
                 ref lines,
                 ref truncated,
-                $"- {bucketName}: seen={stats.Seen} carrying={stats.Carrying} " +
-                $"overVanilla={stats.OverVanilla} ({pct:0.#}% of carrying) " +
-                $"maxAmount={FmtTons(stats.MaxAmount)} prefab='{stats.MaxPrefabName}'");
+                $"- {bucketName}: {stats.OverVanilla}/{stats.Carrying} above vanilla ({pct:0.#}%) | max={FmtTons(stats.MaxAmount)} | prefab='{stats.MaxPrefabName}'");
+        }
+
+        private static void AppendLiveDispatchCategory(
+            StringBuilder sb,
+            ref int lines,
+            ref bool truncated,
+            string label,
+            LiveDispatchCategoryStats stats)
+        {
+            if (stats.Carrying <= 0)
+            {
+                AppendCapped(sb, ref lines, ref truncated, $"{label}: none seen");
+                return;
+            }
+
+            float pct = 100f * stats.OverVanilla / stats.Carrying;
+            AppendCapped(sb, ref lines, ref truncated, $"{label}: {stats.OverVanilla}/{stats.Carrying} above vanilla ({pct:0.#}%)");
+        }
+
+        private static void AppendSectionHeader(StringBuilder sb, ref int lines, ref bool truncated, string title)
+        {
+            AppendCapped(sb, ref lines, ref truncated, "================================");
+            AppendCapped(sb, ref lines, ref truncated, title);
+            AppendCapped(sb, ref lines, ref truncated, "================================");
         }
 
         private static void AppendCapped(StringBuilder sb, ref int lines, ref bool truncated, string line)
@@ -292,6 +362,12 @@ namespace PublicWorksPlus
 
             sb.AppendLine(line);
             lines++;
+        }
+
+        internal static string FmtCapacityForReport(int amount)
+        {
+            float tons = amount / 1000f;
+            return $"{amount} (~{tons:0.###}t)";
         }
 
         private static float InverseRelativeAppliedFromInput(float input)
