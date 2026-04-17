@@ -155,7 +155,7 @@ namespace PublicWorksPlus
 
                     relevant++;
 
-                    Resource transported = Resource.NoResource;
+                    Game.Economy.Resource transported = Game.Economy.Resource.NoResource;
                     if (deliveryLookup.TryGetComponent(prefab, out DeliveryTruckData deliveryData))
                     {
                         transported = deliveryData.m_TransportedResources;
