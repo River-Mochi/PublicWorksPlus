@@ -211,7 +211,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "Extractor fleet" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "Change **max trucks** for  for industrial extractors.\n" +
+                    "Change **max trucks** for Extractor facilities.\n" +
                     "(farms, fishing, forestry, ore, oil, coal, stone).\n" +
                     "**1×** = vanilla\n" +
                     "**5×** = 5 times more.\n" +
