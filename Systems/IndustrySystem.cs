@@ -5,7 +5,9 @@
 //          - Delivery truck cargo capacity (DeliveryTruckData.m_CargoCapacity)
 // Notes:
 // - SystemAPI queries.
-// - tractor/trailer lookups for better Semi detection.
+// - PrefabBase authoring data is the vanilla source of truth for delivery truck capacities.
+// - Delivery sliders are now stored as percent values (100..500), so they are converted to scalars here.
+// - Cargo station / extractor fleet sliders still use direct scalar values (1..5).
 // - Scales all delivery-truck prefabs by bucket (Semi / Van / Raw / Motorbike).
 // - Tags changed prefab entities with Updated via ECB (structural change safe).
 
@@ -109,6 +111,7 @@ namespace PublicWorksPlus
 
             // -----------------------------------------------------------------
             // Cargo Stations: max trucks (TransportCompanyData.m_MaxTransports)
+            // These sliders still use direct scalar values (1x..5x).
             // -----------------------------------------------------------------
             {
                 float scalar = ScalarMath.ClampScalar(
@@ -151,12 +154,14 @@ namespace PublicWorksPlus
 
             // -------------------------------------------------------------------
             // Delivery trucks: buckets (semi / vans / raw materials / motorbikes)
+            // Delivery sliders are now stored as percent values (100..500).
+            // Convert those percent values back into a scalar here.
             // -------------------------------------------------------------------
             {
-                float semiScalar = ScalarMath.ClampScalar(settings.SemiTruckCargoScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
-                float vanScalar = ScalarMath.ClampScalar(settings.DeliveryVanCargoScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
-                float rawScalar = ScalarMath.ClampScalar(settings.CoalTruckScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
-                float mbikeScalar = ScalarMath.ClampScalar(settings.MotorbikeDeliveryCargoScalar, Setting.ServiceMinScalar, Setting.ServiceMaxScalar);
+                float semiScalar = ScalarMath.PercentToScalarClamped(settings.SemiTruckCargoScalar, Setting.DeliveryMinPercent, Setting.DeliveryMaxPercent);
+                float vanScalar = ScalarMath.PercentToScalarClamped(settings.DeliveryVanCargoScalar, Setting.DeliveryMinPercent, Setting.DeliveryMaxPercent);
+                float rawScalar = ScalarMath.PercentToScalarClamped(settings.CoalTruckScalar, Setting.DeliveryMinPercent, Setting.DeliveryMaxPercent);
+                float mbikeScalar = ScalarMath.PercentToScalarClamped(settings.MotorbikeDeliveryCargoScalar, Setting.DeliveryMinPercent, Setting.DeliveryMaxPercent);
 
                 foreach ((RefRW<DeliveryTruckData> truckRef, Entity prefabEntity) in SystemAPI
                              .Query<RefRW<DeliveryTruckData>>()
@@ -222,6 +227,7 @@ namespace PublicWorksPlus
 
             // -------------------------------------------------------------------------------
             // Extractor transport company: max fleet (TransportCompanyData.m_MaxTransports)
+            // These sliders still use direct scalar values (1x..5x).
             // -------------------------------------------------------------------------------
             {
                 float scalar = ScalarMath.ClampScalar(
@@ -288,7 +294,8 @@ namespace PublicWorksPlus
             Enabled = false;
         }
 
-        // SystemAPI is valid in non-static SystemBase methods. Static methods are not supported contexts.
+        // SystemAPI is valid in non-static SystemBase methods.
+        // This helper tags only changed prefab entities.
         private void TagPrefabUpdatedIfMissing(Entity prefabEntity, ref EntityCommandBuffer ecb, ref bool anyPrefabTaggedUpdated)
         {
             if (!SystemAPI.HasComponent<Updated>(prefabEntity))

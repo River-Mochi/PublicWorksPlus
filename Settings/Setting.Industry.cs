@@ -1,5 +1,9 @@
 // File: Settings/Setting.Industry.cs
 // Purpose: Industry settings (delivery vehicles, cargo stations, extractors).
+// Notes:
+// - Delivery vehicle sliders are stored as percent values, same style as Transit.
+// - 100% = vanilla, 500% = 5x.
+// - Cargo station / extractor fleet sliders remain scalar 1x..5x.
 
 namespace PublicWorksPlus
 {
@@ -11,29 +15,25 @@ namespace PublicWorksPlus
 
     public sealed partial class Setting
     {
-        // Vanilla/default scalar is 1.0f: scaling by 1.0 means "no change".
-        private const float kVanillaScalar = 1f;
+        // Delivery vehicles are now stored as percent values.
+        private float m_SemiTruckCargoScalar = kVanillaPercent;
+        private float m_DeliveryVanCargoScalar = kVanillaPercent;
+        private float m_CoalTruckScalar = kVanillaPercent;
+        private float m_MotorbikeDeliveryCargoScalar = kVanillaPercent;
 
-        private float m_SemiTruckCargoScalar = kVanillaScalar;
-        private float m_DeliveryVanCargoScalar = kVanillaScalar;
-        private float m_CoalTruckScalar = kVanillaScalar;
-        private float m_MotorbikeDeliveryCargoScalar = kVanillaScalar;
-
+        // These still use simple scalar values (1x..5x).
         private float m_ExtractorMaxTrucksScalar = kVanillaScalar;
         private float m_CargoStationMaxTrucksScalar = kVanillaScalar;
 
-        // Delivery vehicles.
-        // Stored values remain 1x..5x.
-        // UI displays 100%..500% for easier reading.
-
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar, scalarMultiplier = 100, unit = Unit.kPercentage)]
+        // Delivery vehicles (stored/displayed as percent, like Transit).
+        [SettingsUISlider(min = DeliveryMinPercent, max = DeliveryMaxPercent, step = DeliveryStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
         public float SemiTruckCargoScalar
         {
             get => m_SemiTruckCargoScalar;
             set
             {
-                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
+                float v = NormalizeDeliveryPercentOrVanilla(value);
                 if (m_SemiTruckCargoScalar == v) return;
 
                 m_SemiTruckCargoScalar = v;
@@ -41,14 +41,14 @@ namespace PublicWorksPlus
             }
         }
 
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar, scalarMultiplier = 100, unit = Unit.kPercentage)]
+        [SettingsUISlider(min = DeliveryMinPercent, max = DeliveryMaxPercent, step = DeliveryStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
         public float DeliveryVanCargoScalar
         {
             get => m_DeliveryVanCargoScalar;
             set
             {
-                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
+                float v = NormalizeDeliveryPercentOrVanilla(value);
                 if (m_DeliveryVanCargoScalar == v) return;
 
                 m_DeliveryVanCargoScalar = v;
@@ -56,14 +56,14 @@ namespace PublicWorksPlus
             }
         }
 
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar, scalarMultiplier = 100, unit = Unit.kPercentage)]
+        [SettingsUISlider(min = DeliveryMinPercent, max = DeliveryMaxPercent, step = DeliveryStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
         public float CoalTruckScalar
         {
             get => m_CoalTruckScalar;
             set
             {
-                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
+                float v = NormalizeDeliveryPercentOrVanilla(value);
                 if (m_CoalTruckScalar == v) return;
 
                 m_CoalTruckScalar = v;
@@ -71,14 +71,14 @@ namespace PublicWorksPlus
             }
         }
 
-        [SettingsUISlider(min = ServiceMinScalar, max = ServiceMaxScalar, step = ServiceStepScalar, scalarMultiplier = 100, unit = Unit.kPercentage)]
+        [SettingsUISlider(min = DeliveryMinPercent, max = DeliveryMaxPercent, step = DeliveryStepPercent, scalarMultiplier = 1, unit = Unit.kPercentage)]
         [SettingsUISection(IndustryTab, DeliveryGroup)]
         public float MotorbikeDeliveryCargoScalar
         {
             get => m_MotorbikeDeliveryCargoScalar;
             set
             {
-                float v = ScalarMath.ClampScalar(value, ServiceMinScalar, ServiceMaxScalar);
+                float v = NormalizeDeliveryPercentOrVanilla(value);
                 if (m_MotorbikeDeliveryCargoScalar == v) return;
 
                 m_MotorbikeDeliveryCargoScalar = v;
@@ -86,8 +86,7 @@ namespace PublicWorksPlus
             }
         }
 
-        // Extractor + Cargo Stations (scalar 1x..5x)
-
+        // Extractor + Cargo Stations remain scalar 1x..5x.
         [SettingsUISlider(min = CargoStationMinScalar, max = CargoStationMaxScalar, step = CargoStationStepScalar)]
         [SettingsUISection(IndustryTab, CargoStationsGroup)]
         public float ExtractorMaxTrucksScalar
@@ -127,10 +126,10 @@ namespace PublicWorksPlus
             {
                 if (!value) return;
 
-                m_SemiTruckCargoScalar = kVanillaScalar;
-                m_DeliveryVanCargoScalar = kVanillaScalar;
-                m_CoalTruckScalar = kVanillaScalar;
-                m_MotorbikeDeliveryCargoScalar = kVanillaScalar;
+                m_SemiTruckCargoScalar = kVanillaPercent;
+                m_DeliveryVanCargoScalar = kVanillaPercent;
+                m_CoalTruckScalar = kVanillaPercent;
+                m_MotorbikeDeliveryCargoScalar = kVanillaPercent;
 
                 ApplyAndSave();
             }
@@ -167,10 +166,10 @@ namespace PublicWorksPlus
 
         partial void SetDefaults_Industry()
         {
-            m_SemiTruckCargoScalar = kVanillaScalar;
-            m_DeliveryVanCargoScalar = kVanillaScalar;
-            m_CoalTruckScalar = kVanillaScalar;
-            m_MotorbikeDeliveryCargoScalar = kVanillaScalar;
+            m_SemiTruckCargoScalar = kVanillaPercent;
+            m_DeliveryVanCargoScalar = kVanillaPercent;
+            m_CoalTruckScalar = kVanillaPercent;
+            m_MotorbikeDeliveryCargoScalar = kVanillaPercent;
 
             m_CargoStationMaxTrucksScalar = kVanillaScalar;
             m_ExtractorMaxTrucksScalar = kVanillaScalar;
@@ -178,11 +177,13 @@ namespace PublicWorksPlus
 
         partial void RepairAndClamp_Industry()
         {
-            m_SemiTruckCargoScalar = ClampScalarOrDefault(m_SemiTruckCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
-            m_DeliveryVanCargoScalar = ClampScalarOrDefault(m_DeliveryVanCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
-            m_CoalTruckScalar = ClampScalarOrDefault(m_CoalTruckScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
-            m_MotorbikeDeliveryCargoScalar = ClampScalarOrDefault(m_MotorbikeDeliveryCargoScalar, ServiceMinScalar, ServiceMaxScalar, kVanillaScalar);
+            // Delivery sliders support migration from older scalar saves.
+            m_SemiTruckCargoScalar = NormalizeDeliveryPercentOrVanilla(m_SemiTruckCargoScalar);
+            m_DeliveryVanCargoScalar = NormalizeDeliveryPercentOrVanilla(m_DeliveryVanCargoScalar);
+            m_CoalTruckScalar = NormalizeDeliveryPercentOrVanilla(m_CoalTruckScalar);
+            m_MotorbikeDeliveryCargoScalar = NormalizeDeliveryPercentOrVanilla(m_MotorbikeDeliveryCargoScalar);
 
+            // Fleet sliders stay scalar.
             m_CargoStationMaxTrucksScalar = ClampScalarOrDefault(m_CargoStationMaxTrucksScalar, CargoStationMinScalar, CargoStationMaxScalar, kVanillaScalar);
             m_ExtractorMaxTrucksScalar = ClampScalarOrDefault(m_ExtractorMaxTrucksScalar, CargoStationMinScalar, CargoStationMaxScalar, kVanillaScalar);
         }
