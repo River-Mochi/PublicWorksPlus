@@ -12,18 +12,20 @@
 
         Everything is OPTIONAL - you choose!
 
-        - Scale **fleet sizes**, *vehicle capacities* in:
-        - all Public Transit, Parks/Roads Maintenance
-        - Industry Delivery vehicles, Cargo stations, Extractors.
+- Scale many aspects for:
+ - all Public Transit + Passengers
+- Industry Delivery vehicles, Cargo stations, Extractors.
+- Parks/Roads Maintenance
 
+NEW: before Industry Delivery Capacity of trucks was changed. Now Companies will actually use the increase amount.
 
         ### Features
-        - new Transit Line adjuster (when you only want 1 bus or need ~30-60 buses).
-        - new *Parks + Roads Repairs*: fleet size, work shift, and rate
-        - new Road wear (alpha): scale speed roads accumulate damage over time
-        - new **Industry Deliveries**: scale cargo capacity for delivery vehicles (Semi trucks, Delivery vans, Motorbike delivery, Raw material trucks - coal, oil, etc.)
-        - new *Extractor companies*: Fish, Grain, etc.; scale max fleet size (usually semi trucks)
-        - new *Cargo Stations*: scale max fleet of cargo stations (harbor/train/airport)
+        - Transit Line adjuster: can allow as low as 1 bus or need ~30-60 buses or other transit (tram, train, etc.).
+        - *Parks + Roads Repairs*: fleet size, work shift + rate
+        - Road wear (beta): scale speed roads accumulate damage over time
+        - **Industry Deliveries**: scale capacity of delivery vehicles (Semi trucks, Delivery vans, Motorbike, Raw material trucks - coal, oil, etc.)
+        - *Extractor companies*: max fleet size (usually semi trucks for Fish, Grain, Vegetables, etc.)
+        - *Cargo Stations*: max active transporters (harbor/train/airport)
 
         #### Complete ATC features included
 
@@ -35,7 +37,6 @@
         ### Notes 🚍🚋🚆✈️🚢
         - *Remove* "Adjust Transit Capacity" if you install this mod.
         - *Adjust Sliders* at any time, no restart needed; supports switching cities.
-        - *Depot capacity* = maximum number of vehicles a single depot can maintain/spawn (extension building not scaled).
         - Avoid other depot/passenger capacity mods to avoid conflicts (they override each other).
         - No Harmony or Reflection used; more compatible - less likely to break on patch days.
         - Safe to remove any time (use Reset buttons to return to vanilla game default values).
@@ -48,8 +49,8 @@
         ### Support and feedback
         - If the mod helps you, give it a Like, it's free + easy :)
         - This mod is 5 new mods combined +ATC; feedback was to combine more features into a single mod.
-        All details may not be above, but might be answered in forums or in tool tips of the mod.
-        - Feedback on: Github, Discord, etc., links on this page.
+        All details not above might be answered in forums or in tool tips of the mod menu.
+        - Feedback on: Github, Discord, Forum links on this page.
 
         ### Credits
         - River-Mochi: author
@@ -59,7 +60,7 @@
         - BugsyG: testing
 
         ### Performance advantage
-        This is designed to *not* run in the city per-frame. Player makes changes in Options Menu > then mod goes idle. Debug tools are off by default.
+        This is designed to *not* run in the city per-frame. Player makes changes in Options Menu > then mod goes idle. Debug tools are optional.
 
         ### 11 Languages
 
@@ -96,9 +97,9 @@
 	<!-- Change log for new version. Single line or multi line. Supports minimal markdown subset -->
 <ChangeLog>
 - Major update:
-- Industry Delivery capacity sliders now affect real live delivery loads.
-- Proven working for semis, delivery vans, and raw-material trucks.
-- Strongest improvements are on company buying and road storage-transfer paths. Further tuning may come later.
+- Industry Delivery capacity sliders now affect real live delivery loads (and are 100%-500% sliders)
+- Live increased loads now working for: semi trucks, delivery vans, and raw-material trucks.
+- Strongest improvements are on Company Buying and road storage-transfer paths.
 - update locale files
 </ChangeLog>
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->

@@ -176,7 +176,8 @@ namespace PublicWorksPlus
                     "**500% = 125t**.\n" +
                     "Includes:\n" +
                     " - Specialized industry Semi trucks (farms, fish, forestry, etc.).\n" +
-                    "Side Note: semi trucks carrying mail to/from Cargo stations (are not the same as local mail delivery)."
+                    "Side Note: includes semi trucks carrying mail to/from Cargo stations.\n" +
+                    "This is not the same as local mail delivery."
                 },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "Delivery vans" },
@@ -199,20 +200,23 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Reset delivery defaults" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "Set delivery multipliers back to **100%** (game default / vanilla)." },
+                    "Set delivery sliders back to **100%** (game default / vanilla)." },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "Cargo fleet (harbor, train, airport)" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "Cargo station max fleet" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "Multiplier for **cargo transport stations** maximum active transporters.\n" +
+                    "Change **cargo transport stations** maximum active transporters.\n" +
                     "**1×** = vanilla, **5×** = 5× more." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "Extractor fleet" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "Multiplier for industrial **extractors max trucks**\n" +
+                    "Change **max trucks** for  for industrial extractors.\n" +
                     "(farms, fishing, forestry, ore, oil, coal, stone).\n" +
-                    "**1×** = vanilla, **5×** = 5× more." },
+                    "**1×** = vanilla\n" +
+                    "**5×** = 5 times more.\n" +
+                    "Vanilla usually allows 5 trucks per extractor facility."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "Reset cargo + extractors fleet" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
