@@ -342,6 +342,20 @@ namespace PublicWorksPlus
                 int unclassifiedPrinted = 0;
                 const int kMaxUnclassifiedDetails = 100;
 
+                int semiVanillaCap = 0;
+                int semiCurCap = 0;
+
+                int vanVanillaCap = 0;
+                int vanCurCap = 0;
+
+                int rawVanillaCap = 0;
+                int rawCurCap = 0;
+
+                int bikeVanillaCap = 0;
+                int bikeCurCap = 0;
+
+
+
                 ComponentLookup<DeliveryTruckData> deliveryLookup = SystemAPI.GetComponentLookup<DeliveryTruckData>(isReadOnly: true);
                 ComponentLookup<CarTractorData> tractorLookup = SystemAPI.GetComponentLookup<CarTractorData>(isReadOnly: true);
                 ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
@@ -389,20 +403,45 @@ namespace PublicWorksPlus
                         hasTrailer,
                         trailerType);
 
+
                     switch (bucket)
                     {
-                        case VehicleHelpers.DeliveryBucket.Semi: semi++; break;
-                        case VehicleHelpers.DeliveryBucket.Van: van++; break;
-                        case VehicleHelpers.DeliveryBucket.RawMaterials: raw++; break;
-                        case VehicleHelpers.DeliveryBucket.Motorbike: bike++; break;
-                        default: other++; break;
+                        case VehicleHelpers.DeliveryBucket.Semi:
+                            semi++;
+                            semiVanillaCap = vanillaCap;
+                            if (dt.m_CargoCapacity > semiCurCap) semiCurCap = dt.m_CargoCapacity;
+                            break;
+
+                        case VehicleHelpers.DeliveryBucket.Van:
+                            van++;
+                            vanVanillaCap = vanillaCap;
+                            if (dt.m_CargoCapacity > vanCurCap) vanCurCap = dt.m_CargoCapacity;
+                            break;
+
+                        case VehicleHelpers.DeliveryBucket.RawMaterials:
+                            raw++;
+                            rawVanillaCap = vanillaCap;
+                            if (dt.m_CargoCapacity > rawCurCap) rawCurCap = dt.m_CargoCapacity;
+                            break;
+
+                        case VehicleHelpers.DeliveryBucket.Motorbike:
+                            bike++;
+                            bikeVanillaCap = vanillaCap;
+                            if (dt.m_CargoCapacity > bikeCurCap) bikeCurCap = dt.m_CargoCapacity;
+                            break;
+
+                        default:
+                            other++;
+                            break;
                     }
+
 
                     Append(
                         $"- {name} ({e.Index}:{e.Version}) Bucket={bucket} " +
                         $"VanillaCap={FmtCapacityForReport(vanillaCap)} CurCap={FmtCapacityForReport(dt.m_CargoCapacity)} " +
                         $"Resources={dt.m_TransportedResources} " +
                         $"Tractor={hasTractor}:{tractorType} Trailer={hasTrailer}:{trailerType}");
+
 
                     if (bucket == VehicleHelpers.DeliveryBucket.Other && unclassifiedPrinted < kMaxUnclassifiedDetails)
                     {
@@ -421,8 +460,17 @@ namespace PublicWorksPlus
                     Append($"(Unclassified details printed: {unclassifiedPrinted} / {other} cap={kMaxUnclassifiedDetails})");
                 }
 
+
                 Append($"Delivery summary: Total={deliveryTotal} Semi={semi} Van={van} Raw={raw} Motorbike={bike} Other={other}");
                 Append("");
+
+                AppendSectionHeader(sb, ref lines, ref truncated, "Current delivery slider results");
+                Append($"Semi prefab cap: {FmtCapacityForReport(semiVanillaCap)} -> {FmtCapacityForReport(semiCurCap)}");
+                Append($"Van prefab cap: {FmtCapacityForReport(vanVanillaCap)} -> {FmtCapacityForReport(vanCurCap)}");
+                Append($"Raw prefab cap: {FmtCapacityForReport(rawVanillaCap)} -> {FmtCapacityForReport(rawCurCap)}");
+                Append($"Motorbike prefab cap: {FmtCapacityForReport(bikeVanillaCap)} -> {FmtCapacityForReport(bikeCurCap)}");
+                Append("");
+
 
                 // Maintenance vehicles
                 Append("== MaintenanceVehicleData Prefabs ==");

@@ -85,7 +85,7 @@ delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extrac
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/public-works-plus.1910233/" />
 	<!--Version of the mod-->
-	<ModVersion Value="2.0.6" />
+	<ModVersion Value="2.1.0" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.5.*" />
 	<!--Dependency for the mod, can be set multiple times-->

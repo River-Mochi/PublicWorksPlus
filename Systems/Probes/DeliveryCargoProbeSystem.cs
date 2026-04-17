@@ -98,6 +98,14 @@ namespace PublicWorksPlus
             ComponentLookup<CarTrailerData> trailerLookup = SystemAPI.GetComponentLookup<CarTrailerData>(isReadOnly: true);
 
             int scanned = 0;
+            int companyShoppingCarrying = 0;
+            int companyShoppingOverVanilla = 0;
+
+            int storageTransferCarrying = 0;
+            int storageTransferOverVanilla = 0;
+
+            int facilityOwnedDispatchCarrying = 0;
+            int facilityOwnedDispatchOverVanilla = 0;
 
             foreach ((RefRO<Game.Vehicles.DeliveryTruck> truckRef, RefRO<PrefabRef> prRef, Entity entity) in SystemAPI
                          .Query<RefRO<Game.Vehicles.DeliveryTruck>, RefRO<PrefabRef>>()
@@ -192,6 +200,31 @@ namespace PublicWorksPlus
                         });
                 }
 
+
+                bool isOverVanilla = amount > vanillaCap;
+
+                // Category hints from live DeliveryTruck flags.
+                // - CompanyShopping = Buying and not StorageTransfer / UpkeepDelivery
+                // - StorageTransfer = StorageTransfer
+                // - FacilityOwnedDispatch = UpkeepDelivery
+                // - OC-Transfer is not isolated cleanly in this one-shot live probe
+                if ((truck.m_State & Game.Vehicles.DeliveryTruckFlags.StorageTransfer) != 0)
+                {
+                    storageTransferCarrying++;
+                    if (isOverVanilla) storageTransferOverVanilla++;
+                }
+                else if ((truck.m_State & Game.Vehicles.DeliveryTruckFlags.UpkeepDelivery) != 0)
+                {
+                    facilityOwnedDispatchCarrying++;
+                    if (isOverVanilla) facilityOwnedDispatchOverVanilla++;
+                }
+                else if ((truck.m_State & Game.Vehicles.DeliveryTruckFlags.Buying) != 0)
+                {
+                    companyShoppingCarrying++;
+                    if (isOverVanilla) companyShoppingOverVanilla++;
+                }
+
+
                 if (amount > currentCap)
                 {
                     s.OverCurrentCap++;
@@ -256,6 +289,15 @@ namespace PublicWorksPlus
                 $"Van={FmtBucketSummary(m_Stats[(int)VehicleHelpers.DeliveryBucket.Van])} " +
                 $"Raw={FmtBucketSummary(m_Stats[(int)VehicleHelpers.DeliveryBucket.RawMaterials])} " +
                 $"OverCap={totalOverCurrentCap}");
+
+
+            Mod.s_Log.Info(
+                $"{Mod.ModTag} CATEGORY SUMMARY " +
+                $"CompanyShopping={FmtCategorySummary(companyShoppingOverVanilla, companyShoppingCarrying)} " +
+                $"StorageTransfer={FmtCategorySummary(storageTransferOverVanilla, storageTransferCarrying)} " +
+                $"OC-Transfer=not isolated " +
+                $"FacilityOwnedDispatch={FmtCategorySummary(facilityOwnedDispatchOverVanilla, facilityOwnedDispatchCarrying)}");
+
 
             Mod.s_Log.Info("============================================================");
         }
@@ -373,6 +415,17 @@ namespace PublicWorksPlus
 
             float pct = 100f * s.OverVanilla / s.Carrying;
             return $"{s.OverVanilla}/{s.Carrying} ({pct:0.#}%)";
+        }
+
+        private static string FmtCategorySummary(int overVanilla, int carrying)
+        {
+            if (carrying <= 0)
+            {
+                return "none";
+            }
+
+            float pct = 100f * overVanilla / carrying;
+            return $"{overVanilla}/{carrying} ({pct:0.#}%)";
         }
 
         private static string FmtEntity(Entity entity)
