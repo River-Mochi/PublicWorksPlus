@@ -392,6 +392,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 Library/ilpp.pid
+.idea/
+*.sln.DotSettings
 
 # Backup files from custom scripts
 Properties/PublishConfiguration.xml.bak
