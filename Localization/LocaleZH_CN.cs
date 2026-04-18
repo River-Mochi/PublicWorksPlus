@@ -171,46 +171,51 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "半挂卡车" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
                     "**半挂卡车**容量。\n" +
+                    "**100% = 25t**（原版）\n" +
+                    "**500% = 125t**。\n" +
                     "包括：\n" +
-                    "* 专业工业半挂（农场、渔业、林业等）。\n" +
-                    "* 往返货运站运输邮件的半挂卡车（不同于本地邮件投递）。\n" +
-                    "**1× = 25t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
+                    " - 专业工业半挂（农场、渔业、林业等）。\n" +
+                    "备注：也包括往返货运站运输邮件的半挂卡车。\n" +
+                    "这与本地邮件投递不同。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "配送面包车" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**配送面包车**\n" +
-                    "**1× = 4t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
+                    "**100% = 4t**（原版）\n" +
+                    "**500% = 20t**。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "原材料卡车" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
                     "**原材料卡车**（石油、煤炭、矿石、石材，以及用于工业废弃物的自卸卡车 - 属于同一种共享卡车类型）\n" +
-                    "**1× = 20t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
+                    "**100% = 20t**（原版）\n" +
+                    "**500% = 100t**。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "配送摩托车" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
                     "**摩托车配送**通常会把药品送到医院/诊所。\n" +
-                    "**1× = 0.1t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
+                    "**100% = 0.1t**（原版）\n" +
+                    "**500% = 0.5t**。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "重置配送默认值" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "将配送倍率恢复到 **1×**（游戏默认值 / 原版）。" },
+                    "将配送滑块恢复到 **100%**（游戏默认值 / 原版）。" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "货运车队（港口、铁路、机场）" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "货运站最大车队" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "**货运运输站**最大活跃运输车辆数的倍率。\n" +
+                    "修改**货运运输站**的最大活跃运输车辆数。\n" +
                     "**1×** = 原版，**5×** = 5× 更多。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "采集设施车队" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "工业**采集设施最大卡车数**的倍率\n" +
+                    "修改工业**采集设施最大卡车数**。\n" +
                     "（农场、渔业、林业、矿石、石油、煤炭、石材）。\n" +
-                    "**1×** = 原版，**5×** = 5× 更多。" },
+                    "**1×** = 原版\n" +
+                    "**5×** = 5 倍。\n" +
+                    "原版通常允许每个采集设施建筑拥有 5 辆卡车。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "重置货运 + 采集设施车队" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
@@ -264,7 +269,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "道路磨损" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<新的 Alpha 功能>\n" +
+                    "<Beta feature>\n" +
                     "控制道路因**时间和交通**因素而劣化的速度。\n" +
                     "**10%** = 磨损速度慢 10×（所需维修更少）\n" +
                     "**100%** = 原版\n" +

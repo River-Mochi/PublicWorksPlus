@@ -69,7 +69,11 @@ namespace PublicWorksPlus
                 return;
             }
 
-            bool verbose = Mod.Settings.EnableDebugLogging;
+#if DEBUG
+bool verbose = Mod.Settings.EnableDebugLogging;
+#else
+            bool verbose = false;
+#endif
 
             float percent = Mod.Settings.RoadWearScalar; // 100 = vanilla
             if (percent < Setting.RoadWearMinPercent) percent = Setting.RoadWearMinPercent;

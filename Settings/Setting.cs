@@ -54,19 +54,21 @@ namespace PublicWorksPlus
         // -----------------------
 
         // Public-Transit sliders (percent).
-        public const float DepotMinPercent      = 100f;
-        public const float PassengerMinPercent  = 10f;
-        public const float MaxPercent           = 1000f;
-        public const float StepPercent          = 10f;
+        public const float DepotMinPercent = 100f;
+        public const float PassengerMinPercent = 10f;
+        public const float MaxPercent = 1000f;
+        public const float StepPercent = 10f;
 
         private const float kVanillaPercent = 100f;
+        private const float kVanillaScalar = 1f;
 
-        // Industry sliders (scalar 1x..10x).
-        public const float ServiceMinScalar = 1f;
-        public const float ServiceMaxScalar = 10f;
-        public const float ServiceStepScalar = 1f;
+        // Industry delivery sliders now store/display percent directly, same as Transit.
+        // 100% = vanilla, 500% = 5x.
+        public const float DeliveryMinPercent = 100f;
+        public const float DeliveryMaxPercent = 500f;
+        public const float DeliveryStepPercent = 25f;
 
-        // Cargo station / extractors (scalar 1x..5x).
+        // Cargo station / extractors still use scalar 1x..5x.
         public const float CargoStationMinScalar = 1f;
         public const float CargoStationMaxScalar = 5f;
         public const float CargoStationStepScalar = 1f;
@@ -95,7 +97,7 @@ namespace PublicWorksPlus
         }
 
         /// <summary>
-        /// Repair missing/out-of-range/invalid values after LoadSettings.
+        /// Repair missing/out-of-range/legacy values after LoadSettings.
         /// No auto-save performed.
         /// </summary>
         public void SanitizeAfterLoad()
@@ -299,17 +301,70 @@ namespace PublicWorksPlus
 
         private static float ClampScalarOrDefault(float value, float min, float max, float def)
         {
+            // Missing/corrupt values still fall back to default.
             if (!IsFinite(value) || value == 0f)
             {
                 return def;
             }
 
-            if (value < min || value > max)
+            // Legacy saved values above the new max clamp down to max instead of resetting to vanilla.
+            if (value < min)
             {
-                return def;
+                return min;
+            }
+
+            if (value > max)
+            {
+                return max;
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Migration helper for Industry delivery sliders.
+        /// Supports:
+        /// - current/future percent values: 100..500
+        /// - old scalar values: 1..5 -> 100..500
+        /// - old larger scalar values: 6..10 -> 500
+        /// </summary>
+        private static float NormalizeDeliveryPercentOrVanilla(float value)
+        {
+            if (!IsFinite(value) || value == 0f)
+            {
+                return kVanillaPercent;
+            }
+
+            // New/current correct format: percent stored directly.
+            if (value >= DeliveryMinPercent)
+            {
+                if (value > DeliveryMaxPercent)
+                {
+                    return DeliveryMaxPercent;
+                }
+
+                return value;
+            }
+
+            // Legacy factor format: 1..5 stored as scalar.
+            if (value >= 1f && value <= 5f)
+            {
+                return value * 100f;
+            }
+
+            // Legacy 6x..10x values become 500%.
+            if (value > 5f && value <= 10f)
+            {
+                return DeliveryMaxPercent;
+            }
+
+            // Unknown positive leftovers below 100 are safest at max rather than vanilla.
+            if (value > 0f && value < DeliveryMinPercent)
+            {
+                return DeliveryMaxPercent;
+            }
+
+            return kVanillaPercent;
         }
 
         private static bool IsFinite(float v)

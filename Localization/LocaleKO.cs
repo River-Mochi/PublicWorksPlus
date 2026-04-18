@@ -170,47 +170,52 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "세미트럭" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
-                    "**세미트럭** 용량.\n" +
+                    "**세미트럭** 용량입니다.\n" +
+                    "**100% = 25t** (바닐라)\n" +
+                    "**500% = 125t**.\n" +
                     "포함:\n" +
-                    "* 특화 산업 세미트럭 (농장, 어업, 임업 등).\n" +
-                    "* 화물역으로 우편을 운반하는 세미트럭 (지역 우편 배달과는 다름).\n" +
-                    "**1× = 25t** (바닐라)\n" +
-                    "**10×** = 10배." },
+                    " - 특화 산업 세미트럭 (농장, 어업, 임업 등).\n" +
+                    "참고: 화물역으로 우편을 운반하는 세미트럭도 포함됩니다.\n" +
+                    "이것은 지역 우편 배달과는 다릅니다."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "배송 밴" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**배송 밴**\n" +
-                    "**1× = 4t** (바닐라)\n" +
-                    "**10×** = 10배." },
+                    "**100% = 4t** (바닐라)\n" +
+                    "**500% = 20t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "원자재 트럭" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
                     "**원자재 트럭** (석유, 석탄, 광석, 석재, 산업 폐기물용 덤프트럭 - 같은 공유 트럭 유형)\n" +
-                    "**1× = 20t** (바닐라)\n" +
-                    "**10×** = 10배." },
+                    "**100% = 20t** (바닐라)\n" +
+                    "**500% = 100t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "배송 오토바이" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
                     "**오토바이 배송**은 보통 약품을 병원/클리닉으로 운반합니다.\n" +
-                    "**1× = 0.1t** (바닐라)\n" +
-                    "**10×** = 10배." },
+                    "**100% = 0.1t** (바닐라)\n" +
+                    "**500% = 0.5t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "배송 기본값 리셋" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "배송 배수를 **1×** (게임 기본값 / 바닐라)로 되돌립니다." },
+                    "배송 슬라이더를 **100%** (게임 기본값 / 바닐라)로 되돌립니다." },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "화물 플릿 (항구, 철도, 공항)" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "화물역 최대 플릿" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "**화물 운송역**의 최대 활성 운송 차량 수에 대한 배수입니다.\n" +
+                    "**화물 운송역**의 최대 활성 운송 차량 수를 변경합니다.\n" +
                     "**1×** = 바닐라, **5×** = 5배." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "채취 시설 플릿" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "산업용 **채취 시설 최대 트럭 수**에 대한 배수입니다\n" +
+                    "산업용 **채취 시설 최대 트럭 수**를 변경합니다.\n" +
                     "(농장, 어업, 임업, 광석, 석유, 석탄, 석재).\n" +
-                    "**1×** = 바닐라, **5×** = 5배." },
+                    "**1×** = 바닐라\n" +
+                    "**5×** = 5배.\n" +
+                    "바닐라에서는 보통 채취 시설 건물당 트럭 5대를 허용합니다."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "화물 + 채취 시설 플릿 리셋" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
@@ -264,7 +269,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "도로 마모" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<새로운 Alpha 기능>\n" +
+                    "<Beta feature>\n" +
                     "**시간과 교통량** 요인으로 도로가 얼마나 빨리 손상되는지 제어합니다.\n" +
                     "**10%** = 마모 10× 느림 (수리 필요 감소)\n" +
                     "**100%** = 바닐라\n" +

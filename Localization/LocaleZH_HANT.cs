@@ -170,47 +170,52 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "半掛卡車" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
-                    "**半掛卡車**容量。\n" +
+                    "半掛卡車的**載貨容量**。\n" +
+                    "**100% = 25t**（原版）\n" +
+                    "**500% = 125t**。\n" +
                     "包括：\n" +
-                    "* 專業工業半掛（農場、漁業、林業等）。\n" +
-                    "* 往返貨運站運送郵件的半掛卡車（不同於本地郵件投遞）。\n" +
-                    "**1× = 25t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
+                    " - 專業工業半掛（農場、漁業、林業等）。\n" +
+                    "備註：也包括往返貨運站運送郵件的半掛卡車。\n" +
+                    "這與本地郵件投遞不同。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "配送廂型車" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**配送廂型車**\n" +
-                    "**1× = 4t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
+                    "**100% = 4t**（原版）\n" +
+                    "**500% = 20t**。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "原材料卡車" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
                     "**原材料卡車**（石油、煤炭、礦石、石材，以及用於工業廢棄物的傾卸卡車 - 屬於同一種共用卡車類型）\n" +
-                    "**1× = 20t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
+                    "**100% = 20t**（原版）\n" +
+                    "**500% = 100t**。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "配送機車" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
                     "**機車配送**通常會把藥品送到醫院/診所。\n" +
-                    "**1× = 0.1t**（原版）\n" +
-                    "**10×** = 10× 更多。" },
+                    "**100% = 0.1t**（原版）\n" +
+                    "**500% = 0.5t**。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "重設配送預設值" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "將配送倍率恢復到 **1×**（遊戲預設值 / 原版）。" },
+                    "將配送滑桿恢復到 **100%**（遊戲預設值 / 原版）。" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "貨運車隊（港口、鐵路、機場）" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "貨運站最大車隊" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "**貨運運輸站**最大活躍運輸車輛數的倍率。\n" +
+                    "修改**貨運運輸站**的最大活躍運輸車輛數。\n" +
                     "**1×** = 原版，**5×** = 5× 更多。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "採集設施車隊" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "工業**採集設施最大卡車數**的倍率\n" +
+                    "修改工業**採集設施最大卡車數**。\n" +
                     "（農場、漁業、林業、礦石、石油、煤炭、石材）。\n" +
-                    "**1×** = 原版，**5×** = 5× 更多。" },
+                    "**1×** = 原版\n" +
+                    "**5×** = 5 倍。\n" +
+                    "原版通常允許每個採集設施建築擁有 5 輛卡車。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "重設貨運 + 採集設施車隊" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
@@ -264,7 +269,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "道路磨損" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<新的 Alpha 功能>\n" +
+                    "<Beta feature>\n" +
                     "控制道路因**時間與交通**因素而劣化的速度。\n" +
                     "**10%** = 磨損速度慢 10×（所需維修更少）\n" +
                     "**100%** = 原版\n" +
