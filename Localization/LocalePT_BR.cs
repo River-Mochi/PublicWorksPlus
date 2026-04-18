@@ -171,46 +171,51 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "Caminhões semirreboque" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
                     "Capacidade dos **caminhões semirreboque**.\n" +
+                    "**100% = 25t** (vanilla)\n" +
+                    "**500% = 125t**.\n" +
                     "Inclui:\n" +
-                    "* Semirreboques da indústria especializada (fazendas, pesca, silvicultura etc.).\n" +
-                    "* Semirreboques transportando correio para/de estações de carga (não é o mesmo que entrega local de correio).\n" +
-                    "**1× = 25t** (vanilla)\n" +
-                    "**10×** = 10× mais." },
+                    " - Semirreboques da indústria especializada (fazendas, pesca, silvicultura etc.).\n" +
+                    "Observação: inclui semirreboques que transportam correio para/de estações de carga.\n" +
+                    "Isto não é o mesmo que entrega local de correio."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "Vans de entrega" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**Vans de entrega**\n" +
-                    "**1× = 4t** (vanilla)\n" +
-                    "**10×** = 10× mais." },
+                    "**100% = 4t** (vanilla)\n" +
+                    "**500% = 20t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "Caminhões de matéria-prima" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
                     "**Caminhões de matéria-prima** (petróleo, carvão, minério, pedra, caminhões basculantes para resíduos industriais - mesmo tipo de caminhão compartilhado)\n" +
-                    "**1× = 20t** (vanilla)\n" +
-                    "**10×** = 10× mais." },
+                    "**100% = 20t** (vanilla)\n" +
+                    "**500% = 100t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Moto de entrega" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
                     "**Entrega por moto** normalmente leva produtos farmacêuticos a um hospital/clínica.\n" +
-                    "**1× = 0.1t** (vanilla)\n" +
-                    "**10×** = 10× mais." },
+                    "**100% = 0.1t** (vanilla)\n" +
+                    "**500% = 0.5t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Redefinir entregas" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "Define os multiplicadores de entrega de volta para **1×** (padrão do jogo / vanilla)." },
+                    "Define os controles de entrega de volta para **100%** (padrão do jogo / vanilla)." },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "Frota de carga (porto, trem, aeroporto)" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "Máx. frota da estação de carga" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "Multiplicador para o máximo de transportadores ativos das **estações de transporte de carga**.\n" +
+                    "Altera o máximo de transportadores ativos das **estações de transporte de carga**.\n" +
                     "**1×** = vanilla, **5×** = 5× mais." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "Frota dos extratores" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "Multiplicador para os **caminhões máximos dos extratores** industriais\n" +
+                    "Altera os **caminhões máximos** dos extratores industriais.\n" +
                     "(fazendas, pesca, silvicultura, minério, petróleo, carvão, pedra).\n" +
-                    "**1×** = vanilla, **5×** = 5× mais." },
+                    "**1×** = vanilla\n" +
+                    "**5×** = 5 vezes mais.\n" +
+                    "O vanilla normalmente permite 5 caminhões por instalação extratora."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "Redefinir frota de carga + extratores" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
@@ -264,7 +269,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Desgaste das estradas" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<NOVO recurso Alpha>\n" +
+                    "<Beta feature>\n" +
                     "Controla a velocidade com que as estradas se deterioram por fatores de **tempo e tráfego**.\n" +
                     "**10%** = desgaste 10× mais lento (menos reparos necessários)\n" +
                     "**100%** = vanilla\n" +

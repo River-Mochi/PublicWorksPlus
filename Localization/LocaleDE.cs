@@ -171,46 +171,51 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "Sattelzüge" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
                     "Kapazität der **Sattelzüge**.\n" +
+                    "**100% = 25t** (Vanilla)\n" +
+                    "**500% = 125t**.\n" +
                     "Enthält:\n" +
-                    "* Spezialindustrie-Sattelzüge (Farmen, Fischerei, Forstwirtschaft usw.).\n" +
-                    "* Sattelzüge, die Post zu/von Frachtstationen transportieren (nicht dasselbe wie lokale Postzustellung).\n" +
-                    "**1× = 25t** (Vanilla)\n" +
-                    "**10×** = 10× mehr." },
+                    " - Spezialindustrie-Sattelzüge (Farmen, Fischerei, Forstwirtschaft usw.).\n" +
+                    "Hinweis: Enthält auch Sattelzüge, die Post zu/von Frachtstationen transportieren.\n" +
+                    "Das ist nicht dasselbe wie die lokale Postzustellung."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "Lieferwagen" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**Lieferwagen**\n" +
-                    "**1× = 4t** (Vanilla)\n" +
-                    "**10×** = 10× mehr." },
+                    "**100% = 4t** (Vanilla)\n" +
+                    "**500% = 20t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "Rohstoff-LKW" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
-                    "**Rohstoff-LKW** (Öl, Kohle, Erz, Stein, Deponie-LKW für Industrieabfälle - derselbe gemeinsam genutzte LKW-Typ)\n" +
-                    "**1× = 20t** (Vanilla)\n" +
-                    "**10×** = 10× mehr." },
+                    "**Rohstoff-LKW** (Öl, Kohle, Erz, Stein, Kipper für Industrieabfälle - derselbe gemeinsam genutzte LKW-Typ)\n" +
+                    "**100% = 20t** (Vanilla)\n" +
+                    "**500% = 100t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Liefermotorrad" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
                     "**Motorradlieferung** bringt typischerweise Medikamente zu einem Krankenhaus/einer Klinik.\n" +
-                    "**1× = 0.1t** (Vanilla)\n" +
-                    "**10×** = 10× mehr." },
+                    "**100% = 0.1t** (Vanilla)\n" +
+                    "**500% = 0.5t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Liefer-Standardwerte zurücksetzen" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "Liefer-Multiplikatoren wieder auf **1×** setzen (Spielstandard / Vanilla)." },
+                    "Liefer-Schieberegler wieder auf **100%** setzen (Spielstandard / Vanilla)." },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "Frachtflotte (Hafen, Zug, Flughafen)" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "Max. Frachtstationsflotte" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "Multiplikator für die maximale Anzahl aktiver Transporter von **Frachttransportstationen**.\n" +
+                    "Ändert die maximale Anzahl aktiver Transporter von **Frachttransportstationen**.\n" +
                     "**1×** = Vanilla, **5×** = 5× mehr." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "Fördererflotte" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "Multiplikator für die **maximalen LKWs industrieller Förderer**\n" +
+                    "Ändert die **maximale LKW-Anzahl** industrieller Förderer.\n" +
                     "(Farmen, Fischerei, Forstwirtschaft, Erz, Öl, Kohle, Stein).\n" +
-                    "**1×** = Vanilla, **5×** = 5× mehr." },
+                    "**1×** = Vanilla\n" +
+                    "**5×** = 5-mal mehr.\n" +
+                    "Vanilla erlaubt pro Fördergebäude normalerweise 5 LKW."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "Fracht + Förderer zurücksetzen" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
@@ -264,7 +269,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Straßenverschleiß" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<NEUE Alpha-Funktion>\n" +
+                    "<Beta feature>\n" +
                     "Steuert, wie schnell Straßen durch **Zeit- und Verkehrs**faktoren verschleißen.\n" +
                     "**10%** = 10× langsamerer Verschleiß (weniger Reparaturen nötig)\n" +
                     "**100%** = Vanilla\n" +
@@ -308,8 +313,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Prefab-Scanstatus" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Zeigt den Scanstatus: Leerlauf / In Warteschlange / Läuft / Fertig / Keine Daten.\n" +
-                    "In Warteschlange/Läuft zeigt die verstrichene Zeit; Fertig zeigt Dauer + Endzeit." },
+                    "Zeigt den Scanstatus: Idle / Queued / Running / Done / No Data.\n" +
+                    "Queued/Running shows elapsed time; Done shows duration + finish time." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Ausführliche Debug-Logs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
@@ -328,10 +333,10 @@ namespace PublicWorksPlus
                     "Danach: <ScanReport-Prefabs.txt> mit einem Texteditor öffnen (z. B. Notepad++)." },
 
                 // ---- Scan Report Status Text (format string templates) ----
-                { "PWP_SCAN_IDLE", "Leerlauf" },
-                { "PWP_SCAN_QUEUED_FMT", "In Warteschlange ({0})" },
-                { "PWP_SCAN_RUNNING_FMT", "Läuft ({0})" },
-                { "PWP_SCAN_DONE_FMT", "Fertig ({0} | {1})" },
+                { "PWP_SCAN_IDLE", "Idle" },
+                { "PWP_SCAN_QUEUED_FMT", "Queued ({0})" },
+                { "PWP_SCAN_RUNNING_FMT", "Running ({0})" },
+                { "PWP_SCAN_DONE_FMT", "Done ({0} | {1})" },
                 { "PWP_SCAN_FAILED", "Fehlgeschlagen" },
                 { "PWP_SCAN_FAIL_NO_CITY", "Zuerst Stadt laden" },
                 { "PWP_SCAN_UNKNOWN_TIME", "unbekannte Zeit" },

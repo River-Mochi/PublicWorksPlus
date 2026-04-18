@@ -1,5 +1,5 @@
 // File: Localization/LocalePL.cs
-// Polski, Polish (pl-PL) strings for Options UI.
+// Polish (pl-PL) strings for Options UI.
 
 namespace PublicWorksPlus
 {
@@ -171,46 +171,51 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "Ciągniki siodłowe" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
                     "Pojemność **ciągników siodłowych**.\n" +
+                    "**100% = 25t** (vanilla)\n" +
+                    "**500% = 125t**.\n" +
                     "Obejmuje:\n" +
-                    "* Naczepy specjalistycznego przemysłu (farmy, rybołówstwo, leśnictwo itp.).\n" +
-                    "* Ciągniki siodłowe przewożące pocztę do/z terminali cargo (to nie to samo co lokalne dostawy poczty).\n" +
-                    "**1× = 25t** (vanilla)\n" +
-                    "**10×** = 10× więcej." },
+                    " - Naczepy specjalistycznego przemysłu (farmy, rybołówstwo, leśnictwo itp.).\n" +
+                    "Uwaga: obejmuje też ciągniki siodłowe przewożące pocztę do/z terminali cargo.\n" +
+                    "To nie to samo co lokalne dostawy poczty."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "Furgonetki dostawcze" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**Furgonetki dostawcze**\n" +
-                    "**1× = 4t** (vanilla)\n" +
-                    "**10×** = 10× więcej." },
+                    "**100% = 4t** (vanilla)\n" +
+                    "**500% = 20t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "Ciężarówki surowcowe" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
                     "**Ciężarówki surowcowe** (ropa, węgiel, ruda, kamień, wywrotki do odpadów przemysłowych - ten sam współdzielony typ ciężarówki)\n" +
-                    "**1× = 20t** (vanilla)\n" +
-                    "**10×** = 10× więcej." },
+                    "**100% = 20t** (vanilla)\n" +
+                    "**500% = 100t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Motocykl dostawczy" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
                     "**Dostawa motocyklem** zwykle przewozi farmaceutyki do szpitala/kliniki.\n" +
-                    "**1× = 0.1t** (vanilla)\n" +
-                    "**10×** = 10× więcej." },
+                    "**100% = 0.1t** (vanilla)\n" +
+                    "**500% = 0.5t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Resetuj ustawienia dostaw" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "Ustaw mnożniki dostaw z powrotem na **1×** (domyślna wartość gry / vanilla)." },
+                    "Ustaw suwaki dostaw z powrotem na **100%** (domyślna wartość gry / vanilla)." },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "Flota cargo (port, kolej, lotnisko)" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "Maks. flota stacji cargo" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "Mnożnik maksymalnej liczby aktywnych transporterów dla **stacji transportu cargo**.\n" +
+                    "Zmień maksymalną liczbę aktywnych transporterów **stacji transportu cargo**.\n" +
                     "**1×** = vanilla, **5×** = 5× więcej." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "Flota zakładów wydobywczych" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "Mnożnik dla **maks. ciężarówek zakładów wydobywczych**\n" +
+                    "Zmień **maksymalną liczbę ciężarówek** dla przemysłowych zakładów wydobywczych.\n" +
                     "(farmy, rybołówstwo, leśnictwo, ruda, ropa, węgiel, kamień).\n" +
-                    "**1×** = vanilla, **5×** = 5× więcej." },
+                    "**1×** = vanilla\n" +
+                    "**5×** = 5 razy więcej.\n" +
+                    "Vanilla zwykle pozwala na 5 ciężarówek na budynek wydobywczy."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "Resetuj flotę cargo + wydobycie" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
@@ -264,7 +269,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Zużycie dróg" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<NOWA funkcja Alpha>\n" +
+                    "<Beta feature>\n" +
                     "Kontroluje, jak szybko drogi niszczeją od czynników **czasu i ruchu**.\n" +
                     "**10%** = 10× wolniejsze zużycie (mniej potrzebnych napraw)\n" +
                     "**100%** = vanilla\n" +

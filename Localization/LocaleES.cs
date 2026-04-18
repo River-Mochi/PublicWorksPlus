@@ -171,46 +171,51 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "Camiones articulados" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
                     "Capacidad de los **camiones articulados**.\n" +
+                    "**100% = 25t** (vanilla)\n" +
+                    "**500% = 125t**.\n" +
                     "Incluye:\n" +
-                    "* Camiones articulados de industria especializada (granjas, pesca, silvicultura, etc.).\n" +
-                    "* Camiones articulados que llevan correo hacia/desde estaciones de carga (no es lo mismo que el reparto local de correo).\n" +
-                    "**1× = 25t** (vanilla)\n" +
-                    "**10×** = 10× más." },
+                    " - Camiones articulados de industria especializada (granjas, pesca, silvicultura, etc.).\n" +
+                    "Nota: incluye camiones articulados que llevan correo hacia/desde estaciones de carga.\n" +
+                    "No es lo mismo que el reparto local de correo."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "Furgonetas de reparto" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**Furgonetas de reparto**\n" +
-                    "**1× = 4t** (vanilla)\n" +
-                    "**10×** = 10× más." },
+                    "**100% = 4t** (vanilla)\n" +
+                    "**500% = 20t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "Camiones de materias primas" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
                     "**Camiones de materias primas** (petróleo, carbón, mineral, piedra, camiones volquete para residuos industriales - mismo tipo de camión compartido)\n" +
-                    "**1× = 20t** (vanilla)\n" +
-                    "**10×** = 10× más." },
+                    "**100% = 20t** (vanilla)\n" +
+                    "**500% = 100t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "Moto de reparto" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
-                    "**El reparto en moto** normalmente lleva productos farmacéuticos a un hospital/clínica.\n" +
-                    "**1× = 0.1t** (vanilla)\n" +
-                    "**10×** = 10× más." },
+                    "**El reparto en moto** normalmente lleva productos farmacéuticos a un hospital/una clínica.\n" +
+                    "**100% = 0.1t** (vanilla)\n" +
+                    "**500% = 0.5t**." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "Restablecer reparto" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "Devuelve los multiplicadores de reparto a **1×** (valor predeterminado del juego / vanilla)." },
+                    "Devuelve los deslizadores de reparto a **100%** (valor predeterminado del juego / vanilla)." },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "Flota de carga (puerto, tren, aeropuerto)" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "Flota máx de estación de carga" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "Multiplicador para los transportistas activos máximos de las **estaciones de transporte de carga**.\n" +
+                    "Cambia el máximo de transportistas activos de las **estaciones de transporte de carga**.\n" +
                     "**1×** = vanilla, **5×** = 5× más." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "Flota de extractores" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "Multiplicador para los **camiones máximos de extractores** industriales\n" +
+                    "Cambia el **máximo de camiones** de los extractores industriales.\n" +
                     "(granjas, pesca, silvicultura, mineral, petróleo, carbón, piedra).\n" +
-                    "**1×** = vanilla, **5×** = 5× más." },
+                    "**1×** = vanilla\n" +
+                    "**5×** = 5 veces más.\n" +
+                    "Vanilla normalmente permite 5 camiones por edificio extractor."
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "Restablecer carga + extractores" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
@@ -264,7 +269,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "Desgaste de carreteras" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<NUEVA función Alpha>\n" +
+                    "<Beta feature>\n" +
                     "Controla qué tan rápido se deterioran las carreteras por factores de **tiempo y tráfico**.\n" +
                     "**10%** = desgaste 10× más lento (se necesitan menos reparaciones)\n" +
                     "**100%** = vanilla\n" +
@@ -308,8 +313,8 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.PrefabScanStatus)), "Estado del escaneo de prefabs" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.PrefabScanStatus)),
-                    "Muestra el estado del escaneo: Inactivo / En cola / En ejecución / Hecho / Sin datos.\n" +
-                    "En cola/En ejecución muestra el tiempo transcurrido; Hecho muestra duración + hora de finalización." },
+                    "Muestra el estado del escaneo: Idle / Queued / Running / Done / No Data.\n" +
+                    "Queued/Running shows elapsed time; Done shows duration + finish time." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Registros debug detallados" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)),
@@ -328,10 +333,10 @@ namespace PublicWorksPlus
                     "Siguiente: abrir <ScanReport-Prefabs.txt> con el editor de texto (por ejemplo, Notepad++)." },
 
                 // ---- Scan Report Status Text (format string templates) ----
-                { "PWP_SCAN_IDLE", "Inactivo" },
-                { "PWP_SCAN_QUEUED_FMT", "En cola ({0})" },
-                { "PWP_SCAN_RUNNING_FMT", "En ejecución ({0})" },
-                { "PWP_SCAN_DONE_FMT", "Hecho ({0} | {1})" },
+                { "PWP_SCAN_IDLE", "Idle" },
+                { "PWP_SCAN_QUEUED_FMT", "Queued ({0})" },
+                { "PWP_SCAN_RUNNING_FMT", "Running ({0})" },
+                { "PWP_SCAN_DONE_FMT", "Done ({0} | {1})" },
                 { "PWP_SCAN_FAILED", "Falló" },
                 { "PWP_SCAN_FAIL_NO_CITY", "Cargar ciudad primero" },
                 { "PWP_SCAN_UNKNOWN_TIME", "hora desconocida" },

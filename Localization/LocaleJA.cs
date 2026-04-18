@@ -171,46 +171,51 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.SemiTruckCargoScalar)), "セミトラック" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.SemiTruckCargoScalar)),
                     "**セミトラック**容量です。\n" +
+                    "**100% = 25t**（バニラ）\n" +
+                    "**500% = 125t**。\n" +
                     "対象:\n" +
-                    "* 特化産業のセミトラック（農業、漁業、林業など）。\n" +
-                    "* 貨物駅との間で郵便を運ぶセミトラック（地域の郵便配達とは別）。\n" +
-                    "**1× = 25t**（バニラ）\n" +
-                    "**10×** = 10倍。" },
+                    " - 特化産業のセミトラック（農業、漁業、林業など）。\n" +
+                    "補足: 貨物駅との間で郵便を運ぶセミトラックも含まれます。\n" +
+                    "これは地域の郵便配達とは別です。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DeliveryVanCargoScalar)), "配送バン" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DeliveryVanCargoScalar)),
                     "**配送バン**\n" +
-                    "**1× = 4t**（バニラ）\n" +
-                    "**10×** = 10倍。" },
+                    "**100% = 4t**（バニラ）\n" +
+                    "**500% = 20t**。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CoalTruckScalar)), "原材料トラック" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CoalTruckScalar)),
                     "**原材料トラック**（石油、石炭、鉱石、石材、産業廃棄物用ダンプトラック - 同じ共有トラック種別）\n" +
-                    "**1× = 20t**（バニラ）\n" +
-                    "**10×** = 10倍。" },
+                    "**100% = 20t**（バニラ）\n" +
+                    "**500% = 100t**。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)), "配送バイク" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.MotorbikeDeliveryCargoScalar)),
                     "**バイク配送**は通常、薬品を病院/診療所へ運びます。\n" +
-                    "**1× = 0.1t**（バニラ）\n" +
-                    "**10×** = 10倍。" },
+                    "**100% = 0.1t**（バニラ）\n" +
+                    "**500% = 0.5t**。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)), "配送設定をリセット" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetDeliveryToVanillaButton)),
-                    "配送倍率を**1×**（ゲーム既定値 / バニラ）に戻します。" },
+                    "配送スライダーを**100%**（ゲーム既定値 / バニラ）に戻します。" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.CargoStationsGroup), "貨物フリート（港、鉄道、空港）" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)), "貨物駅最大フリート" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.CargoStationMaxTrucksScalar)),
-                    "**貨物輸送駅**のアクティブ輸送車両最大数に対する倍率です。\n" +
+                    "**貨物輸送駅**のアクティブ輸送車両最大数を変更します。\n" +
                     "**1×** = バニラ、**5×** = 5倍。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)), "採取施設フリート" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ExtractorMaxTrucksScalar)),
-                    "産業用**採取施設の最大トラック数**に対する倍率です\n" +
+                    "産業用**採取施設の最大トラック数**を変更します。\n" +
                     "（農業、漁業、林業、鉱石、石油、石炭、石材）。\n" +
-                    "**1×** = バニラ、**5×** = 5倍。" },
+                    "**1×** = バニラ\n" +
+                    "**5×** = 5倍。\n" +
+                    "バニラでは通常、採取施設1棟あたり5台のトラックが使えます。"
+                },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)), "貨物 + 採取施設フリートをリセット" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetCargoStationsToVanillaButton)),
@@ -253,7 +258,7 @@ namespace PublicWorksPlus
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleCapacityScalar)),
                     "**作業シフト容量**への倍率です。\n" +
                     "トラックが車庫へ戻るまでにこなせる総作業量です。\n" +
-                    "**高いほど = 戻る回数が減る。**" },
+                    "**高いほど = 戻る回数が減る。** より効率的になります。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)), "修理率" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadMaintenanceVehicleRateScalar)),
@@ -264,7 +269,7 @@ namespace PublicWorksPlus
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RoadWearScalar)), "道路摩耗" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RoadWearScalar)),
-                    "<新しいAlpha機能>\n" +
+                    "<Beta feature>\n" +
                     "**時間と交通量**の要因によって道路がどれだけ速く劣化するかを制御します。\n" +
                     "**10%** = 摩耗が10×遅い（修理回数減少）\n" +
                     "**100%** = バニラ\n" +
