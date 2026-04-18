@@ -98,14 +98,14 @@ delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extrac
 	<Dependency Id="" />
 	<!-- Change log for new version. Single line or multi line. Supports minimal markdown subset -->
 <ChangeLog>
-    - Major update:
-    - Industry Delivery capacity sliders now can deliver higher than vanilla load amounts
-    - Decreases traffic because of more optimized use of the delivery vehicles (less trucks needed as companies can actually use the added capacity).
-    - Industry delivery sliders are now 100%-500%
-    - Live increased loads now working for: semi trucks, delivery vans, and raw-material trucks.
-    - Delivery updates are currently for both Company Buying and road storage-transfer paths.
+- Major update:
+- Industry Delivery capacity sliders now can deliver higher than vanilla load amounts
+- Decreases traffic because of more optimized use of the delivery vehicles (less trucks needed as companies can actually use the added capacity).
+- Industry delivery sliders are now 100%-500%
+- Live increased loads now working for: semi trucks, delivery vans, and raw-material trucks.
+- Delivery updates are currently for both Company Buying and road storage-transfer paths.
 - More research needed for the other dispatch paths (Cargo stations, etc.).
-    - updated locale files
+- updated locale files
 </ChangeLog>
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
 <ExternalLink Type="discord" Url="https://discord.gg/HTav7ARPs2" />
