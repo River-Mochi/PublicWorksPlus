@@ -21,7 +21,7 @@ namespace PublicWorksPlus
             {
                 if (string.IsNullOrEmpty(folderPath))
                 {
-                    Mod.s_Log.Info($"{Mod.ModTag} {logLabel}: folder path is empty.");
+                    LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} {logLabel}: folder path is empty.");
                     return;
                 }
 
@@ -29,7 +29,7 @@ namespace PublicWorksPlus
 
                 if (!Directory.Exists(fullPath))
                 {
-                    Mod.s_Log.Info($"{Mod.ModTag} {logLabel}: folder not found: {fullPath}");
+                    LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} {logLabel}: folder not found: {fullPath}");
                     return;
                 }
 
@@ -42,7 +42,7 @@ namespace PublicWorksPlus
             }
             catch (Exception ex)
             {
-                Mod.s_Log.Warn($"{Mod.ModTag} {logLabel}: failed opening folder: {ex.GetType().Name}: {ex.Message}");
+                LogUtils.Warn(Mod.s_Log, () => $"{Mod.ModTag} {logLabel}: failed opening folder: {ex.GetType().Name}: {ex.Message}");
             }
         }
 
@@ -131,7 +131,7 @@ namespace PublicWorksPlus
             }
             catch (Exception ex)
             {
-                Mod.s_Log.Warn($"{Mod.ModTag} ShellOpen: OS fallback failed: {ex.GetType().Name}: {ex.Message}");
+                LogUtils.Warn(Mod.s_Log, () => $"{Mod.ModTag} ShellOpen: OS fallback failed: {ex.GetType().Name}: {ex.Message}");
             }
         }
 

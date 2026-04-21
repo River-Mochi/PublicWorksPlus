@@ -77,7 +77,9 @@ namespace PublicWorksPlus
             m_DeliveryTruckBaseCargoCapacity.Clear();
             m_ExtractorCompanyBaseMaxTransports.Clear();
 
-            Mod.s_Log.Info($"{Mod.ModTag} City Loading Complete -> applying Industry settings");
+#if DEBUG
+            LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} City Loading Complete -> applying Industry settings");
+#endif
             Enabled = true;
         }
 

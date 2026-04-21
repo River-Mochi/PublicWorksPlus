@@ -257,24 +257,26 @@ namespace PublicWorksPlus
                 totalOverCurrentCap += m_Stats[i].OverCurrentCap;
             }
 
-            Mod.s_Log.Info("============================================================");
-            Mod.s_Log.Info($"{Mod.ModTag} DELIVERY CARGO PROBE");
-            Mod.s_Log.Info("============================================================");
-            Mod.s_Log.Info(
+            LogUtils.Info(Mod.s_Log, () => "============================================================");
+            LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} DELIVERY CARGO PROBE");
+            LogUtils.Info(Mod.s_Log, () => "============================================================");
+            LogUtils.Info(
+                Mod.s_Log,
+                () =>
                 $"{Mod.ModTag} Live sample: scanned={scanned} relevant={totalRelevant} carrying={totalCarrying} " +
                 $"overVanilla={totalOverVanilla} overCurrentCap={totalOverCurrentCap} simFrame={m_Sim.frameIndex}");
 
             if (totalOverCurrentCap > 0)
             {
-                Mod.s_Log.Info($"{Mod.ModTag} BAD: found live trucks above slider max.");
+                LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} BAD: found live trucks above slider max.");
             }
             else if (totalOverVanilla > 0)
             {
-                Mod.s_Log.Info($"{Mod.ModTag} GOOD: {totalOverVanilla} trucks > vanilla capacity. GOOD: none above slider max.");
+                LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} GOOD: {totalOverVanilla} trucks > vanilla capacity. GOOD: none above slider max.");
             }
             else
             {
-                Mod.s_Log.Info($"{Mod.ModTag} No live trucks above vanilla in this sample.");
+                LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} No live trucks above vanilla in this sample.");
             }
 
             LogBucket("Semi", m_Stats[(int)VehicleHelpers.DeliveryBucket.Semi], m_TopOverVanilla[(int)VehicleHelpers.DeliveryBucket.Semi], m_TopOverCurrent[(int)VehicleHelpers.DeliveryBucket.Semi]);
@@ -283,7 +285,9 @@ namespace PublicWorksPlus
             LogBucket("Motorbike", m_Stats[(int)VehicleHelpers.DeliveryBucket.Motorbike], m_TopOverVanilla[(int)VehicleHelpers.DeliveryBucket.Motorbike], m_TopOverCurrent[(int)VehicleHelpers.DeliveryBucket.Motorbike]);
             LogBucket("Other", m_Stats[(int)VehicleHelpers.DeliveryBucket.Other], m_TopOverVanilla[(int)VehicleHelpers.DeliveryBucket.Other], m_TopOverCurrent[(int)VehicleHelpers.DeliveryBucket.Other]);
 
-            Mod.s_Log.Info(
+            LogUtils.Info(
+                Mod.s_Log,
+                () =>
                 $"{Mod.ModTag} SUMMARY " +
                 $"Semi={FmtBucketSummary(m_Stats[(int)VehicleHelpers.DeliveryBucket.Semi])} " +
                 $"Van={FmtBucketSummary(m_Stats[(int)VehicleHelpers.DeliveryBucket.Van])} " +
@@ -291,7 +295,9 @@ namespace PublicWorksPlus
                 $"OverCap={totalOverCurrentCap}");
 
 
-            Mod.s_Log.Info(
+            LogUtils.Info(
+                Mod.s_Log,
+                () =>
                 $"{Mod.ModTag} CATEGORY SUMMARY " +
                 $"CompanyShopping={FmtCategorySummary(companyShoppingOverVanilla, companyShoppingCarrying)} " +
                 $"StorageTransfer={FmtCategorySummary(storageTransferOverVanilla, storageTransferCarrying)} " +
@@ -299,7 +305,7 @@ namespace PublicWorksPlus
                 $"FacilityOwnedDispatch={FmtCategorySummary(facilityOwnedDispatchOverVanilla, facilityOwnedDispatchCarrying)}");
 
 
-            Mod.s_Log.Info("============================================================");
+            LogUtils.Info(Mod.s_Log, () => "============================================================");
         }
 
         private void ClearStats()
@@ -363,14 +369,16 @@ namespace PublicWorksPlus
         {
             if (s.Seen == 0)
             {
-                Mod.s_Log.Info($"{Mod.ModTag} {name}: none");
+                LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} {name}: none");
                 return;
             }
 
             float pctVanilla = s.Carrying > 0 ? (100f * s.OverVanilla / s.Carrying) : 0f;
             float pctCurrent = s.Carrying > 0 ? (100f * s.OverCurrentCap / s.Carrying) : 0f;
 
-            Mod.s_Log.Info(
+            LogUtils.Info(
+                Mod.s_Log,
+                () =>
                 $"{Mod.ModTag} {name}: seen={s.Seen} carrying={s.Carrying} " +
                 $"overVanilla={s.OverVanilla} ({pctVanilla:0.#}%) overCurrentCap={s.OverCurrentCap} ({pctCurrent:0.#}%) " +
                 $"Highest={FmtTons(s.MaxAmount)} ENTITY ID {FmtEntity(s.MaxEntity)} " +
@@ -384,7 +392,9 @@ namespace PublicWorksPlus
                 {
                     BucketHit hit = topOverCurrent[i];
 
-                    Mod.s_Log.Info(
+                    LogUtils.Info(
+                        Mod.s_Log,
+                        () =>
                         $"{Mod.ModTag} {name} OverCap {i + 1}: ENTITY ID {FmtEntity(hit.Entity)} " +
                         $"Amt={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
                         $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} " +
@@ -398,7 +408,9 @@ namespace PublicWorksPlus
             {
                 BucketHit hit = topOverVanilla[i];
 
-                Mod.s_Log.Info(
+                LogUtils.Info(
+                    Mod.s_Log,
+                    () =>
                     $"{Mod.ModTag} {name} Top{i + 1}: ENTITY ID {FmtEntity(hit.Entity)} " +
                     $"Amt={FmtTons(hit.Amount)} CurrentCap={FmtTons(hit.CurrentCap)} VanillaCap={FmtTons(hit.VanillaCap)} " +
                     $"has={FormatResource(hit.CarriedResource)} State={hit.StateText} " +

@@ -89,13 +89,13 @@ namespace PublicWorksPlus
 
             if (policyEntity == Entity.Null || !SystemAPI.Exists(policyEntity))
             {
-                Mod.s_Log.Warn($"{Mod.ModTag} VehicleCountPolicyTuner: could not resolve VehicleCountPolicy entity.");
+                LogUtils.Warn(Mod.s_Log, () => $"{Mod.ModTag} VehicleCountPolicyTuner: could not resolve VehicleCountPolicy entity.");
                 return;
             }
 
             if (!SystemAPI.HasBuffer<RouteModifierData>(policyEntity))
             {
-                Mod.s_Log.Warn($"{Mod.ModTag} VehicleCountPolicyTuner: VehicleCountPolicy has no RouteModifierData buffer.");
+                LogUtils.Warn(Mod.s_Log, () => $"{Mod.ModTag} VehicleCountPolicyTuner: VehicleCountPolicy has no RouteModifierData buffer.");
                 return;
             }
 
@@ -122,7 +122,9 @@ namespace PublicWorksPlus
 
                     if (verbose)
                     {
-                        Mod.s_Log.Info(
+                        LogUtils.Info(
+                            Mod.s_Log,
+                            () =>
                             $"{Mod.ModTag} VehicleCountPolicyTuner: captured original VehicleInterval " +
                             $"mode={item.m_Mode} range={item.m_Range.min:F3}..{item.m_Range.max:F3} (input space)");
                     }
@@ -149,7 +151,9 @@ namespace PublicWorksPlus
 
                         if (verbose)
                         {
-                            Mod.s_Log.Info(
+                            LogUtils.Info(
+                                Mod.s_Log,
+                                () =>
                                 $"{Mod.ModTag} VehicleCountPolicyTuner: DISABLED -> restore VehicleInterval " +
                                 $"mode {oldMode} -> {item.m_Mode}, " +
                                 $"range {oldRange.min:F3}..{oldRange.max:F3} -> {item.m_Range.min:F3}..{item.m_Range.max:F3} (input space)");
@@ -157,7 +161,7 @@ namespace PublicWorksPlus
                     }
                     else if (verbose)
                     {
-                        Mod.s_Log.Info($"{Mod.ModTag} VehicleCountPolicyTuner: DISABLED -> already original (no change).");
+                        LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} VehicleCountPolicyTuner: DISABLED -> already original (no change).");
                     }
 
                     break;
@@ -182,7 +186,9 @@ namespace PublicWorksPlus
 
                         if (verbose)
                         {
-                            Mod.s_Log.Info(
+                            LogUtils.Info(
+                                Mod.s_Log,
+                                () =>
                                 $"{Mod.ModTag} VehicleCountPolicyTuner: ENABLED -> VehicleInterval input range " +
                                 $"{oldRange.min:F3}..{oldRange.max:F3} -> {desired.min:F3}..{desired.max:F3} (InverseRelative). " +
                                 $"Applied endpoints: inputMin→{appliedAtMinInput:F3}, inputMax→{appliedAtMaxInput:F3}. " +
@@ -191,19 +197,23 @@ namespace PublicWorksPlus
                     }
                     else if (verbose)
                     {
-                        Mod.s_Log.Info($"{Mod.ModTag} VehicleCountPolicyTuner: ENABLED -> already in desired state (no change).");
+                        LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} VehicleCountPolicyTuner: ENABLED -> already in desired state (no change).");
                     }
                 }
                 else if (item.m_Mode == ModifierValueMode.Relative)
                 {
                     // Different math model; safer to leave unchanged.
-                    Mod.s_Log.Warn(
+                    LogUtils.Warn(
+                        Mod.s_Log,
+                        () =>
                         $"{Mod.ModTag} VehicleCountPolicyTuner: VehicleInterval mode is Relative; leaving unchanged. " +
                         $"Range={item.m_Range.min:F3}..{item.m_Range.max:F3}");
                 }
                 else
                 {
-                    Mod.s_Log.Warn(
+                    LogUtils.Warn(
+                        Mod.s_Log,
+                        () =>
                         $"{Mod.ModTag} VehicleCountPolicyTuner: VehicleInterval mode is {item.m_Mode}; not modifying. " +
                         $"Range={item.m_Range.min:F3}..{item.m_Range.max:F3}");
                 }
@@ -214,11 +224,11 @@ namespace PublicWorksPlus
 
             if (!found)
             {
-                Mod.s_Log.Warn($"{Mod.ModTag} VehicleCountPolicyTuner: no VehicleInterval RouteModifierData entry found.");
+                LogUtils.Warn(Mod.s_Log, () => $"{Mod.ModTag} VehicleCountPolicyTuner: no VehicleInterval RouteModifierData entry found.");
             }
             else if (!changed && verbose)
             {
-                Mod.s_Log.Info($"{Mod.ModTag} VehicleCountPolicyTuner: completed (no change). enable={enable}");
+                LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} VehicleCountPolicyTuner: completed (no change). enable={enable}");
             }
         }
 

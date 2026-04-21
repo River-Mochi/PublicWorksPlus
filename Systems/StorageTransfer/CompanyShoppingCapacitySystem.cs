@@ -287,7 +287,9 @@ namespace PublicWorksPlus
                 {
                     string prefabName = PrefabNameUtil.GetNameSafe(m_PrefabSystem, prefab);
 
-                    Mod.s_Log.Info(
+                    LogUtils.Info(
+                        Mod.s_Log,
+                        () =>
                         $"{Mod.ModTag} [DISPATCH][CompanyShopping] ENTITY ID {entity.Index}:{entity.Version} " +
                         $"prefab='{prefabName}' Resource={resource} Request={desiredRequest} SafeTruckCap={safeSelectedCapacity}");
                 }
@@ -295,7 +297,9 @@ namespace PublicWorksPlus
 
             if (changed > 0 && verbose)
             {
-                Mod.s_Log.Info(
+                LogUtils.Info(
+                    Mod.s_Log,
+                    () =>
                     $"{Mod.ModTag} CompanyShoppingCapacity: promoted {changed} company buyer request(s) toward full truck size.");
             }
         }

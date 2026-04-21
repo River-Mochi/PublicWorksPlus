@@ -38,7 +38,7 @@ namespace PublicWorksPlus
             if (!s_BannerLogged)
             {
                 s_BannerLogged = true;
-                s_Log.Info($"{ModName} v{ModVersion} OnLoad");
+                LogUtils.Info(s_Log, () => $"{ModName} v{ModVersion} OnLoad");
             }
 
             // Settings first so locale labels can resolve.
@@ -110,12 +110,12 @@ namespace PublicWorksPlus
             updateSystem.UpdateAt<LaneWearProbeSystem>(SystemUpdatePhase.GameSimulation);
 #endif
 
-            s_Log.Info($"{ModId}.{nameof(OnLoad)} Completed.");
+            LogUtils.Info(s_Log, () => $"{ModId}.{nameof(OnLoad)} Completed.");
         }
 
         public void OnDispose()
         {
-            s_Log.Info("OnDispose");
+            LogUtils.Info(s_Log, () => "OnDispose");
 
             if (Settings != null)
             {
@@ -138,7 +138,7 @@ namespace PublicWorksPlus
             LocalizationManager? lm = GameManager.instance?.localizationManager;
             if (lm == null)
             {
-                s_Log.Warn($"AddLocaleSource: No LocalizationManager; cannot add source for '{localeId}'.");
+                LogUtils.Warn(s_Log, () => $"AddLocaleSource: No LocalizationManager; cannot add source for '{localeId}'.");
                 return;
             }
 
@@ -148,8 +148,7 @@ namespace PublicWorksPlus
             }
             catch (Exception ex)
             {
-                s_Log.Warn(
-                    $"AddLocaleSource: AddSource for '{localeId}' failed: {ex.GetType().Name}: {ex.Message}");
+                LogUtils.Warn(s_Log, () => $"AddLocaleSource: AddSource for '{localeId}' failed: {ex.GetType().Name}: {ex.Message}");
             }
         }
 

@@ -154,7 +154,7 @@ namespace PublicWorksPlus
             }
             catch (Exception ex)
             {
-                Mod.s_Log.Warn($"{Mod.ModTag} Apply: failed enabling {label}: {ex.GetType().Name}: {ex.Message}");
+                LogUtils.Warn(Mod.s_Log, () => $"{Mod.ModTag} Apply: failed enabling {label}: {ex.GetType().Name}: {ex.Message}");
             }
         }
 
@@ -183,7 +183,7 @@ namespace PublicWorksPlus
                 }
                 catch (Exception ex)
                 {
-                    Mod.s_Log.Info($"{Mod.ModTag} OpenParadoxMods failed: {ex.GetType().Name}: {ex.Message}");
+                    LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} OpenParadoxMods failed: {ex.GetType().Name}: {ex.Message}");
                 }
             }
         }
@@ -203,7 +203,7 @@ namespace PublicWorksPlus
                 }
                 catch (Exception ex)
                 {
-                    Mod.s_Log.Info($"{Mod.ModTag} OpenDiscord failed: {ex.GetType().Name}: {ex.Message}");
+                    LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} OpenDiscord failed: {ex.GetType().Name}: {ex.Message}");
                 }
             }
         }
@@ -228,7 +228,7 @@ namespace PublicWorksPlus
 
                 if (!PrefabScanState.RequestScan())
                 {
-                    Mod.s_Log.Info($"{Mod.ModTag} Prefab scan already queued/running.");
+                    LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} Prefab scan already queued/running.");
                     return;
                 }
 
@@ -244,7 +244,7 @@ namespace PublicWorksPlus
                 catch (Exception ex)
                 {
                     PrefabScanState.MarkFailed(PrefabScanState.FailCode.Exception, $"{ex.GetType().Name}: {ex.Message}");
-                    Mod.s_Log.Warn($"{Mod.ModTag} RunPrefabScanButton failed: {ex.GetType().Name}: {ex.Message}");
+                    LogUtils.Warn(Mod.s_Log, () => $"{Mod.ModTag} RunPrefabScanButton failed: {ex.GetType().Name}: {ex.Message}");
                 }
             }
         }

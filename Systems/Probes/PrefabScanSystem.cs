@@ -631,8 +631,10 @@ namespace PublicWorksPlus
 
                 PrefabScanState.MarkDone(sw.Elapsed, reportPath);
 
-                Mod.s_Log.Info($"{Mod.ModTag} Prefab scan done in {sw.Elapsed.TotalSeconds:0.0}s. Report: {reportPath}");
-                Mod.s_Log.Info(
+                LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} Prefab scan done in {sw.Elapsed.TotalSeconds:0.0}s. Report: {reportPath}");
+                LogUtils.Info(
+                    Mod.s_Log,
+                    () =>
                     $"{Mod.ModTag} PrefabScan counts (prefab entities): " +
                     $"TransitLines={transitLinePrefabTotal}, DeliveryTrucks={deliveryTotal}, " +
                     $"MaintVehicles={mvTotal}, MaintDepots={depotTotal}, CargoStations={cargoTotal}, " +
@@ -642,7 +644,7 @@ namespace PublicWorksPlus
             {
                 sw.Stop();
                 PrefabScanState.MarkFailed(PrefabScanState.FailCode.Exception, $"{ex.GetType().Name}: {ex.Message}");
-                Mod.s_Log.Warn($"{Mod.ModTag} Prefab scan failed: {ex.GetType().Name}: {ex.Message}");
+                LogUtils.Warn(Mod.s_Log, () => $"{Mod.ModTag} Prefab scan failed: {ex.GetType().Name}: {ex.Message}");
             }
 
             Enabled = false;

@@ -137,7 +137,9 @@ namespace PublicWorksPlus
                     {
                         string kind = isOC ? "OC-Transfer" : "StorageTransfer";
 
-                        Mod.s_Log.Info(
+                        LogUtils.Info(
+                            Mod.s_Log,
+                            () =>
                             $"{Mod.ModTag} [DISPATCH][StorageTransfer] SOURCE ENTITY ID {entity.Index}:{entity.Version} " +
                             $"TARGET ENTITY ID {request.m_Target.Index}:{request.m_Target.Version} " +
                             $"kind={kind} Resource={request.m_Resource} Request={adjustedAmount} Flags={request.m_Flags} Mirrored={mirroredThisOne}");
@@ -147,7 +149,9 @@ namespace PublicWorksPlus
 
             if (changed > 0 && verbose)
             {
-                Mod.s_Log.Info(
+                LogUtils.Info(
+                    Mod.s_Log,
+                    () =>
                     $"{Mod.ModTag} StationTransferCapacity: promoted {changed} storage-company/OC outbound car request(s) to full truck size; mirrored {mirrored} matching incoming request(s).");
             }
         }

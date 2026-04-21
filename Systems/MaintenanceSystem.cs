@@ -59,7 +59,9 @@ namespace PublicWorksPlus
             m_MaintenanceVehicleBase.Clear();
             m_MaintenanceDepotBaseVehicleCapacity.Clear();
 
-            Mod.s_Log.Info($"{Mod.ModTag} City Loading Complete -> applying Maintenance settings");
+#if DEBUG
+            LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} City Loading Complete -> applying Maintenance settings");
+#endif
             Enabled = true;
         }
 

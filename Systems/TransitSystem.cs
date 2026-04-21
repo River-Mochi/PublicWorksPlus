@@ -108,7 +108,9 @@ namespace PublicWorksPlus
             m_LoggedTypesOnce = false;
 #endif
 
-            Mod.s_Log.Info($"{Mod.ModTag} City Loading Complete -> applying transit settings");
+#if DEBUG
+            LogUtils.Info(Mod.s_Log, () => $"{Mod.ModTag} City Loading Complete -> applying transit settings");
+#endif
             Enabled = true;
         }
 

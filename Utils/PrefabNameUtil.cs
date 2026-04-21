@@ -34,7 +34,7 @@ namespace PublicWorksPlus
                 if (!s_LoggedOnce)
                 {
                     s_LoggedOnce = true;
-                    Mod.s_Log.Warn($"{Mod.ModTag} PrefabNameUtil.GetNameSafe failed once: {ex.GetType().Name}: {ex.Message}");
+                    LogUtils.Warn(Mod.s_Log, () => $"{Mod.ModTag} PrefabNameUtil.GetNameSafe failed once: {ex.GetType().Name}: {ex.Message}");
                 }
             }
 
