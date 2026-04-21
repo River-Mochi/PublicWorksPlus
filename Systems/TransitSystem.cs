@@ -164,10 +164,14 @@ namespace PublicWorksPlus
 #if DEBUG
                     if (debug)
                     {
-                        Mod.s_Log.Info(
-                            $"{Mod.ModTag} Depot apply: entityIndex={entity.Index} entityVersion={entity.Version} " +
-                            $"type={depotData.m_TransportType} BaseDepot={baseCapacity} scalar={scalar:F2} " +
-                            $"OldDepot={depotData.m_VehicleCapacity} NewDepot={newCapacity}");
+                        TransportType transportType = depotData.m_TransportType;
+                        int oldCapacity = depotData.m_VehicleCapacity;
+
+                        LogUtils.Info(
+                            Mod.s_Log,
+                            () => $"{Mod.ModTag} Depot apply: entityIndex={entity.Index} entityVersion={entity.Version} " +
+                                  $"type={transportType} BaseDepot={baseCapacity} scalar={scalar:F2} " +
+                                  $"OldDepot={oldCapacity} NewDepot={newCapacity}");
                     }
 #endif
 
@@ -210,10 +214,14 @@ namespace PublicWorksPlus
 #if DEBUG
                     if (debug)
                     {
-                        Mod.s_Log.Info(
-                            $"{Mod.ModTag} Passengers apply: entityIndex={entity.Index} entityVersion={entity.Version} " +
-                            $"type={vehicleData.m_TransportType} BaseSeats={basePassengers} scalar={scalar:F2} " +
-                            $"OldSeats={vehicleData.m_PassengerCapacity} NewSeats={newPassengers}");
+                        TransportType transportType = vehicleData.m_TransportType;
+                        int oldPassengers = vehicleData.m_PassengerCapacity;
+
+                        LogUtils.Info(
+                            Mod.s_Log,
+                            () => $"{Mod.ModTag} Passengers apply: entityIndex={entity.Index} entityVersion={entity.Version} " +
+                                  $"type={transportType} BaseSeats={basePassengers} scalar={scalar:F2} " +
+                                  $"OldSeats={oldPassengers} NewSeats={newPassengers}");
                     }
 #endif
 
@@ -243,7 +251,9 @@ namespace PublicWorksPlus
                 string depotSummary = m_SeenDepotTypes.Count > 0 ? string.Join(", ", m_SeenDepotTypes) : "(none)";
                 string passengerSummary = m_SeenPassengerTypes.Count > 0 ? string.Join(", ", m_SeenPassengerTypes) : "(none)";
 
-                Mod.s_Log.Info($"{Mod.ModTag} Debug: City Summary -> DepotTypes=[{depotSummary}] PassengerTypes=[{passengerSummary}]");
+                LogUtils.Info(
+                    Mod.s_Log,
+                    () => $"{Mod.ModTag} Debug: City Summary -> DepotTypes=[{depotSummary}] PassengerTypes=[{passengerSummary}]");
 
                 if (m_PassengerSeatSummary.Count > 0)
                 {
@@ -265,19 +275,22 @@ namespace PublicWorksPlus
                             int perSectionNew = summary.MinNew;
                             int totalNew = perSectionNew * kTramSections;
 
-                            Mod.s_Log.Info(
-                                $"{Mod.ModTag} Debug: Tram passengers scaled {percent:F0}%, " +
-                                $"{perSectionBase} -> {perSectionNew} x {kTramSections} sections = {totalNew} (per vehicle prefab type)");
+                            LogUtils.Info(
+                                Mod.s_Log,
+                                () => $"{Mod.ModTag} Debug: Tram passengers scaled {percent:F0}%, " +
+                                      $"{perSectionBase} -> {perSectionNew} x {kTramSections} sections = {totalNew} (per vehicle prefab type)");
                         }
                         else if (summary.MinBase == summary.MaxBase && summary.MinNew == summary.MaxNew)
                         {
-                            Mod.s_Log.Info(
-                                $"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase} -> {summary.MinNew} (per vehicle prefab type)");
+                            LogUtils.Info(
+                                Mod.s_Log,
+                                () => $"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase} -> {summary.MinNew} (per vehicle prefab type)");
                         }
                         else
                         {
-                            Mod.s_Log.Info(
-                                $"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase}-{summary.MaxBase} -> {summary.MinNew}-{summary.MaxNew} (per vehicle prefab types)");
+                            LogUtils.Info(
+                                Mod.s_Log,
+                                () => $"{Mod.ModTag} Debug: {type} passengers scaled {percent:F0}%, {summary.MinBase}-{summary.MaxBase} -> {summary.MinNew}-{summary.MaxNew} (per vehicle prefab types)");
                         }
                     }
                 }

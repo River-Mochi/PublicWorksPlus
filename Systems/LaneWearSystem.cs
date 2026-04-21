@@ -129,9 +129,10 @@ bool verbose = Mod.Settings.EnableDebugLogging;
 
             if (verbose)
             {
-                Mod.s_Log.Info(
-                    $"{Mod.ModTag} Lane wear: RoadWearScalar={percent:0.#}% Scalar={scalar:0.###} " +
-                    $"Prefabs={total} Changed={changed} (scaled TimeFactor + TrafficFactor)");
+                LogUtils.Info(
+                    Mod.s_Log,
+                    () => $"{Mod.ModTag} Lane wear: RoadWearScalar={percent:0.#}% Scalar={scalar:0.###} " +
+                          $"Prefabs={total} Changed={changed} (scaled TimeFactor + TrafficFactor)");
             }
 
             Enabled = false;

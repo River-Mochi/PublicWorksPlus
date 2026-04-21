@@ -158,25 +158,29 @@ namespace PublicWorksPlus
                 if (!had || deltaQ != 0)
                 {
                     string tag = had ? "" : " (first)";
-                    Mod.s_Log.Info(
-                        $"{Mod.ModTag} [LaneWearProbe g={group}] lane={lane.Index}:{lane.Version} " +
-                        $"wear={wear:0.######} (q64={wearQ64}) Δ={delta:0.######} (Δq64={deltaQ}){tag} " +
-                        $"Prefab={pr.m_Prefab.Index}:{pr.m_Prefab.Version} TF={Fmt(tf)} TrF={Fmt(traf)}");
+                    LogUtils.Info(
+                        Mod.s_Log,
+                        () => $"{Mod.ModTag} [LaneWearProbe g={group}] lane={lane.Index}:{lane.Version} " +
+                              $"wear={wear:0.######} (q64={wearQ64}) Δ={delta:0.######} (Δq64={deltaQ}){tag} " +
+                              $"Prefab={pr.m_Prefab.Index}:{pr.m_Prefab.Version} TF={Fmt(tf)} TrF={Fmt(traf)}");
                 }
             }
 
             if (observed == 0)
             {
-                Mod.s_Log.Info($"{Mod.ModTag} [LaneWearProbe g={group}] no samples found Frame={frame}");
+                LogUtils.Info(
+                    Mod.s_Log,
+                    () => $"{Mod.ModTag} [LaneWearProbe g={group}] no samples found Frame={frame}");
                 return;
             }
 
             float avg = sumDelta / observed;
 
-            Mod.s_Log.Info(
-                $"{Mod.ModTag} [LaneWearProbe g={group}] summary: Observed={observed} " +
-                $"AvgΔ={avg:0.######} AvgΔq64={(sumDeltaQ / (float)observed):0.###} " +
-                $"Max|Δ|={maxAbsDelta:0.######} Max|Δq64|={maxAbsDeltaQ} Frame={frame}");
+            LogUtils.Info(
+                Mod.s_Log,
+                () => $"{Mod.ModTag} [LaneWearProbe g={group}] summary: Observed={observed} " +
+                      $"AvgΔ={avg:0.######} AvgΔq64={(sumDeltaQ / (float)observed):0.###} " +
+                      $"Max|Δ|={maxAbsDelta:0.######} Max|Δq64|={maxAbsDeltaQ} Frame={frame}");
         }
 
         private void RefillSamplesIfNeeded(int group, UpdateFrame target)

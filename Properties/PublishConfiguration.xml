@@ -20,11 +20,11 @@ Everything is OPTIONAL - you choose!
 - Industry Delivery vehicles, Cargo stations, Extractors.
 - Parks/Roads Maintenance
 
-**NEW Company Deliveries will now actually use the increase amount you set for trucks.**
+**NEW Company Deliveries will now actually use the increase truck/van amounts you set, reducing traffic with fewer trips.**
 Storage Transfers are also improved. Future: other dispatch paths may be improved (more research needed).
 
 ### Features
-- Transit Line adjuster: can allow as low as 1 bus or need ~30-60 buses or other transit (tram, train, etc.).
+- Transit Line adjuster: can allow as low as 1 bus or higher ~30-60 buses (tram, train, etc.).
 - **Parks + Roads Repairs**: fleet size, work shift + rate
 - Road wear (beta): scale speed roads accumulate damage over time
 - **Industry Deliveries**: scale capacity of delivery vehicles (Semi trucks, Delivery vans, Motorbike, Raw material trucks - coal, oil, etc.)
@@ -94,21 +94,14 @@ delivery trucks vans, industry semi-trucks, cargo station depot capacity, Extrac
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/public-works-plus.1910233/" />
 	<!--Version of the mod-->
-	<ModVersion Value="2.1.0" />
+	<ModVersion Value="2.1.1" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.5.*" />
 	<!--Dependency for the mod, can be set multiple times-->
 	<Dependency Id="" />
 	<!-- Change log for new version. Single line or multi line. Supports minimal markdown subset -->
 <ChangeLog>
-- Major update:
-- Industry Delivery capacity sliders now can deliver higher than vanilla load amounts
-- Decreases traffic because of more optimized use of the delivery vehicles (less trucks needed as companies can actually use the added capacity).
-- Industry delivery sliders are now 100%-500%
-- Live increased loads now working for: semi trucks, delivery vans, and raw-material trucks.
-- Delivery updates are currently for both Company Buying and road storage-transfer paths.
-- More research needed for the other dispatch paths (Cargo stations, etc.).
-- updated locale files
+- added logging utils to prevent edge case harmless but annoying NRE pop-up.
 </ChangeLog>
 	<!--External link. supported types are discord, github, youtube, twitch, x, paypal, patreon-->
 <ExternalLink Type="discord" Url="https://discord.gg/HTav7ARPs2" />

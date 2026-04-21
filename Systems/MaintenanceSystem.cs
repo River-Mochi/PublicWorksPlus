@@ -152,9 +152,12 @@ bool verbose = settings.EnableDebugLogging;
                     if (verbose)
                     {
                         string groupLabel = isPark ? "Park" : "Road";
-                        Mod.s_Log.Info(
-                            $"{Mod.ModTag} MaintenanceDepot({groupLabel}) vehicles: '{prefabName}' " +
-                            $"Type={data.m_MaintenanceType} Base={baseVehicles} x{scalar:0.##} -> {newVehicles}");
+                        MaintenanceType maintenanceType = data.m_MaintenanceType;
+
+                        LogUtils.Info(
+                            Mod.s_Log,
+                            () => $"{Mod.ModTag} MaintenanceDepot({groupLabel}) vehicles: '{prefabName}' " +
+                                  $"Type={maintenanceType} Base={baseVehicles} x{scalar:0.##} -> {newVehicles}");
                     }
 
                     data.m_VehicleCapacity = newVehicles;
@@ -194,9 +197,12 @@ bool verbose = settings.EnableDebugLogging;
                     if (verbose)
                     {
                         string groupLabel = isPark ? "Park" : "Road";
-                        Mod.s_Log.Info(
-                            $"{Mod.ModTag} Maintenance({groupLabel}) cap: '{prefabName}' " +
-                            $"Type={data.m_MaintenanceType} Base={baseVals.Cap} x{capScalar:0.##} -> {newCap}");
+                        MaintenanceType maintenanceType = data.m_MaintenanceType;
+
+                        LogUtils.Info(
+                            Mod.s_Log,
+                            () => $"{Mod.ModTag} Maintenance({groupLabel}) cap: '{prefabName}' " +
+                                  $"Type={maintenanceType} Base={baseVals.Cap} x{capScalar:0.##} -> {newCap}");
                     }
 
                     data.m_MaintenanceCapacity = newCap;
@@ -207,9 +213,12 @@ bool verbose = settings.EnableDebugLogging;
                     if (verbose)
                     {
                         string groupLabel = isPark ? "Park" : "Road";
-                        Mod.s_Log.Info(
-                            $"{Mod.ModTag} Maintenance({groupLabel}) rate: '{prefabName}' " +
-                            $"Type={data.m_MaintenanceType} Base={baseVals.Rate} x{rateScalar:0.##} -> {newRate}");
+                        MaintenanceType maintenanceType = data.m_MaintenanceType;
+
+                        LogUtils.Info(
+                            Mod.s_Log,
+                            () => $"{Mod.ModTag} Maintenance({groupLabel}) rate: '{prefabName}' " +
+                                  $"Type={maintenanceType} Base={baseVals.Rate} x{rateScalar:0.##} -> {newRate}");
                     }
 
                     data.m_MaintenanceRate = newRate;

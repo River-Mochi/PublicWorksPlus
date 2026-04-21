@@ -143,9 +143,10 @@ namespace PublicWorksPlus
 
                         if (verbose)
                         {
-                            Mod.s_Log.Info(
-                                $"{Mod.ModTag} CargoStation max trucks: '{prefabName}' " +
-                                $"Base={baseMax} x{scalar:0.##} -> {newMax}");
+                            LogUtils.Info(
+                                Mod.s_Log,
+                                () => $"{Mod.ModTag} CargoStation max trucks: '{prefabName}' " +
+                                      $"Base={baseMax} x{scalar:0.##} -> {newMax}");
                         }
 
                         company.m_MaxTransports = newMax;
@@ -216,9 +217,12 @@ namespace PublicWorksPlus
                     {
                         if (verbose)
                         {
-                            Mod.s_Log.Info(
-                                $"{Mod.ModTag} Delivery cargo: '{prefabName}' Bucket={bucket} Base={baseCap} x{scalar:0.##} -> {newCap} " +
-                                $"Resources={data.m_TransportedResources}");
+                            string resources = data.m_TransportedResources.ToString();
+
+                            LogUtils.Info(
+                                Mod.s_Log,
+                                () => $"{Mod.ModTag} Delivery cargo: '{prefabName}' Bucket={bucket} Base={baseCap} x{scalar:0.##} -> {newCap} " +
+                                      $"Resources={resources}");
                         }
 
                         data.m_CargoCapacity = newCap;
@@ -273,7 +277,9 @@ namespace PublicWorksPlus
 
                         if (verbose)
                         {
-                            Mod.s_Log.Info($"{Mod.ModTag} Extractor trucks: '{name}' Base={baseMax} x{scalar:0.##} -> {desired}");
+                            LogUtils.Info(
+                                Mod.s_Log,
+                                () => $"{Mod.ModTag} Extractor trucks: '{name}' Base={baseMax} x{scalar:0.##} -> {desired}");
                         }
 
                         TagPrefabUpdatedIfMissing(prefabEntity, ref ecb, ref anyPrefabTaggedUpdated);
@@ -282,7 +288,9 @@ namespace PublicWorksPlus
 
                 if (verbose)
                 {
-                    Mod.s_Log.Info($"{Mod.ModTag} Extractor trucks: scalar={scalar:0.##} matched={matched} changed={changed} skippedZero={skippedZero}");
+                    LogUtils.Info(
+                        Mod.s_Log,
+                        () => $"{Mod.ModTag} Extractor trucks: scalar={scalar:0.##} matched={matched} changed={changed} skippedZero={skippedZero}");
                 }
             }
 
